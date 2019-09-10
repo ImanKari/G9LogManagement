@@ -93,3 +93,13 @@
     border-top-left-radius: 3.9px !important;
     border-top-right-radius: 0 !important;
 }
+
+@keyframes animate {
+    0% {
+        background-position: 500%;
+    }
+
+    100% {
+        background-position: -500%;
+    }
+}

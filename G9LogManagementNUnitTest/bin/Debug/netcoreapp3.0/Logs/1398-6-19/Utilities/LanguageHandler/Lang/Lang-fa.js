@@ -57,5 +57,6 @@
     "LogsManagement": "مدیریت لاگ ها",
     "SingOut": "خروج",
     "ActiveFilters": "فیلتر های فعال",
-    "Remove": "حذف"
+    "Remove": "حذف",
+    "Loading": "بارگذاری"
 };

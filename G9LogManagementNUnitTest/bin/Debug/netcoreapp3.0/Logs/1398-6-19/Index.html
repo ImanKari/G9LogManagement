@@ -6,7 +6,7 @@
 ┼ | |_\ .___/ / | |___| (_) | (_| | | |\ |  __| (_| | (_| |  __| |
 ┼  \____\____/  \_____/\___/ \__, | \_| \_\___|\__,_|\__,_|\___|_|
 ┼                             __/ |
-┼                   G9Studio |___/  APP-V: 1.2.0.3
+┼                   G9Studio |___/  APP-V: 1.3.1.0
 -->
 <!DOCTYPE html>
 <html dir="ltr" lang="fa">
@@ -256,7 +256,7 @@
     <!-- sidebar-content  -->
     <div class="sidebar-footer">
         <label class="sidebar-footer-Labels">⫷ Powered By G9™ - 2019 ⫸</label>
-        <label class="sidebar-footer-Labels">⫷ ㏒-APP-V: 1.2.0.3 ⫸</label>
+        <label class="sidebar-footer-Labels">⫷ ㏒-APP-V: 1.3.1.0 ⫸</label>
     </div>
 </nav>
 
@@ -413,7 +413,7 @@
                     <div id="ContentShowLog_Items_Loading_Logo">
                         <img src="Utilities/Images/G9Logo/G9Logo.png"/>
                         <br/>
-                        <label class="Loading">Loading...</label>
+                        <label class="Loading" g9-bind-value="Loading">Loading</label>
                     </div>
                 </div>
             </div>
@@ -432,7 +432,7 @@
         <!-- Login Form -->
         <img id="DivLogin_BG" src="Utilities/Images/Login/BG.jpg"/>
         <div id="DivLogin_BGColor"></div>
-        <div id="DivLogin_Loading"></div>
+        <div id="DivLogin_Loading">{LOADING}<br />{...}</div>
         <div id="DivLogin" style="display: none">
             <div id="row DivLogin_Body">
                 <div id="DivLogin_Body_Message">
@@ -447,7 +447,7 @@
                         <input onkeypress="return HandleEnterKey(event)" id="G9Password" type="password" class="InputForLogin" autocomplete="off" name="p" placeholder="Password" required="required"/>
                         <button id="Btn_Login" type="submit" class="btn btn-primary btn-block btn-large" g9-bind-value="LetMeIn"></button>
                         <label style="margin-top: 16.9px;" class="sidebar-footer-Labels">⫷ Powered By G9™ - 2019 ⫸</label>
-                        <label class="sidebar-footer-Labels">⫷ ㏒-APP-V: 1.2.0.3 ⫸</label>
+                        <label class="sidebar-footer-Labels">⫷ ㏒-APP-V: 1.3.1.0 ⫸</label>
                     </div>
 
                 </div>

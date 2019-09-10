@@ -57,5 +57,6 @@ G9ResourceLanguage["en-us"] = {
     "LogsManagement": "Logs Management",
     "SingOut": "Sing out",
     "ActiveFilters": "Active Filters",
-    "Remove": "Remove"
+    "Remove": "Remove",
+    "Loading": "Loading"
 };

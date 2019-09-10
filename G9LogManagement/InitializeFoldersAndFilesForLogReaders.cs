@@ -19,6 +19,11 @@ namespace G9LogManagement
         /// </summary>
         private static bool _initializeFirstTime = true;
 
+        /// <summary>
+        ///     Specify library version
+        /// </summary>
+        private readonly string _assemblyVersion;
+
         #endregion
 
         #region Methods
@@ -32,6 +37,10 @@ namespace G9LogManagement
 
         public InitializeFoldersAndFilesForLogReaders()
         {
+            var assembly = Assembly.GetExecutingAssembly();
+            var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+            _assemblyVersion = fileVersionInfo.ProductVersion;
+
             var logReaderTemplateFoldersList = new List<string>
             {
                 "G9LogReaderTemplate",
@@ -160,20 +169,70 @@ namespace G9LogManagement
 
         private void WriteEmbeddedResourceToFile(string embeddedResourceAddress, string pathAndFileName)
         {
+            // Check for config file
+            bool overrideConfig = false;
+            string firstData = string.Empty, configVersion = string.Empty;
+            if (pathAndFileName == "G9Log.config")
+            {
+                if (File.Exists(pathAndFileName))
+                {
+                    // Read all data from config file
+                    var configData = File.ReadAllText(pathAndFileName);
+                    if (string.IsNullOrEmpty(configData))
+                    {
+                        overrideConfig = true;
+                    }
+
+                    // Check exists version attr
+                    if (configData.IndexOf("G9ConfigVersion=\"") == -1)
+                        overrideConfig = true;
+                    else
+                        firstData = configData.Substring(configData.IndexOf("G9ConfigVersion=\"") +
+                                                         "G9ConfigVersion=\"".Length);
+
+                    // Check exists end attr
+                    if (string.IsNullOrEmpty(firstData) || firstData.IndexOf("\"") == -1)
+                        overrideConfig = true;
+                    else
+                        configVersion = firstData.Substring(0, firstData.IndexOf("\""));
+
+                    // Check assembly version equal with config version
+                    if (configVersion != _assemblyVersion)
+                        overrideConfig = true;
+                }
+                else
+                {
+                    // File not exists
+                    overrideConfig = true;
+                }
+
+                // Don't need change config file
+                if (!overrideConfig)
+                    return;
+            }
+            
             using (var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream(embeddedResourceAddress))
             {
                 using (var file = new FileStream(pathAndFileName, FileMode.Create, FileAccess.Write))
                 {
                     if (pathAndFileName.Contains("G9LogReaderTemplate/Index.html"))
                     {
-                        var assembly = Assembly.GetExecutingAssembly();
-                        var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-                        var version = fileVersionInfo.ProductVersion;
-
-                        var reader = new StreamReader(resource);
-                        var index = reader.ReadToEnd();
-                        var bytes = Encoding.UTF8.GetBytes(index.Replace("<G9AppVersion/>", version));
-                        file.Write(bytes, 0, bytes.Length);
+                        using (var reader = new StreamReader(resource))
+                        {
+                            var index = reader.ReadToEnd();
+                            var bytes = Encoding.UTF8.GetBytes(index.Replace("<G9AppVersion/>", _assemblyVersion));
+                            file.Write(bytes, 0, bytes.Length);
+                        }
+                    }
+                    else if (pathAndFileName == "G9Log.config")
+                    {
+                        using (var reader = new StreamReader(resource))
+                        {
+                            var index = reader.ReadToEnd();
+                            var bytes = Encoding.UTF8.GetBytes(index.Replace("G9ConfigVersion=\"1.0\"",
+                                $"G9ConfigVersion=\"{_assemblyVersion}\""));
+                            file.Write(bytes, 0, bytes.Length);
+                        }
                     }
                     else
                     {

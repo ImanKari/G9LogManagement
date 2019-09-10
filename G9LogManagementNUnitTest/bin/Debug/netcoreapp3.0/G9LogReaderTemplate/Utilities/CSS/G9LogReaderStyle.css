@@ -393,24 +393,28 @@ body {
     width: 100%;
 }
 
-#ContentShowLog_Items_Loading_Logo img { height: 199px; }
+#ContentShowLog_Items_Loading_Logo{ text-align: center;}
+
+#ContentShowLog_Items_Loading_Logo img {
+    height: 199px;
+}
 
 #ContentShowLog_Items_Loading_Logo label {
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: rgba(255, 255, 255, 0);
-    animation: animate 1.69s linear infinite;
+    position: relative;
+    color: #eee;
+    position: relative;
+    font-family: sans-serif;
+    text-transform: uppercase;
+    font-size: 2em;
+    letter-spacing: 4px;
+    overflow: hidden;
     background: linear-gradient(90deg, #000, #fff, #000);
     background-repeat: no-repeat;
     background-size: 80%;
-    color: #eee;
-    font-family: sans-serif;
-    font-size: 2em;
-    letter-spacing: 4px;
+    animation: animate 1.69s linear infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: rgba(255, 255, 255, 0);
     margin-top: 19px;
-    overflow: hidden;
-    position: relative;
-    position: relative;
-    text-transform: uppercase;
 }
 
 @keyframes animate {
@@ -798,11 +802,11 @@ body {
 #DivLogin_BG {
     -webkit-filter: blur(6.9px);
     filter: blur(6.9px);
-    height: 100%;
+    height: 101%;
     left: 0;
     position: fixed;
     top: 0;
-    width: 100%;
+    width: 101%;
     z-index: 999;
 }
 
