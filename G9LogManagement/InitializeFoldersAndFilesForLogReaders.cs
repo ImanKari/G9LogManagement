@@ -170,7 +170,7 @@ namespace G9LogManagement
         private void WriteEmbeddedResourceToFile(string embeddedResourceAddress, string pathAndFileName)
         {
             // Check for config file
-            bool overrideConfig = false;
+            var overrideConfig = false;
             string firstData = string.Empty, configVersion = string.Empty;
             if (pathAndFileName == "G9Log.config")
             {
@@ -178,10 +178,7 @@ namespace G9LogManagement
                 {
                     // Read all data from config file
                     var configData = File.ReadAllText(pathAndFileName);
-                    if (string.IsNullOrEmpty(configData))
-                    {
-                        overrideConfig = true;
-                    }
+                    if (string.IsNullOrEmpty(configData)) overrideConfig = true;
 
                     // Check exists version attr
                     if (configData.IndexOf("G9ConfigVersion=\"") == -1)
@@ -210,22 +207,19 @@ namespace G9LogManagement
                 if (!overrideConfig)
                     return;
             }
-            
+
             using (var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream(embeddedResourceAddress))
             {
                 using (var file = new FileStream(pathAndFileName, FileMode.Create, FileAccess.Write))
                 {
                     if (pathAndFileName.Contains("G9LogReaderTemplate/Index.html"))
-                    {
                         using (var reader = new StreamReader(resource))
                         {
                             var index = reader.ReadToEnd();
                             var bytes = Encoding.UTF8.GetBytes(index.Replace("<G9AppVersion/>", _assemblyVersion));
                             file.Write(bytes, 0, bytes.Length);
                         }
-                    }
                     else if (pathAndFileName == "G9Log.config")
-                    {
                         using (var reader = new StreamReader(resource))
                         {
                             var index = reader.ReadToEnd();
@@ -233,11 +227,8 @@ namespace G9LogManagement
                                 $"G9ConfigVersion=\"{_assemblyVersion}\""));
                             file.Write(bytes, 0, bytes.Length);
                         }
-                    }
                     else
-                    {
                         resource.CopyTo(file);
-                    }
                 }
             }
         }

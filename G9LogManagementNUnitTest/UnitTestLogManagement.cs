@@ -39,7 +39,7 @@ namespace G9LogManagementNUnitTest
         [Order(4)]
         public void CheckLogManagement()
         {
-            for (var i = 0; i < G9Log.Configuration.SaveCount; i++)
+            for (var i = 0; i < 10; i++)
             {
                 // Event
                 "Event".G9LogEvent("Event", "Event");
@@ -53,6 +53,7 @@ namespace G9LogManagementNUnitTest
                 new Exception("Exception", new Exception("Exception", new Exception("Exception"))).G9LogException(
                     "Exception", "Exception", "Exception");
             }
+            Thread.Sleep(20000);
         }
     }
 }

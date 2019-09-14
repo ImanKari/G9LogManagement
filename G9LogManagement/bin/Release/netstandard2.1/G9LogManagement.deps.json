@@ -7,36 +7,36 @@
   "targets": {
     ".NETStandard,Version=v2.1": {},
     ".NETStandard,Version=v2.1/": {
-      "G9LogManagement/1.3.0.3": {
+      "G9LogManagement/1.3.1.2": {
         "dependencies": {
-          "G9ScheduleManagement": "1.0.0.1"
+          "G9ScheduleManagement": "1.1.0"
         },
         "runtime": {
           "G9LogManagement.dll": {}
         }
       },
-      "G9ScheduleManagement/1.0.0.1": {
+      "G9ScheduleManagement/1.1.0": {
         "runtime": {
           "lib/netstandard2.1/G9ScheduleManagement.dll": {
-            "assemblyVersion": "1.0.0.1",
-            "fileVersion": "1.0.0.1"
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
           }
         }
       }
     }
   },
   "libraries": {
-    "G9LogManagement/1.3.0.3": {
+    "G9LogManagement/1.3.1.2": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "G9ScheduleManagement/1.0.0.1": {
+    "G9ScheduleManagement/1.1.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-TWxbEJgGF81Zpp64+tY3Lsy36XZDi4LHk3A/pQ2pDuZjEVjRpAgvXZfIxdnBa+U4CYTYVva2RiJKYkCBZX+KjQ==",
-      "path": "g9schedulemanagement/1.0.0.1",
-      "hashPath": "g9schedulemanagement.1.0.0.1.nupkg.sha512"
+      "sha512": "sha512-UNAfT+w4vszNenq0ryJT2eNcYKfGDA6CKfVFRdDsLiRdti4udH3OHLqhkR+hSA+En3TEk+bhjtcQCJJxRyxM0w==",
+      "path": "g9schedulemanagement/1.1.0",
+      "hashPath": "g9schedulemanagement.1.1.0.nupkg.sha512"
     }
   }
 }
