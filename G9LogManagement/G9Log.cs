@@ -5,8 +5,10 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using G9ConfigManagement;
 using G9LogManagement.AESEncryptionDecryption;
 using G9LogManagement.Config;
@@ -31,7 +33,12 @@ namespace G9LogManagement
         /// <summary>
         ///     Concurrent Queue for data logs
         /// </summary>
-        private readonly ConcurrentQueue<G9LogItem> _queueOfLogData = new ConcurrentQueue<G9LogItem>();
+        private readonly ConcurrentQueue<G9LogItem> _queueOfLogData1 = new ConcurrentQueue<G9LogItem>();
+
+        /// <summary>
+        ///     Concurrent Queue for data logs
+        /// </summary>
+        private readonly ConcurrentQueue<G9LogItem> _queueOfLogData2 = new ConcurrentQueue<G9LogItem>();
 
         /// <summary>
         ///     Queue for data logs next day
@@ -39,64 +46,9 @@ namespace G9LogManagement
         private readonly Queue<G9LogItem> _queueOfLogDataNextDay = new Queue<G9LogItem>();
 
         /// <summary>
-        ///     Specify G9LogReaderTemplate path
+        ///     Specify log name
         /// </summary>
-        public const string G9ConfigName = "G9Log-{0}.config";
-
-        /// <summary>
-        ///     Specify G9LogReaderTemplate path
-        /// </summary>
-        public const string G9LogReaderPath = "G9LogReaderTemplate/";
-
-        /// <summary>
-        ///     Initialize unique identity for component log
-        /// </summary>
-        public const string G9LogIdentity = "G9TM";
-
-        /// <summary>
-        ///     Specify directory name for log data
-        /// </summary>
-        public const string DataDirectory = "Data/";
-
-        /// <summary>
-        ///     Specify default data file name
-        /// </summary>
-        public const string DataFileName = "G9DataLog.js";
-
-        /// <summary>
-        ///     Specify default setting file name
-        /// </summary>
-        public const string SettingFileName = "G9Setting.js";
-
-        /// <summary>
-        ///     Specify default config file name
-        /// </summary>
-        public const string ConfigFileName = "G9Config.js";
-
-        /// <summary>
-        ///     Specify default encoding sample text
-        /// </summary>
-        public const string DefaultEncodingSampleText = "Is G9™ Team!";
-
-        /// <summary>
-        ///     Specify default change path sample text
-        /// </summary>
-        public const string DefaultChangePathText = "-ChangeConfig-";
-
-        /// <summary>
-        ///     Specify default language culture file path
-        /// </summary>
-        public const string DefaultLanguageCultureFile = "Utilities/LanguageHandler/DefaultCulture.js";
-
-        /// <summary>
-        ///     Specify minimum max file size in byte
-        /// </summary>
-        public const int MinimumMaxFileSizeInByte = 5000000;
-
-        /// <summary>
-        ///     Default time out for close stream when close app
-        /// </summary>
-        public const int DefaultTimeOutToCloseStreamWhenExitApp = 963;
+        public readonly string LogName;
 
         /// <summary>
         ///     Access to parsed config file
@@ -124,6 +76,9 @@ namespace G9LogManagement
         /// </summary>
         private DateTime _startDateTime = DateTime.Now;
 
+        /// <summary>
+        ///     Specify last hour of date time
+        /// </summary>
         private DateTime _lastHourOfDateTime = DateTime.Parse($"{DateTime.Now:yyyy-MM-dd} 23:59:59.999");
 
         /// <summary>
@@ -132,9 +87,14 @@ namespace G9LogManagement
         private bool _activeTimeOutForSave;
 
         /// <summary>
-        ///     Flag field specify ready for flush logs item
+        ///     Flag field specify ready space for flush logs item
         /// </summary>
-        private bool _readyForFlushLogItems;
+        private FlushLogsSpace _spaceForFlushLogItems;
+
+        /// <summary>
+        ///     Flag true when flush log items to file
+        /// </summary>
+        private bool _workOnFlushLogItem;
 
         /// <summary>
         ///     Field save stream length => file size
@@ -179,30 +139,48 @@ namespace G9LogManagement
         ///     Constructor
         ///     Initialize Requirements
         /// </summary>
+        /// <param name="customLogName">
+        ///     <para>Optional</para>
+        ///     <para>Specified custom log name.</para>
+        ///     <para>You will have a different configuration and config path for each name</para>
+        /// </param>
+        /// <param name="customLogConfig">
+        ///     <para>Optional</para>
+        ///     <para>Specify custom object for create config xml file.</para>
+        ///     <para>Just for create, if created don't use </para>
+        /// </param>
 
         #region G9Log
 
-        protected G9Log(string customLogName = "Default", LogConfig customLogConfig = null)
+        public G9Log(string customLogName = "Default", LogConfig customLogConfig = null)
         {
+            if (string.IsNullOrEmpty(customLogName))
+                throw new ArgumentNullException(nameof(customLogName),
+                    $"Config version property '{nameof(customLogName)}', can be null!");
+
+            // Set log name
+            LogName = customLogName;
+
             // Initialize folders and files
             new InitializeFoldersAndFilesForLogReaders();
 
             // Load configs
             _configuration = G9ConfigManagement_Singleton<LogConfig>.GetInstance(
-                string.Format(G9ConfigName, customLogName), customLogConfig, customLogConfig != null);
+                string.Format(G9LogConst.G9ConfigName, customLogName), customLogConfig, customLogConfig != null);
 
             // Set enable item
-            IsEnableEventLog = _configuration.Configuration.ActiveLogs.EVENT;
+                IsEnableEventLog = _configuration.Configuration.ActiveLogs.EVENT;
             IsEnableInformationLog = _configuration.Configuration.ActiveLogs.INFO;
             IsEnableWarningLog = _configuration.Configuration.ActiveLogs.WARN;
             IsEnableErrorLog = _configuration.Configuration.ActiveLogs.ERROR;
             IsEnableExceptionLog = _configuration.Configuration.ActiveLogs.EXCEPTION;
 
+            // Set event for exit or unload
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
             AppDomain.CurrentDomain.DomainUnload += OnProcessExit;
 
             if (_configuration.Configuration.ComponentLog)
-                G9LogInformationForComponentLog("Start G9LogManagement...", G9LogIdentity, "Start");
+                G9LogInformationForComponentLog("Start G9LogManagement...", G9LogConst.G9LogIdentity, "Start");
 
             // Initialize scheduler
             _scheduler = new G9Schedule();
@@ -252,7 +230,7 @@ namespace G9LogManagement
             if (!IsEnableExceptionLog) return;
 
             // Handle log
-            G9LogManagement(LogsType.EXCEPTION, ExceptionErrorGenerate(ex, message), identity, title, ex);
+            Task.Run(() => G9LogManagement(LogsType.EXCEPTION, ExceptionErrorGenerate(ex, message), identity, title, ex));
         }
 
         #endregion
@@ -272,7 +250,7 @@ namespace G9LogManagement
             if (!IsEnableErrorLog) return;
 
             // Handle log
-            G9LogManagement(LogsType.ERROR, message, identity, title);
+            Task.Run(() => G9LogManagement(LogsType.ERROR, message, identity, title));
         }
 
         #endregion
@@ -292,7 +270,7 @@ namespace G9LogManagement
             if (!IsEnableWarningLog) return;
 
             // Handle log
-            G9LogManagement(LogsType.WARN, message, identity, title);
+            Task.Run(() => G9LogManagement(LogsType.WARN, message, identity, title));
         }
 
         #endregion
@@ -313,7 +291,7 @@ namespace G9LogManagement
         {
             // Handle log
             // Without check file size
-            G9LogManagement(LogsType.EVENT, message, identity, title, null, false, customDateTime, forceSaveLogs);
+            Task.Run(() => G9LogManagement(LogsType.EVENT, message, identity, title, null, false, customDateTime, forceSaveLogs));
         }
 
         #endregion
@@ -333,7 +311,7 @@ namespace G9LogManagement
             if (!IsEnableInformationLog) return;
 
             // Handle log
-            G9LogManagement(LogsType.INFO, message, identity, title);
+            Task.Run(() => G9LogManagement(LogsType.INFO, message, identity, title));
         }
 
         #endregion
@@ -353,7 +331,7 @@ namespace G9LogManagement
             if (!IsEnableEventLog) return;
 
             // Handle log
-            G9LogManagement(LogsType.EVENT, message, identity, title);
+            Task.Run(() => G9LogManagement(LogsType.EVENT, message, identity, title));
         }
 
         #endregion
@@ -408,17 +386,14 @@ namespace G9LogManagement
         {
             if (!forceSaveLogs)
             {
-                if (_readyForFlushLogItems)
-                    lock (_waitForFlushLogItems)
-                    {
-                        // Add log item to queue
-                        _queueOfLogData.Enqueue(logItem);
-                    }
+                // Add log item to queue
+                if (_spaceForFlushLogItems == FlushLogsSpace.QueueOfLogData1)
+                    // if flush is space 1 add items to space 2
+                    _queueOfLogData2.Enqueue(logItem);
                 else
-                    // Add log item to queue
-                    _queueOfLogData.Enqueue(logItem);
-
-
+                    // if flush is space 2 add items to space 1
+                    _queueOfLogData1.Enqueue(logItem);
+                
                 FlushLogsAndSave(fileSizeCheck);
             }
             else
@@ -441,22 +416,45 @@ namespace G9LogManagement
         private void FlushLogsAndSave(bool fileSizeCheck = true, bool forceSaveLogs = false,
             G9LogItem? forceLogItem = null)
         {
-            if (forceSaveLogs || _activeTimeOutForSave ||
-                _queueOfLogData.Count >= _configuration.Configuration.SaveCount)
+            if (!forceSaveLogs && _workOnFlushLogItem)
+                return;
+
+            // Set flags
+            _workOnFlushLogItem = true;
+
+            start1:
+
+            // if previous space is 1 current item add to space 2 else add item to space 1
+            var flushSpace = _spaceForFlushLogItems == FlushLogsSpace.QueueOfLogData1
+                ? _queueOfLogData2
+                : _queueOfLogData1;
+
+            if (flushSpace.Any() && (forceSaveLogs || _activeTimeOutForSave ||
+                                     flushSpace.Count >= _configuration.Configuration.SaveCount))
             {
                 // Stop scheduler
                 _scheduler?.Stop();
                 lock (_waitForFlushLogItems)
                 {
-                    if (forceSaveLogs || _activeTimeOutForSave ||
-                        _queueOfLogData.Count >= _configuration.Configuration.SaveCount)
+                    if (flushSpace.Any() && (forceSaveLogs || _activeTimeOutForSave ||
+                                             flushSpace.Count >= _configuration.Configuration.SaveCount))
                     {
+                        Debug.WriteLine($"######### FlushLogsSpace: {_spaceForFlushLogItems} #########");
+                        Debug.WriteLine($"######### FlushLogsSpaceCount: {flushSpace.LongCount()} #########");
+
+                        // Switch space 
+                        _spaceForFlushLogItems = _spaceForFlushLogItems == FlushLogsSpace.QueueOfLogData1
+                            ? FlushLogsSpace.QueueOfLogData2
+                            : FlushLogsSpace.QueueOfLogData1;
+
+                        Start2:
+                        _activeTimeOutForSave = false;
+
                         // Check path if save not force
                         if (!forceSaveLogs)
                         {
                             var generateNewFile = false;
                             if (fileSizeCheck &&
-                                _configuration.Configuration.MaxFileSizeInByte > MinimumMaxFileSizeInByte &&
                                 _configuration.Configuration.MaxFileSizeInByte <= _streamLengthFileSize)
                             {
                                 generateNewFile = true;
@@ -470,12 +468,10 @@ namespace G9LogManagement
                             CheckAndHandlePath();
                         }
 
-                        // Set flags
-                        _readyForFlushLogItems = true;
-                        _activeTimeOutForSave = false;
-
                         // Ignore other log for next day
                         var ignoreOtherLogForNextDay = false;
+
+                        bool flagBreakSize = false;
 
                         // Instance new stream and open
                         using (var logFileStream = new FileStream(
@@ -485,32 +481,46 @@ namespace G9LogManagement
                             FileShare.Read))
                         {
                             // Write bytes for next day
-                            while (_queueOfLogDataNextDay.TryDequeue(out var logItemData))
-                                WriteLogsToStream(logItemData, logFileStream);
+                            while (_queueOfLogDataNextDay.Any())
+                                if (_queueOfLogDataNextDay.TryDequeue(out var logItemData))
+                                    WriteLogsToStream(logItemData, logFileStream);
 
                             // Dequeue log Item for save to file
-                            while (_queueOfLogData.TryDequeue(out var logItemData))
+                            while (!flushSpace.IsEmpty)
                             {
-                                if (forceSaveLogs)
-                                    if (logItemData.LogDateTime > _lastHourOfDateTime)
+                                if (flushSpace.TryDequeue(out var logItemData))
+                                {
+                                    if (forceSaveLogs)
+                                        if (logItemData.LogDateTime > _lastHourOfDateTime)
+                                        {
+                                            _queueOfLogDataNextDay.Enqueue(logItemData);
+                                            ignoreOtherLogForNextDay = true;
+                                        }
+
+                                    if (!ignoreOtherLogForNextDay) WriteLogsToStream(logItemData, logFileStream);
+
+                                    // break loop if item for next day
+                                    if (ignoreOtherLogForNextDay && forceLogItem != null)
                                     {
-                                        _queueOfLogDataNextDay.Enqueue(logItemData);
-                                        ignoreOtherLogForNextDay = true;
+                                        WriteLogsToStream(forceLogItem.Value, logFileStream);
+                                        break;
                                     }
 
-                                if (!ignoreOtherLogForNextDay) WriteLogsToStream(logItemData, logFileStream);
-
-                                // break loop if item for next day
-                                if (ignoreOtherLogForNextDay && forceLogItem != null)
-                                {
-                                    WriteLogsToStream(forceLogItem.Value, logFileStream);
-                                    break;
+                                    if (fileSizeCheck && _configuration.Configuration.MaxFileSizeInByte <=
+                                        logFileStream.Length)
+                                    {
+                                        flagBreakSize = true;
+                                        break;
+                                    }
                                 }
                             }
 
                             // Set file size
                             _streamLengthFileSize = logFileStream.Length;
                         }
+
+                        if (flagBreakSize)
+                            goto Start2;
 
                         // Reset duration of scheduler
                         if (_scheduler != null)
@@ -519,12 +529,13 @@ namespace G9LogManagement
                             // Resume scheduler
                             _scheduler.Resume();
                         }
-
-                        // Finish flush logs
-                        _readyForFlushLogItems = false;
                     }
                 }
+                goto start1;
             }
+
+            // Finish flush logs
+            _workOnFlushLogItem = false;
         }
 
         #endregion
@@ -628,7 +639,7 @@ namespace G9LogManagement
         {
             // Log for exit
             if (_configuration.Configuration.ComponentLog)
-                G9LogInformationForComponentLog("Stop G9LogManagement and close app...", G9LogIdentity,
+                G9LogInformationForComponentLog("Stop G9LogManagement and close app...", G9LogConst.G9LogIdentity,
                     "Stop And Close");
 
             // Update old setting file
@@ -638,7 +649,7 @@ namespace G9LogManagement
             FlushLogsAndSave(false, true);
 
             // Sleep for wait insert data
-            Thread.Sleep(DefaultTimeOutToCloseStreamWhenExitApp);
+            Thread.Sleep(G9LogConst.DefaultTimeOutToCloseStreamWhenExitApp);
         }
 
         #endregion
@@ -675,7 +686,7 @@ namespace G9LogManagement
                     // Set log change day
                     G9LogInformationForComponentLog(
                         $"Finish day and generate path for new day...\nOld path is: {oldPath}\nNew path is: {CurrentLogDirectory}",
-                        G9LogIdentity, "Change path",
+                        G9LogConst.G9LogIdentity, "Change path",
                         DateTime.Now > _lastHourOfDateTime ? _lastHourOfDateTime : DateTime.Now, true);
                 }
 
@@ -686,12 +697,13 @@ namespace G9LogManagement
                 if (_configuration.Configuration.DirectoryNameDateType == DateTimeType.Gregorian)
                 {
                     CurrentLogDirectory =
-                        Path.Combine(_configuration.Configuration.Path, _startDateTime.ToString("yyyy-MM-dd/"));
+                        Path.Combine(_configuration.Configuration.Path, LogName,
+                            _startDateTime.ToString("yyyy-MM-dd/"));
                 }
                 else
                 {
                     var pc = new PersianCalendar();
-                    CurrentLogDirectory = Path.Combine(_configuration.Configuration.Path,
+                    CurrentLogDirectory = Path.Combine(_configuration.Configuration.Path, LogName,
                         $"{pc.GetYear(_startDateTime)}-{pc.GetMonth(_startDateTime)}-{pc.GetDayOfMonth(_startDateTime)}/");
                 }
 
@@ -703,7 +715,7 @@ namespace G9LogManagement
                 CurrentLogFileAddress = tempCurrentLogFileAddress;
 
                 // Check if not exists directory create it
-                CopyDirectoryAndFileBetweenTwoPath(G9LogReaderPath, CurrentLogDirectory);
+                CopyDirectoryAndFileBetweenTwoPath(G9LogConst.G9LogReaderPath, CurrentLogDirectory);
 
                 // Set log reader configuration
                 SetLogReaderConfiguration(CurrentLogDirectory);
@@ -715,7 +727,7 @@ namespace G9LogManagement
                 if (_configuration.Configuration.ComponentLog)
                     G9LogInformationForComponentLog(
                         $"Generate new path and for new day...\nNew path is: {CurrentLogDirectory}",
-                        G9LogIdentity, "Generate new path");
+                        G9LogConst.G9LogIdentity, "Generate new path");
 
                 // Generate last time for current date
                 _lastHourOfDateTime = DateTime.Parse($"{_startDateTime:yyyy-MM-dd} 23:59:59.999");
@@ -744,7 +756,7 @@ namespace G9LogManagement
                 if (Directory.Exists(
                     Path.Combine(
                         CurrentLogDirectory.Substring(0,
-                            CurrentLogDirectory.Length - 1) + DefaultChangePathText + ++i)))
+                            CurrentLogDirectory.Length - 1) + G9LogConst.DefaultChangePathText + ++i)))
                 {
                     existNewConfigPath = true;
                 }
@@ -760,8 +772,10 @@ namespace G9LogManagement
             // Check inner directory
             while (true)
             {
-                var newSettingPath = Path.Combine(CurrentLogDirectory, DataDirectory, $"{j}-{SettingFileName}");
-                var newDataPath = Path.Combine(CurrentLogDirectory, DataDirectory, $"{j}-{DataFileName}");
+                var newSettingPath = Path.Combine(CurrentLogDirectory, G9LogConst.DataDirectory,
+                    $"{j}-{G9LogConst.SettingFileName}");
+                var newDataPath = Path.Combine(CurrentLogDirectory, G9LogConst.DataDirectory,
+                    $"{j}-{G9LogConst.DataFileName}");
 
                 if (!File.Exists(newSettingPath))
                     return (newSettingPath, newDataPath);
@@ -786,14 +800,14 @@ namespace G9LogManagement
         {
             var newPathForCheck = existNewConfigPath
                 ? CurrentLogDirectory.Substring(0, CurrentLogDirectory.Length - 1)
-                  + DefaultChangePathText + newConfigPathIndex
+                  + G9LogConst.DefaultChangePathText + newConfigPathIndex
                 : CurrentLogDirectory;
 
-            var dicrectoryPath = Path.Combine(newPathForCheck, DataDirectory);
+            var dicrectoryPath = Path.Combine(newPathForCheck, G9LogConst.DataDirectory);
             if (!Directory.Exists(dicrectoryPath))
                 Directory.CreateDirectory(dicrectoryPath);
 
-            var configPathFile = Path.Combine(dicrectoryPath, ConfigFileName);
+            var configPathFile = Path.Combine(dicrectoryPath, G9LogConst.ConfigFileName);
             // Check config file if exists
             if (File.Exists(configPathFile))
             {
@@ -824,7 +838,7 @@ namespace G9LogManagement
                             _configuration.Configuration.EncryptedPassword, out var error);
                         // If exist and config is true
                         // Previous config Equal current config
-                        if (string.IsNullOrEmpty(error) && decoding.Contains(DefaultEncodingSampleText))
+                        if (string.IsNullOrEmpty(error) && decoding.Contains(G9LogConst.DefaultEncodingSampleText))
                             return newPathForCheck;
                         // if exist and config change Generate new path
                         // Previous config User Pass changed
@@ -842,7 +856,7 @@ namespace G9LogManagement
             if (_configuration.Configuration.EnableEncryptionLog)
             {
                 encoding = AES128.EncryptString(
-                    $"{DefaultEncodingSampleText}- {Guid.NewGuid()}-{DateTime.Now:yyyy/MM/dd HH:mm:ss}",
+                    $"{G9LogConst.DefaultEncodingSampleText}- {Guid.NewGuid()}-{DateTime.Now:yyyy/MM/dd HH:mm:ss}",
                     _configuration.Configuration.EncryptedUserName, _configuration.Configuration.EncryptedPassword,
                     out var error);
 
@@ -874,31 +888,31 @@ namespace G9LogManagement
             if (closeReason == ReasonCloseType.ChangeDay && !string.IsNullOrEmpty(oldPath))
             {
                 archivePath = oldPath;
-                oldSettingPath = Path.Combine(oldPath, DataDirectory);
+                oldSettingPath = Path.Combine(oldPath, G9LogConst.DataDirectory);
             }
             else
             {
-                oldSettingPath = Path.Combine(CurrentLogDirectory, DataDirectory);
+                oldSettingPath = Path.Combine(CurrentLogDirectory, G9LogConst.DataDirectory);
             }
 
 
             // If firs file or folder not exists = exit func
             if (!Directory.Exists(oldSettingPath) ||
-                !File.Exists(Path.Combine(oldSettingPath, $"{i}-{SettingFileName}")))
+                !File.Exists(Path.Combine(oldSettingPath, $"{i}-{G9LogConst.SettingFileName}")))
                 return;
 
             while (true)
             {
-                var checkPath = Path.Combine(oldSettingPath, $"{i}-{SettingFileName}");
+                var checkPath = Path.Combine(oldSettingPath, $"{i}-{G9LogConst.SettingFileName}");
 
                 if (!File.Exists(checkPath))
                     if (i > 0)
                     {
-                        checkPath = Path.Combine(oldSettingPath, $"{i - 1}-{SettingFileName}");
+                        checkPath = Path.Combine(oldSettingPath, $"{i - 1}-{G9LogConst.SettingFileName}");
 
                         var oldDataPathFile = string.Empty;
-                        if (File.Exists(Path.Combine(oldSettingPath, $"{i - 1}-{DataFileName}")))
-                            oldDataPathFile = Path.Combine(oldSettingPath, $"{i - 1}-{DataFileName}");
+                        if (File.Exists(Path.Combine(oldSettingPath, $"{i - 1}-{G9LogConst.DataFileName}")))
+                            oldDataPathFile = Path.Combine(oldSettingPath, $"{i - 1}-{G9LogConst.DataFileName}");
 
                         var settingFileLines = File.ReadAllLines(checkPath);
 
@@ -1045,7 +1059,8 @@ namespace G9LogManagement
 
         private void SetLogReaderConfiguration(string path)
         {
-            using var cultureStreamWriter = new StreamWriter(Path.Combine(path, DefaultLanguageCultureFile), false);
+            using var cultureStreamWriter =
+                new StreamWriter(Path.Combine(path, G9LogConst.DefaultLanguageCultureFile), false);
             cultureStreamWriter.Write(
                 $"var DefaultCulture = '{_configuration.Configuration.LogReaderDefaultCulture}';");
         }

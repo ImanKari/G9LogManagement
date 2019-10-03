@@ -1,13 +1,18 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using G9LogManagement;
 using G9LogManagement.Config;
+using G9LogManagement.Structures;
 using NUnit.Framework;
 
 namespace G9LogManagementNUnitTest
 {
     public class UnitTestLogManagement
     {
+
+        public G9Log Logging;
+
         [SetUp]
         public void Setup()
         {
@@ -18,42 +23,53 @@ namespace G9LogManagementNUnitTest
         public void CheckInitializeFoldersAndFilesLogReader()
         {
             var initialize = new InitializeFoldersAndFilesForLogReaders();
+
         }
 
         [Test]
         [Order(2)]
-        public void CheckExistsG9LogConfigFile()
+        public void CheckExistsLogReadersIndexFile()
         {
             Thread.Sleep(1000);
-            FileAssert.Exists("G9Log.config");
+            FileAssert.Exists("G9LogReaderTemplate/Index.html");
         }
 
-        //[Test]
-        //[Order(3)]
-        //public void CheckLoadConfig()
-        //{
-        //    var config = LogConfig.GetInstance();
-        //}
+        [Test]
+        [Order(3)]
+        public void CheckInitializeG9Log()
+        {
+            Logging = new G9Log();
+        }
 
-        //[Test]
-        //[Order(4)]
-        //public void CheckLogManagement()
-        //{
-        //    for (var i = 0; i < 10; i++)
-        //    {
-        //        // Event
-        //        "Event".G9LogEvent("Event", "Event");
-        //        // Information
-        //        "Information".G9LogInformation("Information", "Information");
-        //        // Warning
-        //        "Warning".G9LogWarning("Warning", "Warning");
-        //        // Error
-        //        "Error".G9LogError("Error", "Error");
-        //        // Exception And Inner Exception
-        //        new Exception("Exception", new Exception("Exception", new Exception("Exception"))).G9LogException(
-        //            "Exception", "Exception", "Exception");
-        //    }
-        //    Thread.Sleep(1000);
-        //}
+        [Test]
+        [Order(3)]
+        public void CheckExistsG9LogConfigFile()
+        {
+            FileAssert.Exists(string.Format(G9LogConst.G9ConfigName, Logging.LogName));
+        }
+
+        [Test]
+        [Order(4)]
+        public void CheckLogManagement()
+        {
+            // Test for 1 million log
+            Parallel.For(0, 199999, (index) =>
+            {
+                // Event
+                Logging.G9LogEvent($"Event {index}", $"Event {index}", $"Event {index}");
+                // Information
+                Logging.G9LogInformation($"Information {index}", $"Information {index}", $"Information {index}");
+                // Warning
+                Logging.G9LogWarning($"Warning {index}", $"Warning {index}", $"Warning {index}");
+                // Error
+                Logging.G9LogError($"Error {index}", $"Error {index}", "Error");
+                // Exception And Inner Exception
+                Logging.G9LogException(
+                    new Exception("Exception", new Exception("Exception", new Exception("Exception"))), $"Exception {index}",
+                    $"Exception {index}", $"Exception {index}");
+            });
+
+            Thread.Sleep(30000);
+        }
     }
 }

@@ -41,37 +41,27 @@ namespace G9LogManagement.Config
         /// <summary>
         ///     Event log enable or disable
         /// </summary>
-        [DefaultValue(true)]
-        [Hint("'true' or 'false' for EVENT")]
-        public bool EVENT { get; }
+        public bool EVENT { set; get; } = true;
 
         /// <summary>
         ///     Info log enable or disable
         /// </summary>
-        [DefaultValue(true)]
-        [Hint("'true' or 'false' for EVENT")]
-        public bool INFO { get; }
+        public bool INFO { set; get; } = true;
 
         /// <summary>
         ///     Warning log enable or disable
         /// </summary>
-        [DefaultValue(true)]
-        [Hint("'true' or 'false' for EVENT")]
-        public bool WARN { get; }
+        public bool WARN { set; get; } = true;
 
         /// <summary>
         ///     Error log enable or disable
         /// </summary>
-        [DefaultValue(true)]
-        [Hint("'true' or 'false' for EVENT")]
-        public bool ERROR { get; }
+        public bool ERROR { set; get; } = true;
 
         /// <summary>
         ///     Exception error log enable or disable
         /// </summary>
-        [DefaultValue(true)]
-        [Hint("'true' or 'false' for EVENT")]
-        public bool EXCEPTION { get; }
+        public bool EXCEPTION { set; get; } = true;
 
         #endregion
     }

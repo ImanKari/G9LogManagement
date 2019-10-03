@@ -5,7 +5,7 @@
   },
   "projects": {
     "D:\\Project\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj": {
-      "version": "1.4.0",
+      "version": "1.5.0",
       "restore": {
         "projectUniqueName": "D:\\Project\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj",
         "projectName": "G9LogManagement",
@@ -48,7 +48,7 @@
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[1.4.0.1, )"
+              "version": "[1.4.1, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",

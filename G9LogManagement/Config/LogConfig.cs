@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using G9ConfigManagement.Attributes;
 using G9ConfigManagement.Interface;
 using G9LogManagement.Enums;
+using G9LogManagement.Structures;
 
 namespace G9LogManagement.Config
 {
@@ -24,8 +26,6 @@ namespace G9LogManagement.Config
 
         public LogConfig()
         {
-            EnableStackTraceInformation = new LogsTypeConfig();
-            ActiveLogs = new LogsTypeConfig();
         }
 
         #endregion
@@ -65,7 +65,10 @@ namespace G9LogManagement.Config
         #region Fields And Properties
 
         /// <inheritdoc />
-        public string ConfigVersion { set; get; }
+        public string ConfigVersion =>
+            string.IsNullOrEmpty(Assembly.GetExecutingAssembly().GetName().Version.ToString())
+                ? Assembly.GetEntryAssembly()?.GetName().Version.ToString() ?? "0.0.0.0"
+                : Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
         /// <summary>
         ///     Save path
@@ -82,7 +85,7 @@ namespace G9LogManagement.Config
             get
             {
                 if (string.IsNullOrEmpty(_path))
-                    _path = "LogsManagement/";
+                    _path = "G9Logs/";
                 return _path;
             }
         }
@@ -101,20 +104,19 @@ namespace G9LogManagement.Config
         /// </summary>
         [Hint("Enable log for component G9LogHandler")]
         [Hint("Logs like: start datetime, end datetime and other additional")]
-        [DefaultValue(true)]
-        public bool ComponentLog { set; get; }
-
-        /// <summary>
-        ///     Enable stack trace info for logs
-        /// </summary>
-        [Hint("Enable stack trace info for logs")]
-        public LogsTypeConfig EnableStackTraceInformation { set; get; }
+        public bool ComponentLog { set; get; } = true;
 
         /// <summary>
         ///     Specify log type enable
         /// </summary>
         [Hint("Specify log type enable")]
-        public LogsTypeConfig ActiveLogs { set; get; }
+        public LogsTypeConfig ActiveLogs { set; get; } = new LogsTypeConfig();
+
+        /// <summary>
+        ///     Enable stack trace info for logs
+        /// </summary>
+        [Hint("Enable stack trace info for logs")]
+        public LogsTypeConfig EnableStackTraceInformation { set; get; } = new LogsTypeConfig();
 
         /// <summary>
         ///     Specify need encrypt data for log
@@ -205,23 +207,26 @@ namespace G9LogManagement.Config
         ///     Specify max file size in byte
         /// </summary>
         [Hint("Specify max file size in MB")]
-        [Hint("Set 0 => Unlimited | Min value: 3")]
-        [DefaultValue(10)]
+        [Hint("Minimum 3 and maximum 10")]
         public decimal MaxFileSize
         {
-            set => _maxFileSize = value;
-            get
+            set
             {
-                if (_maxFileSize < 3)
-                    return 3;
-                return _maxFileSize;
+                _maxFileSizeInByte = 0;
+                if (value < 3)
+                    _maxFileSize = 3;
+                else if (value > 10)
+                    _maxFileSize = 10;
+                else
+                    _maxFileSize = value;
             }
+            get => _maxFileSize;
         }
         
         /// <summary>
         /// field for save max file size in byte
         /// </summary>
-        private decimal _maxFileSizeInByte = 0;
+        private decimal _maxFileSizeInByte;
 
         /// <summary>
         /// Access to max file size Mb => byte
@@ -231,9 +236,21 @@ namespace G9LogManagement.Config
         {
             get
             {
+                // if not zero mean set and return
                 if (_maxFileSizeInByte != 0)
                     return _maxFileSizeInByte;
-                return _maxFileSizeInByte = MaxFileSize * 1048576;
+                // if max file size is zero or less zero mean infinity
+                if (MaxFileSize <= 0)
+                    return _maxFileSizeInByte = int.MaxValue;
+                // else convert MB to byte
+                _maxFileSizeInByte = MaxFileSize * 1048576;
+                // if less than minimum file size => set minimum file size for it
+                if (_maxFileSizeInByte < G9LogConst.MinimumFileSizeInByte)
+                {
+                    _maxFileSizeInByte = G9LogConst.MinimumFileSizeInByte;
+                }
+
+                return _maxFileSizeInByte;
             }
         }
 
@@ -253,36 +270,43 @@ namespace G9LogManagement.Config
         ///     Specify time in second for save logs
         /// </summary>
         [Hint("Specify time in second for save logs")]
+        [Hint("Minimum 1 and maximum 3600")]
         public int SaveTime
         {
-            set => _saveTime = value;
-            get
+            set
             {
-                if (_saveTime < 1)
-                    return 1;
-                return _saveTime;
+                if (value < 1)
+                    _saveTime = 1;
+                else if (value > 3600)
+                    _saveTime = 3600;
+                else
+                    _saveTime = value;
             }
+            get => _saveTime;
         }
 
         /// <summary>
         ///     Field for save count
         /// </summary>
-        private int _saveCount;
+        private int _saveCount = 100;
 
         /// <summary>
         ///     Specify count of logs for save logs
         /// </summary>
         [Hint("Specify count of logs for save logs")]
-        [Hint("Minimum Set 0 => without queue")]
+        [Hint("Minimum 100 and maximum 10000")]
         public int SaveCount
         {
-            set => _saveCount = value;
-            get
+            set
             {
-                if (_saveCount < 0)
-                    return 0;
-                return _saveCount;
+                if (value < 100)
+                    _saveCount = 100;
+                else if (value > 10000)
+                    _saveCount = 10000;
+                else
+                    _saveCount = value;
             }
+            get => _saveCount;
         }
 
         /// <summary>

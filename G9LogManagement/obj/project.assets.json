@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     ".NETStandard,Version=v2.1": {
-      "G9ConfigManagement/1.4.0.1": {
+      "G9ConfigManagement/1.4.1": {
         "type": "package",
         "compile": {
           "lib/netstandard2.1/G9ConfigManagement.dll": {}
@@ -23,14 +23,14 @@
     }
   },
   "libraries": {
-    "G9ConfigManagement/1.4.0.1": {
-      "sha512": "qJZ5AhReFPQr+2jWstOKMtC085ts+feqRkfmdO6WmibEgEl+xLuAqiue5gubCDrqODEDqZZhipbiR+36QuXigg==",
+    "G9ConfigManagement/1.4.1": {
+      "sha512": "JwbiLW/gjsLY6+FW1A9VfDEDP8SJO44eo80JCE9o7UWP3NCHdklQuLJeBSG/zAMH3cpihhFy6b/24m0CPoQgeQ==",
       "type": "package",
-      "path": "g9configmanagement/1.4.0.1",
+      "path": "g9configmanagement/1.4.1",
       "files": [
         ".nupkg.metadata",
         "LICENSE.md",
-        "g9configmanagement.1.4.0.1.nupkg.sha512",
+        "g9configmanagement.1.4.1.nupkg.sha512",
         "g9configmanagement.nuspec",
         "lib/netstandard2.1/G9ConfigManagement.dll"
       ]
@@ -50,7 +50,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETStandard,Version=v2.1": [
-      "G9ConfigManagement >= 1.4.0.1",
+      "G9ConfigManagement >= 1.4.1",
       "G9ScheduleManagement >= 1.1.0"
     ]
   },
@@ -60,7 +60,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
-    "version": "1.4.0",
+    "version": "1.5.0",
     "restore": {
       "projectUniqueName": "D:\\Project\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj",
       "projectName": "G9LogManagement",
@@ -103,7 +103,7 @@
         "dependencies": {
           "G9ConfigManagement": {
             "target": "Package",
-            "version": "[1.4.0.1, )"
+            "version": "[1.4.1, )"
           },
           "G9ScheduleManagement": {
             "target": "Package",
