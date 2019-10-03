@@ -86,7 +86,7 @@ $(document).ready(function() {
                     // Load data log
                     AddAllDataLogScript();
                 },
-                963);
+                369);
         } catch (error) {
             console.log(error);
         }

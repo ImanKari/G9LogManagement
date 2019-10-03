@@ -2,6 +2,15 @@
   "version": 3,
   "targets": {
     ".NETStandard,Version=v2.1": {
+      "G9ConfigManagement/1.4.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.1/G9ConfigManagement.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.1/G9ConfigManagement.dll": {}
+        }
+      },
       "G9ScheduleManagement/1.1.0": {
         "type": "package",
         "compile": {
@@ -14,6 +23,18 @@
     }
   },
   "libraries": {
+    "G9ConfigManagement/1.4.0.1": {
+      "sha512": "qJZ5AhReFPQr+2jWstOKMtC085ts+feqRkfmdO6WmibEgEl+xLuAqiue5gubCDrqODEDqZZhipbiR+36QuXigg==",
+      "type": "package",
+      "path": "g9configmanagement/1.4.0.1",
+      "files": [
+        ".nupkg.metadata",
+        "LICENSE.md",
+        "g9configmanagement.1.4.0.1.nupkg.sha512",
+        "g9configmanagement.nuspec",
+        "lib/netstandard2.1/G9ConfigManagement.dll"
+      ]
+    },
     "G9ScheduleManagement/1.1.0": {
       "sha512": "UNAfT+w4vszNenq0ryJT2eNcYKfGDA6CKfVFRdDsLiRdti4udH3OHLqhkR+hSA+En3TEk+bhjtcQCJJxRyxM0w==",
       "type": "package",
@@ -29,6 +50,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETStandard,Version=v2.1": [
+      "G9ConfigManagement >= 1.4.0.1",
       "G9ScheduleManagement >= 1.1.0"
     ]
   },
@@ -38,7 +60,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
-    "version": "1.3.1.2",
+    "version": "1.4.0",
     "restore": {
       "projectUniqueName": "D:\\Project\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj",
       "projectName": "G9LogManagement",
@@ -60,6 +82,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "D:\\Project\\G9ConfigManagement\\G9ConfigManagement\\G9ConfigManagement\\bin\\Release": {},
         "D:\\Project\\G9LogManagement\\G9LogManagement\\bin\\Release": {},
         "D:\\Project\\G9ScheduleManagement\\G9ScheduleManagement\\bin\\Release": {},
         "https://api.nuget.org/v3/index.json": {}
@@ -78,6 +101,10 @@
     "frameworks": {
       "netstandard2.1": {
         "dependencies": {
+          "G9ConfigManagement": {
+            "target": "Package",
+            "version": "[1.4.0.1, )"
+          },
           "G9ScheduleManagement": {
             "target": "Package",
             "version": "[1.1.0, )"
@@ -98,7 +125,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100-preview9-014004\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100\\RuntimeIdentifierGraph.json"
       }
     }
   }

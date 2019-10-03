@@ -72,7 +72,6 @@ namespace G9LogManagement
 
             var logReaderTemplateFilesList = new List<string>
             {
-                "G9Log.config",
                 "G9LogReaderTemplate/Index.html",
                 "G9LogReaderTemplate/Data/DataFilePath.txt",
                 "G9LogReaderTemplate/Utilities/CanvasJs/jquery.canvasjs.min.js",

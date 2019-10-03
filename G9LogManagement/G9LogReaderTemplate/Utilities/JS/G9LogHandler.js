@@ -86,7 +86,7 @@ $(document).ready(function() {
                     // Load data log
                     AddAllDataLogScript();
                 },
-                963);
+                369);
         } catch (error) {
             console.log(error);
         }
@@ -1273,7 +1273,7 @@ $(document).ready(function() {
         }
     }
 
-    // Decrypt log data in 'FilteredDataLog' by log item number = (array index)
+    // Decrypt log data in 'FilteredDataLog' by log item number = (array index) 
     function DecryptFilteredDataLogByItemNumber(itemNumber) {
         // Get bin item number
         var binItemNumber = FilteredDataLog[itemNumber]()[4];
@@ -1281,6 +1281,13 @@ $(document).ready(function() {
         if (G9Encoding && typeof G9DataLogDecoded[binItemNumber] === "undefined") {
             // Column 2 is data log and just this column encrypted
             FilteredDataLog[itemNumber]()[2] = Decoding(FilteredDataLog[itemNumber]()[2], G9UserName, G9Password);
+            // Split column 2 to 5 Array columns:
+            // ({title}🅖➒{body}🅖➒{fileName}🅖➒{methodBase}🅖➒{lineNumber})
+            FilteredDataLog[itemNumber]()[2] = FilteredDataLog[itemNumber]()[2].split("\ud83c\udd56\u2792");
+            // Save decoded number
+            G9DataLogDecoded[binItemNumber] = true;
+        }
+        else if (typeof G9DataLogDecoded[binItemNumber] === "undefined") {
             // Split column 2 to 5 Array columns:
             // ({title}🅖➒{body}🅖➒{fileName}🅖➒{methodBase}🅖➒{lineNumber})
             FilteredDataLog[itemNumber]()[2] = FilteredDataLog[itemNumber]()[2].split("\ud83c\udd56\u2792");

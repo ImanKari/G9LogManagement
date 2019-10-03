@@ -28,32 +28,32 @@ namespace G9LogManagementNUnitTest
             FileAssert.Exists("G9Log.config");
         }
 
-        [Test]
-        [Order(3)]
-        public void CheckLoadConfig()
-        {
-            var config = G9LogConfigSingleton.GetInstance();
-        }
+        //[Test]
+        //[Order(3)]
+        //public void CheckLoadConfig()
+        //{
+        //    var config = LogConfig.GetInstance();
+        //}
 
-        [Test]
-        [Order(4)]
-        public void CheckLogManagement()
-        {
-            for (var i = 0; i < 10; i++)
-            {
-                // Event
-                "Event".G9LogEvent("Event", "Event");
-                // Information
-                "Information".G9LogInformation("Information", "Information");
-                // Warning
-                "Warning".G9LogWarning("Warning", "Warning");
-                // Error
-                "Error".G9LogError("Error", "Error");
-                // Exception And Inner Exception
-                new Exception("Exception", new Exception("Exception", new Exception("Exception"))).G9LogException(
-                    "Exception", "Exception", "Exception");
-            }
-            Thread.Sleep(20000);
-        }
+        //[Test]
+        //[Order(4)]
+        //public void CheckLogManagement()
+        //{
+        //    for (var i = 0; i < 10; i++)
+        //    {
+        //        // Event
+        //        "Event".G9LogEvent("Event", "Event");
+        //        // Information
+        //        "Information".G9LogInformation("Information", "Information");
+        //        // Warning
+        //        "Warning".G9LogWarning("Warning", "Warning");
+        //        // Error
+        //        "Error".G9LogError("Error", "Error");
+        //        // Exception And Inner Exception
+        //        new Exception("Exception", new Exception("Exception", new Exception("Exception"))).G9LogException(
+        //            "Exception", "Exception", "Exception");
+        //    }
+        //    Thread.Sleep(1000);
+        //}
     }
 }

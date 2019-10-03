@@ -7,6 +7,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Threading;
+using G9ConfigManagement;
 using G9LogManagement.AESEncryptionDecryption;
 using G9LogManagement.Config;
 using G9LogManagement.Enums;
@@ -16,26 +17,31 @@ using G9ScheduleManagement;
 namespace G9LogManagement
 {
     /// <summary>
-    ///     Static class for managed logs
+    ///     Abstract Class for managed logs
     /// </summary>
-    public static class G9Log
+    public class G9Log
     {
         #region Fields And Properties
 
         /// <summary>
         ///     Scheduler for handle duration save log
         /// </summary>
-        private static readonly G9Schedule _scheduler;
+        private readonly G9Schedule _scheduler;
 
         /// <summary>
         ///     Concurrent Queue for data logs
         /// </summary>
-        private static readonly ConcurrentQueue<G9LogItem> _queueOfLogData = new ConcurrentQueue<G9LogItem>();
+        private readonly ConcurrentQueue<G9LogItem> _queueOfLogData = new ConcurrentQueue<G9LogItem>();
 
         /// <summary>
         ///     Queue for data logs next day
         /// </summary>
-        private static readonly Queue<G9LogItem> _queueOfLogDataNextDay = new Queue<G9LogItem>();
+        private readonly Queue<G9LogItem> _queueOfLogDataNextDay = new Queue<G9LogItem>();
+
+        /// <summary>
+        ///     Specify G9LogReaderTemplate path
+        /// </summary>
+        public const string G9ConfigName = "G9Log-{0}.config";
 
         /// <summary>
         ///     Specify G9LogReaderTemplate path
@@ -70,7 +76,7 @@ namespace G9LogManagement
         /// <summary>
         ///     Specify default encoding sample text
         /// </summary>
-        public const string DefaultEncodingSampleText = "This Is G9™ Team!";
+        public const string DefaultEncodingSampleText = "Is G9™ Team!";
 
         /// <summary>
         ///     Specify default change path sample text
@@ -96,49 +102,74 @@ namespace G9LogManagement
         ///     Access to parsed config file
         ///     <para>Config file: 'G9Log.config'</para>
         /// </summary>
-        public static G9LogConfigSingleton Configuration { get; }
+        private readonly G9ConfigManagement_Singleton<LogConfig> _configuration;
 
         /// <summary>
         ///     Encoding for log write
         /// </summary>
-        private static readonly UTF8Encoding Encoding = new UTF8Encoding(true);
+        private readonly UTF8Encoding _encoding = new UTF8Encoding(true);
 
         /// <summary>
         ///     Get full path of directory
         /// </summary>
-        public static string CurrentLogDirectory { get; private set; }
+        public string CurrentLogDirectory { get; private set; }
 
         /// <summary>
         ///     Get full path of directory
         /// </summary>
-        public static string CurrentLogFileAddress { get; private set; }
+        public string CurrentLogFileAddress { get; private set; }
 
         /// <summary>
         ///     Field save start date time
         /// </summary>
-        private static DateTime _startDateTime = DateTime.Now;
+        private DateTime _startDateTime = DateTime.Now;
 
-        private static DateTime _lastHourOfDateTime = DateTime.Parse($"{DateTime.Now:yyyy-MM-dd} 23:59:59.999");
+        private DateTime _lastHourOfDateTime = DateTime.Parse($"{DateTime.Now:yyyy-MM-dd} 23:59:59.999");
 
         /// <summary>
         ///     After time out duration active field for save
         /// </summary>
-        private static bool _activeTimeOutForSave;
+        private bool _activeTimeOutForSave;
 
         /// <summary>
         ///     Flag field specify ready for flush logs item
         /// </summary>
-        private static bool _readyForFlushLogItems;
+        private bool _readyForFlushLogItems;
 
         /// <summary>
         ///     Field save stream length => file size
         /// </summary>
-        private static long _streamLengthFileSize;
+        private long _streamLengthFileSize;
 
         /// <summary>
         ///     Field for lock
         /// </summary>
-        private static readonly object WaitForFlushLogItems = new object();
+        private readonly object _waitForFlushLogItems = new object();
+
+        /// <summary>
+        ///     Specified enable event log
+        /// </summary>
+        public readonly bool IsEnableEventLog;
+
+        /// <summary>
+        ///     Specified enable information log
+        /// </summary>
+        public readonly bool IsEnableInformationLog;
+
+        /// <summary>
+        ///     Specified enable warning log
+        /// </summary>
+        public readonly bool IsEnableWarningLog;
+
+        /// <summary>
+        ///     Specified enable error log
+        /// </summary>
+        public readonly bool IsEnableErrorLog;
+
+        /// <summary>
+        ///     Specified enable exception log
+        /// </summary>
+        public readonly bool IsEnableExceptionLog;
 
         #endregion
 
@@ -151,17 +182,26 @@ namespace G9LogManagement
 
         #region G9Log
 
-        static G9Log()
+        protected G9Log(string customLogName = "Default", LogConfig customLogConfig = null)
         {
             // Initialize folders and files
-            var initializeFoldersAndFiles =
-                new InitializeFoldersAndFilesForLogReaders();
+            new InitializeFoldersAndFilesForLogReaders();
 
-            Configuration = G9LogConfigSingleton.GetInstance();
+            // Load configs
+            _configuration = G9ConfigManagement_Singleton<LogConfig>.GetInstance(
+                string.Format(G9ConfigName, customLogName), customLogConfig, customLogConfig != null);
+
+            // Set enable item
+            IsEnableEventLog = _configuration.Configuration.ActiveLogs.EVENT;
+            IsEnableInformationLog = _configuration.Configuration.ActiveLogs.INFO;
+            IsEnableWarningLog = _configuration.Configuration.ActiveLogs.WARN;
+            IsEnableErrorLog = _configuration.Configuration.ActiveLogs.ERROR;
+            IsEnableExceptionLog = _configuration.Configuration.ActiveLogs.EXCEPTION;
+
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
             AppDomain.CurrentDomain.DomainUnload += OnProcessExit;
 
-            if (Configuration.ComponentLog)
+            if (_configuration.Configuration.ComponentLog)
                 G9LogInformationForComponentLog("Start G9LogManagement...", G9LogIdentity, "Start");
 
             // Initialize scheduler
@@ -179,7 +219,7 @@ namespace G9LogManagement
 
         #region ScheduleHandler
 
-        private static void ScheduleHandler()
+        private void ScheduleHandler()
         {
             _scheduler
                 .AddScheduleAction(() =>
@@ -189,8 +229,8 @@ namespace G9LogManagement
                     // Run save logs
                     FlushLogsAndSave();
                 })
-                .SetDuration(TimeSpan.FromSeconds(Configuration.SaveTime))
-                .AddErrorCallBack(exception => exception.G9LogException("Scheduler Error!", "Scheduler", "Scheduler"));
+                .SetDuration(TimeSpan.FromSeconds(_configuration.Configuration.SaveTime))
+                .AddErrorCallBack(exception => G9LogException(exception, "Scheduler Error!", "Scheduler", "Scheduler"));
         }
 
         #endregion
@@ -205,9 +245,12 @@ namespace G9LogManagement
 
         #region ExceptionLog
 
-        public static void G9LogException(this Exception ex, string message = null, string identity = null,
+        public void G9LogException(Exception ex, string message = null, string identity = null,
             string title = null)
         {
+            // Ignore if disable log type
+            if (!IsEnableExceptionLog) return;
+
             // Handle log
             G9LogManagement(LogsType.EXCEPTION, ExceptionErrorGenerate(ex, message), identity, title, ex);
         }
@@ -223,8 +266,11 @@ namespace G9LogManagement
 
         #region ErrorLog
 
-        public static void G9LogError(this string message, string identity = null, string title = null)
+        public void G9LogError(string message, string identity = null, string title = null)
         {
+            // Ignore if disable log type
+            if (!IsEnableErrorLog) return;
+
             // Handle log
             G9LogManagement(LogsType.ERROR, message, identity, title);
         }
@@ -240,8 +286,11 @@ namespace G9LogManagement
 
         #region G9LogWarning
 
-        public static void G9LogWarning(this string message, string identity = null, string title = null)
+        public void G9LogWarning(string message, string identity = null, string title = null)
         {
+            // Ignore if disable log type
+            if (!IsEnableWarningLog) return;
+
             // Handle log
             G9LogManagement(LogsType.WARN, message, identity, title);
         }
@@ -259,7 +308,7 @@ namespace G9LogManagement
 
         #region G9LogInformationForComponentLog
 
-        private static void G9LogInformationForComponentLog(this string message, string identity = null,
+        private void G9LogInformationForComponentLog(string message, string identity = null,
             string title = null, DateTime? customDateTime = null, bool forceSaveLogs = false)
         {
             // Handle log
@@ -278,8 +327,11 @@ namespace G9LogManagement
 
         #region G9LogInformation
 
-        public static void G9LogInformation(this string message, string identity = null, string title = null)
+        public void G9LogInformation(string message, string identity = null, string title = null)
         {
+            // Ignore if disable log type
+            if (!IsEnableInformationLog) return;
+
             // Handle log
             G9LogManagement(LogsType.INFO, message, identity, title);
         }
@@ -295,8 +347,11 @@ namespace G9LogManagement
 
         #region G9LogEvent
 
-        public static void G9LogEvent(this string message, string identity = null, string title = null)
+        public void G9LogEvent(string message, string identity = null, string title = null)
         {
+            // Ignore if disable log type
+            if (!IsEnableEventLog) return;
+
             // Handle log
             G9LogManagement(LogsType.EVENT, message, identity, title);
         }
@@ -317,15 +372,15 @@ namespace G9LogManagement
 
         #region G9LogManagement
 
-        private static void G9LogManagement(LogsType logType, string message, string identity = null,
+        private void G9LogManagement(LogsType logType, string message, string identity = null,
             string title = null,
             Exception ex = null, bool fileSizeCheck = true, DateTime? customDateTime = null, bool forceSaveLogs = false)
         {
             // fields for save stack trace information
             string fileName = string.Empty, methodBase = string.Empty, lineNumber = string.Empty;
 
-            // Check if enable stack information log for this type
-            if (Configuration.EnableStackTraceInformation.CheckValueByType(logType))
+            // Check if enable stack information log for type
+            if (_configuration.Configuration.EnableStackTraceInformation.CheckValueByType(logType))
                 if (ex != null)
                     (fileName, methodBase, lineNumber) = GetStackInformation(new StackTrace(ex, true));
                 else
@@ -349,12 +404,12 @@ namespace G9LogManagement
 
         #region WriteLogAutomatic
 
-        private static void WriteLogAutomatic(G9LogItem logItem, bool fileSizeCheck = true, bool forceSaveLogs = false)
+        private void WriteLogAutomatic(G9LogItem logItem, bool fileSizeCheck = true, bool forceSaveLogs = false)
         {
             if (!forceSaveLogs)
             {
                 if (_readyForFlushLogItems)
-                    lock (WaitForFlushLogItems)
+                    lock (_waitForFlushLogItems)
                     {
                         // Add log item to queue
                         _queueOfLogData.Enqueue(logItem);
@@ -379,27 +434,30 @@ namespace G9LogManagement
         /// </summary>
         /// <param name="fileSizeCheck">Specify check file size or no</param>
         /// <param name="forceSaveLogs">When need force save</param>
+        /// <param name="forceLogItem">Specify item for save in the last</param>
 
         #region FlushLogsAndSave
 
-        private static void FlushLogsAndSave(bool fileSizeCheck = true, bool forceSaveLogs = false,
+        private void FlushLogsAndSave(bool fileSizeCheck = true, bool forceSaveLogs = false,
             G9LogItem? forceLogItem = null)
         {
-            if (forceSaveLogs || _activeTimeOutForSave || _queueOfLogData.Count >= Configuration.SaveCount)
+            if (forceSaveLogs || _activeTimeOutForSave ||
+                _queueOfLogData.Count >= _configuration.Configuration.SaveCount)
             {
                 // Stop scheduler
                 _scheduler?.Stop();
-                lock (WaitForFlushLogItems)
+                lock (_waitForFlushLogItems)
                 {
-                    if (forceSaveLogs || _activeTimeOutForSave || _queueOfLogData.Count >= Configuration.SaveCount)
+                    if (forceSaveLogs || _activeTimeOutForSave ||
+                        _queueOfLogData.Count >= _configuration.Configuration.SaveCount)
                     {
                         // Check path if save not force
                         if (!forceSaveLogs)
                         {
                             var generateNewFile = false;
                             if (fileSizeCheck &&
-                                Configuration.MaxFileSize > MinimumMaxFileSizeInByte &&
-                                Configuration.MaxFileSize <= _streamLengthFileSize)
+                                _configuration.Configuration.MaxFileSizeInByte > MinimumMaxFileSizeInByte &&
+                                _configuration.Configuration.MaxFileSizeInByte <= _streamLengthFileSize)
                             {
                                 generateNewFile = true;
                                 _streamLengthFileSize = 0;
@@ -420,7 +478,7 @@ namespace G9LogManagement
                         var ignoreOtherLogForNextDay = false;
 
                         // Instance new stream and open
-                        using (var _logFileStream = new FileStream(
+                        using (var logFileStream = new FileStream(
                             CurrentLogFileAddress,
                             FileMode.OpenOrCreate,
                             FileAccess.ReadWrite,
@@ -428,7 +486,7 @@ namespace G9LogManagement
                         {
                             // Write bytes for next day
                             while (_queueOfLogDataNextDay.TryDequeue(out var logItemData))
-                                WriteLogsToStream(logItemData, _logFileStream);
+                                WriteLogsToStream(logItemData, logFileStream);
 
                             // Dequeue log Item for save to file
                             while (_queueOfLogData.TryDequeue(out var logItemData))
@@ -440,24 +498,28 @@ namespace G9LogManagement
                                         ignoreOtherLogForNextDay = true;
                                     }
 
-                                if (!ignoreOtherLogForNextDay) WriteLogsToStream(logItemData, _logFileStream);
+                                if (!ignoreOtherLogForNextDay) WriteLogsToStream(logItemData, logFileStream);
 
                                 // break loop if item for next day
                                 if (ignoreOtherLogForNextDay && forceLogItem != null)
                                 {
-                                    WriteLogsToStream(forceLogItem.Value, _logFileStream);
+                                    WriteLogsToStream(forceLogItem.Value, logFileStream);
                                     break;
                                 }
                             }
 
                             // Set file size
-                            _streamLengthFileSize = _logFileStream.Length;
+                            _streamLengthFileSize = logFileStream.Length;
                         }
 
                         // Reset duration of scheduler
-                        _scheduler.ResetDuration();
-                        // Resume scheduler
-                        _scheduler.Resume();
+                        if (_scheduler != null)
+                        {
+                            _scheduler.ResetDuration();
+                            // Resume scheduler
+                            _scheduler.Resume();
+                        }
+
                         // Finish flush logs
                         _readyForFlushLogItems = false;
                     }
@@ -475,18 +537,18 @@ namespace G9LogManagement
 
         #region WriteLogsToStream
 
-        private static void WriteLogsToStream(G9LogItem logItemData, FileStream fileStream)
+        private void WriteLogsToStream(G9LogItem logItemData, FileStream fileStream)
         {
             if (fileStream.Length <= 2)
             {
-                fileStream.Write(Encoding.GetBytes(EncodeJsString(
+                fileStream.Write(_encoding.GetBytes(EncodeJsString(
                     $"G9DataLog.push({GenerateLogByInformation(logItemData.LogType, logItemData.Identity, logItemData.Title, logItemData.Body, logItemData.FileName, logItemData.MethodBase, logItemData.LineNumber, logItemData.LogDateTime, false)});"
                 )));
             }
             else
             {
                 fileStream.Seek(-2, SeekOrigin.End);
-                fileStream.Write(Encoding.GetBytes(
+                fileStream.Write(_encoding.GetBytes(
                     EncodeJsString(
                         $"{GenerateLogByInformation(logItemData.LogType, logItemData.Identity, logItemData.Title, logItemData.Body, logItemData.FileName, logItemData.MethodBase, logItemData.LineNumber, logItemData.LogDateTime, true)});"
                     )));
@@ -502,22 +564,23 @@ namespace G9LogManagement
 
         #region GenerateLogByInformation
 
-        private static string GenerateLogByInformation(LogsType logType, string identity, string title, string body,
+        private string GenerateLogByInformation(LogsType logType, string identity, string title, string body,
             string fileName, string methodBase, string lineNumber, DateTime logDateTime, bool addCommaInFirst)
         {
             /* JavaScript G9DataLog Format:
             * Array [
             * byte logType,
             * string identity,
-            * string ({title}🅖➒{body}🅖➒{path}🅖➒{method}🅖➒{line}), // Encrypt this column if encryption enable
+            * string ({title}🅖➒{body}🅖➒{path}🅖➒{method}🅖➒{line}), // Encrypt column if encryption enable
             * string logDateTime:yyyy/MM/dd HH:mm:ss
             * ]
             */
 
             // If encrypt enable => encrypt all data before write
-            if (Configuration.EnableEncryptionLog)
+            if (_configuration.Configuration.EnableEncryptionLog)
             {
-                string key = Configuration.LogUserName, iv = Configuration.LogPassword;
+                string key = _configuration.Configuration.EncryptedUserName,
+                    iv = _configuration.Configuration.EncryptedPassword;
                 return
                     $"{(addCommaInFirst ? "," : string.Empty)}[{(byte) logType},'{identity}','{AES128.EncryptString($"{title}🅖➒{body}🅖➒{fileName}🅖➒{methodBase}🅖➒{lineNumber}", key, iv, out _)}','{logDateTime.ToString("yyyy/MM/dd HH:mm:ss.ff")}']";
             }
@@ -537,7 +600,7 @@ namespace G9LogManagement
 
         #region GetStackInformation
 
-        private static (string, string, string) GetStackInformation(StackTrace stackTrace)
+        private (string, string, string) GetStackInformation(StackTrace stackTrace)
         {
             return
                 // Check if exists stack trace frame count => add stack trace information
@@ -561,10 +624,10 @@ namespace G9LogManagement
 
         #region OnProcessExit
 
-        private static void OnProcessExit(object sender, EventArgs e)
+        private void OnProcessExit(object sender, EventArgs e)
         {
             // Log for exit
-            if (Configuration.ComponentLog)
+            if (_configuration.Configuration.ComponentLog)
                 G9LogInformationForComponentLog("Stop G9LogManagement and close app...", G9LogIdentity,
                     "Stop And Close");
 
@@ -587,7 +650,7 @@ namespace G9LogManagement
 
         #region CheckAndHandlePath
 
-        private static void CheckAndHandlePath(bool generateNewPathBecauseFileSizeIsLarge = false)
+        private void CheckAndHandlePath(bool generateNewPathBecauseFileSizeIsLarge = false)
         {
             // If directory path is null or change day => Generate new path and initialize requirement
             if (generateNewPathBecauseFileSizeIsLarge ||
@@ -605,7 +668,7 @@ namespace G9LogManagement
                         : ReasonCloseType.ChangeDay;
 
                 // Log for Change path
-                if (closeReason == ReasonCloseType.ChangeDay && Configuration.ComponentLog)
+                if (closeReason == ReasonCloseType.ChangeDay && _configuration.Configuration.ComponentLog)
                 {
                     // Generate last time for previous date
                     _lastHourOfDateTime = DateTime.Parse($"{_startDateTime:yyyy-MM-dd} 23:59:59.999");
@@ -620,15 +683,15 @@ namespace G9LogManagement
                 _startDateTime = DateTime.Now;
 
                 // Generate directory name
-                if (Configuration.DirectoryNameDateType == DateTimeType.Gregorian)
+                if (_configuration.Configuration.DirectoryNameDateType == DateTimeType.Gregorian)
                 {
                     CurrentLogDirectory =
-                        Path.Combine(Configuration.Path, _startDateTime.ToString("yyyy-MM-dd/"));
+                        Path.Combine(_configuration.Configuration.Path, _startDateTime.ToString("yyyy-MM-dd/"));
                 }
                 else
                 {
                     var pc = new PersianCalendar();
-                    CurrentLogDirectory = Path.Combine(Configuration.Path,
+                    CurrentLogDirectory = Path.Combine(_configuration.Configuration.Path,
                         $"{pc.GetYear(_startDateTime)}-{pc.GetMonth(_startDateTime)}-{pc.GetDayOfMonth(_startDateTime)}/");
                 }
 
@@ -649,7 +712,7 @@ namespace G9LogManagement
                 CreateSettingFile(settingFilePath);
 
                 // Log for Change path
-                if (Configuration.ComponentLog)
+                if (_configuration.Configuration.ComponentLog)
                     G9LogInformationForComponentLog(
                         $"Generate new path and for new day...\nNew path is: {CurrentLogDirectory}",
                         G9LogIdentity, "Generate new path");
@@ -672,7 +735,7 @@ namespace G9LogManagement
 
         #region GenerateSettingAndDataFilePath
 
-        private static (string, string) GenerateSettingAndDataFilePath()
+        private (string, string) GenerateSettingAndDataFilePath()
         {
             int i = -1, j = 0;
             var existNewConfigPath = false;
@@ -718,7 +781,7 @@ namespace G9LogManagement
 
         #region CheckAndGenerateMainConfigAndGenerateNewPath
 
-        private static string CheckAndGenerateMainConfigAndGenerateNewPath(
+        private string CheckAndGenerateMainConfigAndGenerateNewPath(
             bool existNewConfigPath, int newConfigPathIndex)
         {
             var newPathForCheck = existNewConfigPath
@@ -734,7 +797,6 @@ namespace G9LogManagement
             // Check config file if exists
             if (File.Exists(configPathFile))
             {
-                var decoding = string.Empty;
                 var configFileLines = File.ReadAllLines(configPathFile);
                 for (var i = 0; i < configFileLines.Length; i++)
                     if (configFileLines[i].Contains("G9Encoding"))
@@ -744,21 +806,22 @@ namespace G9LogManagement
 
                         // If encryption is true but encrypt text is empty => generate new path
                         // Previous config with out encryption but current config with encryption
-                        if (string.IsNullOrEmpty(encryptionText) && Configuration.EnableEncryptionLog)
+                        if (string.IsNullOrEmpty(encryptionText) && _configuration.Configuration.EnableEncryptionLog)
                             return CheckAndGenerateMainConfigAndGenerateNewPath(true, newConfigPathIndex + 1);
                         // Else If encryption is false but encrypt text is not empty => generate new path
                         // Previous config with encryption but current config with out encryption
 
-                        if (!Configuration.EnableEncryptionLog && !string.IsNullOrEmpty(encryptionText))
+                        if (!_configuration.Configuration.EnableEncryptionLog && !string.IsNullOrEmpty(encryptionText))
                             return CheckAndGenerateMainConfigAndGenerateNewPath(true, newConfigPathIndex + 1);
                         // Previous config and current config without encryption
 
-                        if (!Configuration.EnableEncryptionLog)
+                        if (!_configuration.Configuration.EnableEncryptionLog)
                             return newPathForCheck;
                         // Else check encrypt user pass between Previous and current config
 
-                        decoding = AES128.DecryptString(
-                            encryptionText, Configuration.LogUserName, Configuration.LogPassword, out var error);
+                        var decoding = AES128.DecryptString(
+                            encryptionText, _configuration.Configuration.EncryptedUserName,
+                            _configuration.Configuration.EncryptedPassword, out var error);
                         // If exist and config is true
                         // Previous config Equal current config
                         if (string.IsNullOrEmpty(error) && decoding.Contains(DefaultEncodingSampleText))
@@ -776,11 +839,12 @@ namespace G9LogManagement
 
             var encoding = string.Empty;
 
-            if (Configuration.EnableEncryptionLog)
+            if (_configuration.Configuration.EnableEncryptionLog)
             {
                 encoding = AES128.EncryptString(
                     $"{DefaultEncodingSampleText}- {Guid.NewGuid()}-{DateTime.Now:yyyy/MM/dd HH:mm:ss}",
-                    Configuration.LogUserName, Configuration.LogPassword, out var error);
+                    _configuration.Configuration.EncryptedUserName, _configuration.Configuration.EncryptedPassword,
+                    out var error);
 
                 if (!string.IsNullOrEmpty(error))
                     throw new Exception(error, new Exception(new StackTrace().ToString()));
@@ -788,7 +852,7 @@ namespace G9LogManagement
 
             using var configFile = File.CreateText(configPathFile);
             configFile.WriteLine($"var G9Encoding = '{encoding}';");
-            configFile.WriteLine($"var G9DefaultPage = '{(byte) Configuration.LogReaderStarterPage}';");
+            configFile.WriteLine($"var G9DefaultPage = '{(byte) _configuration.Configuration.LogReaderStarterPage}';");
 
             return newPathForCheck;
         }
@@ -801,10 +865,10 @@ namespace G9LogManagement
 
         #region CloseSettingFileAndSetCloseReason
 
-        private static void CloseSettingFileAndSetCloseReason(ReasonCloseType closeReason, string oldPath = null)
+        private void CloseSettingFileAndSetCloseReason(ReasonCloseType closeReason, string oldPath = null)
         {
             var i = 0;
-            var oldSettingPath = string.Empty;
+            string oldSettingPath;
             string archivePath = null;
             // Specify path
             if (closeReason == ReasonCloseType.ChangeDay && !string.IsNullOrEmpty(oldPath))
@@ -866,9 +930,9 @@ namespace G9LogManagement
 
             // If enable LogHandlerConfig.ZipArchivePreviousDay and
             // If change day => archive previous day
-            if (Configuration.ZipArchivePreviousDay && closeReason == ReasonCloseType.ChangeDay &&
+            if (_configuration.Configuration.ZipArchivePreviousDay && closeReason == ReasonCloseType.ChangeDay &&
                 !string.IsNullOrEmpty(oldPath))
-                GenerateDirectoryZipArchiveAndRemoveDirectoty(archivePath);
+                GenerateDirectoryZipArchiveAndRemoveDirectory(archivePath);
         }
 
         #endregion
@@ -884,7 +948,7 @@ namespace G9LogManagement
 
         #region EncodeJsString
 
-        public static string EncodeJsString(string text)
+        public string EncodeJsString(string text)
         {
             var sb = new StringBuilder();
             foreach (var c in text)
@@ -912,11 +976,7 @@ namespace G9LogManagement
                         sb.Append("\\t");
                         break;
                     default:
-                        var i = c;
-                        if (i < 32 || i > 127)
-                            sb.AppendFormat("\\u{0:X04}", i);
-                        else
-                            sb.Append(c);
+                        sb.Append(c);
                         break;
                 }
 
@@ -935,7 +995,7 @@ namespace G9LogManagement
 
         #region CopyDirectoryAndFileBetweenTwoPath
 
-        private static void CopyDirectoryAndFileBetweenTwoPath(string sourcePath, string destinationPath)
+        private void CopyDirectoryAndFileBetweenTwoPath(string sourcePath, string destinationPath)
         {
             //Now Create all of the directories
             foreach (var dirPath in Directory.GetDirectories(sourcePath, "*",
@@ -964,7 +1024,7 @@ namespace G9LogManagement
 
         #region CreateSettingFile
 
-        private static void CreateSettingFile(string path)
+        private void CreateSettingFile(string path)
         {
             using var settingFile = File.CreateText(path);
             settingFile.WriteLine($"G9StartDateTime.push('{DateTime.Now:yyyy-MM-dd HH:mm:ss}');");
@@ -983,12 +1043,11 @@ namespace G9LogManagement
 
         #region SetLogReaderConfiguration
 
-        private static void SetLogReaderConfiguration(string path)
+        private void SetLogReaderConfiguration(string path)
         {
-            using (var cultureStreamWriter = new StreamWriter(Path.Combine(path, DefaultLanguageCultureFile), false))
-            {
-                cultureStreamWriter.Write($"var DefaultCulture = '{Configuration.LogReaderDefaultCulture}';");
-            }
+            using var cultureStreamWriter = new StreamWriter(Path.Combine(path, DefaultLanguageCultureFile), false);
+            cultureStreamWriter.Write(
+                $"var DefaultCulture = '{_configuration.Configuration.LogReaderDefaultCulture}';");
         }
 
         #endregion
@@ -1002,7 +1061,7 @@ namespace G9LogManagement
 
         #region ExceptionErrorGenerate
 
-        private static string ExceptionErrorGenerate(Exception ex, string additionalMessage)
+        private string ExceptionErrorGenerate(Exception ex, string additionalMessage)
         {
             var exceptionMessage = new StringBuilder();
             // Add additioanal
@@ -1033,7 +1092,7 @@ namespace G9LogManagement
 
         #region GenerateDirectoryZipArchiveAndRemoveDirectoty
 
-        private static void GenerateDirectoryZipArchiveAndRemoveDirectoty(string directoryPath)
+        private void GenerateDirectoryZipArchiveAndRemoveDirectory(string directoryPath)
         {
             // Generate archive
             ZipFile.CreateFromDirectory(directoryPath, directoryPath.Trim('/') + ".zip"
