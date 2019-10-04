@@ -1244,7 +1244,7 @@
           "lib/netstandard1.3/System.Xml.XPath.XmlDocument.dll": {}
         }
       },
-      "G9LogManagement/1.6.0.1": {
+      "G9LogManagement/1.6.0.2": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.1",
         "dependencies": {
@@ -4625,7 +4625,7 @@
         "system.xml.xpath.xmldocument.nuspec"
       ]
     },
-    "G9LogManagement/1.6.0.1": {
+    "G9LogManagement/1.6.0.2": {
       "type": "project",
       "path": "../G9LogManagement/G9LogManagement.csproj",
       "msbuildProject": "../G9LogManagement/G9LogManagement.csproj"
@@ -4633,7 +4633,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.0": [
-      "G9LogManagement >= 1.6.0.1",
+      "G9LogManagement >= 1.6.0.2",
       "Microsoft.NET.Test.Sdk >= 16.3.0",
       "NUnit3TestAdapter >= 3.15.1",
       "nunit >= 3.12.0"

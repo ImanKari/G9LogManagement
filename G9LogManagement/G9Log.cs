@@ -550,17 +550,16 @@ namespace G9LogManagement
         {
             if (fileStream.Length <= 2)
             {
-                fileStream.Write(_encoding.GetBytes(EncodeJsString(
+                fileStream.Write(_encoding.GetBytes(
                     $"G9DataLog.push({GenerateLogByInformation(logItemData.LogType, logItemData.Identity, logItemData.Title, logItemData.Body, logItemData.FileName, logItemData.MethodBase, logItemData.LineNumber, logItemData.LogDateTime, false)});"
-                )));
+                ));
             }
             else
             {
                 fileStream.Seek(-2, SeekOrigin.End);
                 fileStream.Write(_encoding.GetBytes(
-                    EncodeJsString(
                         $"{GenerateLogByInformation(logItemData.LogType, logItemData.Identity, logItemData.Title, logItemData.Body, logItemData.FileName, logItemData.MethodBase, logItemData.LineNumber, logItemData.LogDateTime, true)});"
-                    )));
+                    ));
             }
         }
 
@@ -945,56 +944,6 @@ namespace G9LogManagement
             if (_configuration.Configuration.ZipArchivePreviousDay && closeReason == ReasonCloseType.ChangeDay &&
                 !string.IsNullOrEmpty(oldPath))
                 GenerateDirectoryZipArchiveAndRemoveDirectory(archivePath);
-        }
-
-        #endregion
-
-        /// <summary>
-        ///     Encodes a string to be represented as a string literal. The format
-        ///     is essentially a JSON string.
-        ///     The string returned includes outer quotes
-        ///     Example Output: "Hello \"Rick\"!\r\nRock on"
-        /// </summary>
-        /// <param name="text">Text for convert</param>
-        /// <returns>Converted text</returns>
-
-        #region EncodeJsString
-
-        public string EncodeJsString(string text)
-        {
-            var sb = new StringBuilder();
-            foreach (var c in text)
-                switch (c)
-                {
-                    case '\'':
-                        sb.Append("\\'");
-                        break;
-                    case '\\':
-                        sb.Append("\\\\");
-                        break;
-                    case '\b':
-                        sb.Append("\\b");
-                        break;
-                    case '\f':
-                        sb.Append("\\f");
-                        break;
-                    case '\n':
-                        sb.Append("\\n");
-                        break;
-                    case '\r':
-                        sb.Append("\\r");
-                        break;
-                    case '\t':
-                        sb.Append("\\t");
-                        break;
-                    default:
-                        sb.Append(c);
-                        break;
-                }
-
-            sb.Replace(Environment.NewLine, "\n");
-
-            return sb.ToString();
         }
 
         #endregion
