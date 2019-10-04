@@ -440,9 +440,6 @@ namespace G9LogManagement
                     if (flushSpace.Any() && (forceSaveLogs || _activeTimeOutForSave ||
                                              flushSpace.Count >= _configuration.Configuration.SaveCount))
                     {
-                        Debug.WriteLine($"######### FlushLogsSpace: {_spaceForFlushLogItems} #########");
-                        Debug.WriteLine($"######### FlushLogsSpaceCount: {flushSpace.LongCount()} #########");
-
                         // Switch space 
                         _spaceForFlushLogItems = _spaceForFlushLogItems == FlushLogsSpace.QueueOfLogData1
                             ? FlushLogsSpace.QueueOfLogData2
@@ -969,8 +966,8 @@ namespace G9LogManagement
             foreach (var c in text)
                 switch (c)
                 {
-                    case '\"':
-                        sb.Append("\\\"");
+                    case '\'':
+                        sb.Append("\\'");
                         break;
                     case '\\':
                         sb.Append("\\\\");

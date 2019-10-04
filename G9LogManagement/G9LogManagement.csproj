@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.6.0.0</Version>
+    <Version>1.6.0.1</Version>
     <Authors>Iman Kari</Authors>
     <Company>G9Studio</Company>
     <Description>Log Magement</Description>
@@ -12,8 +12,8 @@
     <PackageProjectUrl>http://www.G9TM.com/</PackageProjectUrl>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <Product>G9 Log Management</Product>
-    <AssemblyVersion>1.6.0.0</AssemblyVersion>
-    <FileVersion>1.6.0.0</FileVersion>
+    <AssemblyVersion>1.6.0.1</AssemblyVersion>
+    <FileVersion>1.6.0.1</FileVersion>
     <PackageId>G9LogManagement</PackageId>
   </PropertyGroup>
 
