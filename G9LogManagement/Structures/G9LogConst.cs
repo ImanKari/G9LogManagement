@@ -40,7 +40,7 @@
         /// <summary>
         ///     Specify default encoding sample text
         /// </summary>
-        public const string DefaultEncodingSampleText = "Is G9™ Team!";
+        public const string DefaultEncodingSampleText = "This Is G9™ Team!";
 
         /// <summary>
         ///     Specify default change path sample text

@@ -221,7 +221,7 @@ namespace G9LogManagement
         /// <param name="identity">Insert identity if need found easy in logs</param>
         /// <param name="title">Custom title for log</param>
 
-        #region ExceptionLog
+        #region G9LogException
 
         public void G9LogException(Exception ex, string message = null, string identity = null,
             string title = null)
@@ -242,7 +242,7 @@ namespace G9LogManagement
         /// <param name="identity">Insert identity if need found easy in logs</param>
         /// <param name="title">Custom title for log</param>
 
-        #region ErrorLog
+        #region G9LogError
 
         public void G9LogError(string message, string identity = null, string title = null)
         {
@@ -291,7 +291,8 @@ namespace G9LogManagement
         {
             // Handle log
             // Without check file size
-            Task.Run(() => G9LogManagement(LogsType.EVENT, message, identity, title, null, false, customDateTime, forceSaveLogs));
+            Task.Run(() =>
+                G9LogManagement(LogsType.EVENT, message, identity, title, null, false, customDateTime, forceSaveLogs));
         }
 
         #endregion
@@ -856,7 +857,7 @@ namespace G9LogManagement
             if (_configuration.Configuration.EnableEncryptionLog)
             {
                 encoding = AES128.EncryptString(
-                    $"{G9LogConst.DefaultEncodingSampleText}- {Guid.NewGuid()}-{DateTime.Now:yyyy/MM/dd HH:mm:ss}",
+                    $"{Guid.NewGuid()}-{G9LogConst.DefaultEncodingSampleText}-{DateTime.Now:yyyy/MM/dd HH:mm:ss}",
                     _configuration.Configuration.EncryptedUserName, _configuration.Configuration.EncryptedPassword,
                     out var error);
 
