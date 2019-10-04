@@ -60,7 +60,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
-    "version": "1.6.0.2",
+    "version": "1.6.0.3",
     "restore": {
       "projectUniqueName": "D:\\Project\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj",
       "projectName": "G9LogManagement",

@@ -151,6 +151,9 @@ namespace G9LogManagement.Structures
 
         public string EncodeJsString(string text)
         {
+            if (string.IsNullOrEmpty(text))
+                return text;
+
             var sb = new StringBuilder();
             foreach (var c in text)
                 switch (c)
