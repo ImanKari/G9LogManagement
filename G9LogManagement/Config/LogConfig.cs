@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -127,21 +126,34 @@ namespace G9LogManagement.Config
         {
             get
             {
-                if (!string.IsNullOrEmpty(LogUserName) && !string.IsNullOrEmpty(LogPassword))
-                {
-                    if (string.IsNullOrEmpty(_encryptedPassword) || string.IsNullOrEmpty(_encryptedUserName))
-                    {
-                        // Generate MD5 with sum user pass and generate key and iv
-                        var tempAllKeys = LogUserName + LogPassword;
-                        tempAllKeys = CreateMD5(tempAllKeys);
-                        _encryptedUserName = tempAllKeys.Substring(0, 16);
-                        _encryptedPassword = tempAllKeys.Substring(16, 16);
-                    }
+                // if user name is null of pass is null return false
+                if (string.IsNullOrEmpty(LogUserName) || string.IsNullOrEmpty(LogPassword)) return false;
 
-                    return true;
-                }
+                // if encrypted user and pass has value return true
+                if (!string.IsNullOrEmpty(_encryptedPassword) && !string.IsNullOrEmpty(_encryptedUserName)) return true;
 
-                return false;
+                // Calculate encrypted user and pass for set
+                // Set User And Pass
+                var logUserNameTemp = LogUserName.Length == 16
+                    ? LogUserName
+                    : LogUserName.Length > 16
+                        ? LogUserName.Substring(0, 16)
+                        : LogUserName.PadRight(16, '9');
+
+                var logPasswordTemp = LogPassword.Length == 16
+                    ? LogPassword
+                    : LogPassword.Length > 16
+                        ? LogPassword.Substring(0, 16)
+                        : LogPassword.PadRight(16, '9');
+
+                // Generate MD5 with sum user pass and generate key and iv
+                var tempAllKeys = logUserNameTemp + logPasswordTemp;
+                tempAllKeys = CreateMD5(tempAllKeys);
+                _encryptedUserName = tempAllKeys.Substring(0, 16);
+                _encryptedPassword = tempAllKeys.Substring(16, 16);
+
+                return true;
+
             }
         }
 
@@ -199,7 +211,7 @@ namespace G9LogManagement.Config
         }
 
         /// <summary>
-        /// field for save max file size
+        ///     field for save max file size
         /// </summary>
         private decimal _maxFileSize = 3;
 
@@ -222,14 +234,14 @@ namespace G9LogManagement.Config
             }
             get => _maxFileSize;
         }
-        
+
         /// <summary>
-        /// field for save max file size in byte
+        ///     field for save max file size in byte
         /// </summary>
         private decimal _maxFileSizeInByte;
 
         /// <summary>
-        /// Access to max file size Mb => byte
+        ///     Access to max file size Mb => byte
         /// </summary>
         [Ignore]
         public decimal MaxFileSizeInByte
@@ -246,9 +258,7 @@ namespace G9LogManagement.Config
                 _maxFileSizeInByte = MaxFileSize * 1048576;
                 // if less than minimum file size => set minimum file size for it
                 if (_maxFileSizeInByte < G9LogConst.MinimumFileSizeInByte)
-                {
                     _maxFileSizeInByte = G9LogConst.MinimumFileSizeInByte;
-                }
 
                 return _maxFileSizeInByte;
             }
@@ -313,7 +323,7 @@ namespace G9LogManagement.Config
         ///     Specify enable archive previous day
         /// </summary>
         [Hint("Specify enable archive previous day")]
-        public bool ZipArchivePreviousDay { set; get; }
+        public bool ZipArchivePreviousDay { set; get; } = true;
 
         /// <summary>
         ///     Specify log reader starter page

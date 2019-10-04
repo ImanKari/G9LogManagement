@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using G9LogManagement;
 using G9LogManagement.Config;
+using G9LogManagement.Enums;
 using G9LogManagement.Structures;
 using NUnit.Framework;
 
@@ -36,9 +37,19 @@ namespace G9LogManagementNUnitTest
 
         [Test]
         [Order(3)]
-        public void CheckInitializeG9Log()
+        public void CheckInitializeG9LogWithCustomConfig()
         {
-            Logging = new G9Log();
+            Logging = new G9Log("Test", new LogConfig()
+            {
+                SaveTime = 3,
+                SaveCount = 500,
+                LogUserName = "ImanKari",
+                LogPassword = "1990",
+                MaxFileSize = 6,
+                LogReaderStarterPage = LogReaderPages.LogsManagement,
+                LogReaderDefaultCulture = CultureType.fa,
+                DirectoryNameDateType = DateTimeType.Shamsi
+            });
         }
 
         [Test]
@@ -50,10 +61,34 @@ namespace G9LogManagementNUnitTest
 
         [Test]
         [Order(4)]
-        public void CheckLogManagement()
+        public void CheckInsertOneHundredThousandLog_ExtensionDefaultClassTest()
         {
             // Test for 1 million log
-            Parallel.For(0, 199999, (index) =>
+            for(var index = 0; index < 19999; index++)
+            {
+                // Event
+                $"Event {index}".G9LogEvent_Default($"Event {index}", $"Event {index}");
+                // Information
+                $"Information {index}".G9LogInformation_Default($"Information {index}", $"Information {index}");
+                // Warning
+                $"Warning {index}".G9LogWarning_Default($"Warning {index}", $"Warning {index}");
+                // Error
+                $"Error {index}".G9LogError_Default($"Error {index}", "Error");
+                // Exception And Inner Exception
+                new Exception("Exception", new Exception("Exception", new Exception("Exception")))
+                    .G9LogException_Default("Exception {index}",
+                        $"Exception {index}", $"Exception {index}");
+            }
+
+            Thread.Sleep(10000);
+        }
+
+        [Test]
+        [Order(5)]
+        public void CheckInsertOneHundredThousandLogWithCustomConfigAndEncryption()
+        {
+            // Test for 1 million log
+            for (var index = 0; index < 19999; index++)
             {
                 // Event
                 Logging.G9LogEvent($"Event {index}", $"Event {index}", $"Event {index}");
@@ -67,9 +102,9 @@ namespace G9LogManagementNUnitTest
                 Logging.G9LogException(
                     new Exception("Exception", new Exception("Exception", new Exception("Exception"))), $"Exception {index}",
                     $"Exception {index}", $"Exception {index}");
-            });
+            };
 
-            Thread.Sleep(30000);
+            Thread.Sleep(10000);
         }
     }
 }
