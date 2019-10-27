@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using G9LogManagement.Enums;
 
 namespace G9LogManagement
@@ -118,29 +117,54 @@ namespace G9LogManagement
         #endregion
 
         /// <summary>
-        ///     Check active logging by log type
+        ///     Check active file logging by log type
         ///     Used to default instance
         /// </summary>
         /// <param name="type">Specify type of log</param>
-        /// <returns>If active logging for specified type return true</returns>
+        /// <returns>If active file logging for specified type return true</returns>
 
-        #region CheckActiveLogType_Default
+        #region CheckActiveFileLoggingByType_Default
 
-        public static bool CheckActiveLogType_Default(this LogsType type)
+        public static bool CheckActiveFileLoggingByType_Default(this LogsType type)
         {
-            return type switch
-            {
-                LogsType.EVENT => G9Logging.IsEnableEventLog,
-                LogsType.INFO => G9Logging.IsEnableInformationLog,
-                LogsType.WARN => G9Logging.IsEnableWarningLog,
-                LogsType.ERROR => G9Logging.IsEnableErrorLog,
-                LogsType.EXCEPTION => G9Logging.IsEnableExceptionLog,
-                _ => throw new InvalidEnumArgumentException(nameof(type), (int) type, typeof(LogsType))
-            };
+            return G9Logging.CheckEnableFileLoggingByType(type);
         }
+
+        #endregion
+
+        /// <summary>
+        ///     Check active console logging by log type
+        ///     Used to default instance
+        /// </summary>
+        /// <param name="type">Specify type of log</param>
+        /// <returns>If active console logging for specified type return true</returns>
+
+        #region CheckActiveFileLoggingByType_Default
+
+        public static bool CheckActiveConsoleLoggingByType_Default(this LogsType type)
+        {
+            return G9Logging.CheckEnableConsoleLoggingByType(type);
+        }
+
+        #endregion
+
+        /// <summary>
+        ///     Check active console logging by log type
+        ///     Used to default instance
+        /// </summary>
+        /// <param name="type">Specify type of log</param>
+        /// <returns>If active file logging or console logging for specified type return true</returns>
+
+        #region CheckActiveFileLoggingByType_Default
+
+        public static bool CheckActiveFileLoggingOrConsoleLoggingByType_Default(this LogsType type)
+        {
+            return G9Logging.CheckEnableConsoleLoggingOrFileLoggingByType(type);
+        }
+
+        #endregion
 
         #endregion
     }
 
-    #endregion
 }

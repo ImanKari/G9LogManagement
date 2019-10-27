@@ -61,10 +61,10 @@ namespace G9LogManagementNUnitTest
 
         [Test]
         [Order(4)]
-        public void CheckInsertOneHundredThousandLog_ExtensionDefaultClassTest()
+        public void CheckInsertThousandLog_ExtensionDefaultClassTest()
         {
             // Test for 1 million log
-            for(var index = 0; index < 19999; index++)
+            for(var index = 0; index < 1000; index++)
             {
                 // Event
                 $"Event {index}".G9LogEvent_Default($"Event {index}", $"Event {index}");
@@ -85,10 +85,10 @@ namespace G9LogManagementNUnitTest
 
         [Test]
         [Order(5)]
-        public void CheckInsertOneHundredThousandLogWithCustomConfigAndEncryption()
+        public void CheckInsertThousandLogWithCustomConfigAndEncryption()
         {
             // Test for 1 million log
-            for (var index = 0; index < 19999; index++)
+            for (var index = 0; index < 1000; index++)
             {
                 // Event
                 Logging.G9LogEvent($"Event {index}", $"Event {index}", $"Event {index}");

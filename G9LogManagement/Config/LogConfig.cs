@@ -106,10 +106,16 @@ namespace G9LogManagement.Config
         public bool ComponentLog { set; get; } = true;
 
         /// <summary>
-        ///     Specify log type enable
+        ///     Specify file logging type is enable
         /// </summary>
-        [Hint("Specify log type enable")]
-        public LogsTypeConfig ActiveLogs { set; get; } = new LogsTypeConfig();
+        [Hint("Specify file logging type is enable")]
+        public LogsTypeConfig ActiveFileLogs { set; get; } = new LogsTypeConfig();
+
+        /// <summary>
+        ///     Specify console logging type is enable
+        /// </summary>
+        [Hint("Specify console logging type is enable")]
+        public LogsTypeConfig ActiveConsoleLogs { set; get; } = new LogsTypeConfig();
 
         /// <summary>
         ///     Enable stack trace info for logs
@@ -153,7 +159,6 @@ namespace G9LogManagement.Config
                 _encryptedPassword = tempAllKeys.Substring(16, 16);
 
                 return true;
-
             }
         }
 

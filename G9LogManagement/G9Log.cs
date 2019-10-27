@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -106,30 +107,19 @@ namespace G9LogManagement
         /// </summary>
         private readonly object _waitForFlushLogItems = new object();
 
-        /// <summary>
-        ///     Specified enable event log
-        /// </summary>
-        public readonly bool IsEnableEventLog;
+        #region Enable Logging Fields And Properties
 
         /// <summary>
-        ///     Specified enable information log
+        ///     Specified active logging for files
         /// </summary>
-        public readonly bool IsEnableInformationLog;
+        public LogsTypeConfig ActiveFileLogging => _configuration.Configuration.ActiveFileLogs;
 
         /// <summary>
-        ///     Specified enable warning log
+        ///     Specified active logging for console
         /// </summary>
-        public readonly bool IsEnableWarningLog;
+        public LogsTypeConfig ActiveConsoleLogging => _configuration.Configuration.ActiveConsoleLogs;
 
-        /// <summary>
-        ///     Specified enable error log
-        /// </summary>
-        public readonly bool IsEnableErrorLog;
-
-        /// <summary>
-        ///     Specified enable exception log
-        /// </summary>
-        public readonly bool IsEnableExceptionLog;
+        #endregion
 
         #endregion
 
@@ -167,13 +157,6 @@ namespace G9LogManagement
             // Load configs
             _configuration = G9ConfigManagement_Singleton<LogConfig>.GetInstance(
                 string.Format(G9LogConst.G9ConfigName, customLogName), customLogConfig, customLogConfig != null);
-
-            // Set enable item
-                IsEnableEventLog = _configuration.Configuration.ActiveLogs.EVENT;
-            IsEnableInformationLog = _configuration.Configuration.ActiveLogs.INFO;
-            IsEnableWarningLog = _configuration.Configuration.ActiveLogs.WARN;
-            IsEnableErrorLog = _configuration.Configuration.ActiveLogs.ERROR;
-            IsEnableExceptionLog = _configuration.Configuration.ActiveLogs.EXCEPTION;
 
             // Set event for exit or unload
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
@@ -227,10 +210,11 @@ namespace G9LogManagement
             string title = null)
         {
             // Ignore if disable log type
-            if (!IsEnableExceptionLog) return;
+            if (!CheckEnableConsoleLoggingOrFileLoggingByType(LogsType.EXCEPTION)) return;
 
             // Handle log
-            Task.Run(() => G9LogManagement(LogsType.EXCEPTION, ExceptionErrorGenerate(ex, message), identity, title, ex));
+            Task.Run(
+                () => G9LogManagement(LogsType.EXCEPTION, ExceptionErrorGenerate(ex, message), identity, title, ex));
         }
 
         #endregion
@@ -247,7 +231,7 @@ namespace G9LogManagement
         public void G9LogError(string message, string identity = null, string title = null)
         {
             // Ignore if disable log type
-            if (!IsEnableErrorLog) return;
+            if (!CheckEnableConsoleLoggingOrFileLoggingByType(LogsType.ERROR)) return;
 
             // Handle log
             Task.Run(() => G9LogManagement(LogsType.ERROR, message, identity, title));
@@ -267,32 +251,10 @@ namespace G9LogManagement
         public void G9LogWarning(string message, string identity = null, string title = null)
         {
             // Ignore if disable log type
-            if (!IsEnableWarningLog) return;
+            if (!CheckEnableConsoleLoggingOrFileLoggingByType(LogsType.WARN)) return;
 
             // Handle log
             Task.Run(() => G9LogManagement(LogsType.WARN, message, identity, title));
-        }
-
-        #endregion
-
-        /// <summary>
-        ///     Handle information log
-        /// </summary>
-        /// <param name="message">Information message</param>
-        /// <param name="identity">Insert identity if need found easy in logs</param>
-        /// <param name="title">Custom title for log</param>
-        /// <param name="customDateTime">Set custom date time for log if need</param>
-        /// <param name="forceSaveLogs">When need force save</param>
-
-        #region G9LogInformationForComponentLog
-
-        private void G9LogInformationForComponentLog(string message, string identity = null,
-            string title = null, DateTime? customDateTime = null, bool forceSaveLogs = false)
-        {
-            // Handle log
-            // Without check file size
-            Task.Run(() =>
-                G9LogManagement(LogsType.EVENT, message, identity, title, null, false, customDateTime, forceSaveLogs));
         }
 
         #endregion
@@ -309,7 +271,7 @@ namespace G9LogManagement
         public void G9LogInformation(string message, string identity = null, string title = null)
         {
             // Ignore if disable log type
-            if (!IsEnableInformationLog) return;
+            if (!CheckEnableConsoleLoggingOrFileLoggingByType(LogsType.INFO)) return;
 
             // Handle log
             Task.Run(() => G9LogManagement(LogsType.INFO, message, identity, title));
@@ -329,10 +291,35 @@ namespace G9LogManagement
         public void G9LogEvent(string message, string identity = null, string title = null)
         {
             // Ignore if disable log type
-            if (!IsEnableEventLog) return;
+            if (!CheckEnableConsoleLoggingOrFileLoggingByType(LogsType.EVENT)) return;
 
             // Handle log
             Task.Run(() => G9LogManagement(LogsType.EVENT, message, identity, title));
+        }
+
+        #endregion
+
+        /// <summary>
+        ///     Handle information log
+        /// </summary>
+        /// <param name="message">Information message</param>
+        /// <param name="identity">Insert identity if need found easy in logs</param>
+        /// <param name="title">Custom title for log</param>
+        /// <param name="customDateTime">Set custom date time for log if need</param>
+        /// <param name="forceSaveLogs">When need force save</param>
+
+        #region G9LogInformationForComponentLog
+
+        private void G9LogInformationForComponentLog(string message, string identity = null,
+            string title = null, DateTime? customDateTime = null, bool forceSaveLogs = false)
+        {
+            // If disable component log => return
+            if (!_configuration.Configuration.ComponentLog) return;
+
+            // Handle log
+            // Without check file size
+            Task.Run(() =>
+                G9LogManagement(LogsType.EVENT, message, identity, title, null, false, customDateTime, forceSaveLogs));
         }
 
         #endregion
@@ -385,22 +372,28 @@ namespace G9LogManagement
 
         private void WriteLogAutomatic(G9LogItem logItem, bool fileSizeCheck = true, bool forceSaveLogs = false)
         {
-            if (!forceSaveLogs)
-            {
-                // Add log item to queue
-                if (_spaceForFlushLogItems == FlushLogsSpace.QueueOfLogData1)
-                    // if flush is space 1 add items to space 2
-                    _queueOfLogData2.Enqueue(logItem);
+            // Management console log
+            if (CheckEnableConsoleLoggingByType(logItem.LogType))
+                ConsoleLogging(logItem);
+
+            // Management file log
+            if (CheckEnableFileLoggingByType(logItem.LogType))
+                if (!forceSaveLogs)
+                {
+                    // Add log item to queue
+                    if (_spaceForFlushLogItems == FlushLogsSpace.QueueOfLogData1)
+                        // if flush is space 1 add items to space 2
+                        _queueOfLogData2.Enqueue(logItem);
+                    else
+                        // if flush is space 2 add items to space 1
+                        _queueOfLogData1.Enqueue(logItem);
+
+                    FlushLogsAndSave(fileSizeCheck);
+                }
                 else
-                    // if flush is space 2 add items to space 1
-                    _queueOfLogData1.Enqueue(logItem);
-                
-                FlushLogsAndSave(fileSizeCheck);
-            }
-            else
-            {
-                FlushLogsAndSave(fileSizeCheck, true, logItem);
-            }
+                {
+                    FlushLogsAndSave(fileSizeCheck, true, logItem);
+                }
         }
 
         #endregion
@@ -469,7 +462,7 @@ namespace G9LogManagement
                         // Ignore other log for next day
                         var ignoreOtherLogForNextDay = false;
 
-                        bool flagBreakSize = false;
+                        var flagBreakSize = false;
 
                         // Instance new stream and open
                         using (var logFileStream = new FileStream(
@@ -485,7 +478,6 @@ namespace G9LogManagement
 
                             // Dequeue log Item for save to file
                             while (!flushSpace.IsEmpty)
-                            {
                                 if (flushSpace.TryDequeue(out var logItemData))
                                 {
                                     if (forceSaveLogs)
@@ -511,7 +503,6 @@ namespace G9LogManagement
                                         break;
                                     }
                                 }
-                            }
 
                             // Set file size
                             _streamLengthFileSize = logFileStream.Length;
@@ -529,6 +520,7 @@ namespace G9LogManagement
                         }
                     }
                 }
+
                 goto start1;
             }
 
@@ -558,8 +550,8 @@ namespace G9LogManagement
             {
                 fileStream.Seek(-2, SeekOrigin.End);
                 fileStream.Write(_encoding.GetBytes(
-                        $"{GenerateLogByInformation(logItemData.LogType, logItemData.Identity, logItemData.Title, logItemData.Body, logItemData.FileName, logItemData.MethodBase, logItemData.LineNumber, logItemData.LogDateTime, true)});"
-                    ));
+                    $"{GenerateLogByInformation(logItemData.LogType, logItemData.Identity, logItemData.Title, logItemData.Body, logItemData.FileName, logItemData.MethodBase, logItemData.LineNumber, logItemData.LogDateTime, true)});"
+                ));
             }
         }
 
@@ -676,15 +668,17 @@ namespace G9LogManagement
                         : ReasonCloseType.ChangeDay;
 
                 // Log for Change path
-                if (closeReason == ReasonCloseType.ChangeDay && _configuration.Configuration.ComponentLog)
+                if (closeReason == ReasonCloseType.ChangeDay)
                 {
                     // Generate last time for previous date
                     _lastHourOfDateTime = DateTime.Parse($"{_startDateTime:yyyy-MM-dd} 23:59:59.999");
-                    // Set log change day
-                    G9LogInformationForComponentLog(
-                        $"Finish day and generate path for new day...\nOld path is: {oldPath}\nNew path is: {CurrentLogDirectory}",
-                        G9LogConst.G9LogIdentity, "Change path",
-                        DateTime.Now > _lastHourOfDateTime ? _lastHourOfDateTime : DateTime.Now, true);
+
+                    if (_configuration.Configuration.ComponentLog)
+                        // Set log change day
+                        G9LogInformationForComponentLog(
+                            $"Finish day and generate path for new day...\nOld path is: {oldPath}\nNew path is: {CurrentLogDirectory}",
+                            G9LogConst.G9LogIdentity, "Change path",
+                            DateTime.Now > _lastHourOfDateTime ? _lastHourOfDateTime : DateTime.Now, true);
                 }
 
                 // Set new date time
@@ -1069,6 +1063,140 @@ namespace G9LogManagement
                 dir.Delete(true);
             // Delete main directory
             Directory.Delete(directoryPath);
+        }
+
+        #endregion
+
+        /// <summary>
+        ///     Ready log data for show in the console
+        /// </summary>
+        /// <param name="logItem">Specify log item for show</param>
+
+        #region ConsoleLogging
+
+        private void ConsoleLogging(G9LogItem logItem)
+        {
+            // Set console color
+            SetConsoleLoggingColorByLogType(logItem.LogType);
+
+            // Show console log
+            Console.WriteLine(
+                $"################################################# Log Type: {logItem.LogType} #################################################\nDate & Time: {logItem.LogDateTime:yyyy/MM/ss HH:mm:ss.fff}\tIdentity: {logItem.Identity}\tTitle: {logItem.Title}\nBody: {logItem.Body}\nPath: {logItem.FileName}\tMethod: {logItem.MethodBase}\tLine: {logItem.LineNumber}\n");
+
+            // Reset console
+            ResetLoggingColor();
+        }
+
+        #endregion
+
+        /// <summary>
+        ///     Set console 'BackgroundColor' and 'ForegroundColor' by log type
+        /// </summary>
+        /// <param name="type">Specified log type</param>
+
+        #region SetConsoleLoggingColorByLogType
+
+        private void SetConsoleLoggingColorByLogType(LogsType type)
+        {
+            switch (type)
+            {
+                case LogsType.EXCEPTION:
+                    Console.BackgroundColor = ConsoleColor.DarkRed;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                case LogsType.ERROR:
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                case LogsType.WARN:
+                    Console.BackgroundColor = ConsoleColor.DarkYellow;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                case LogsType.INFO:
+                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                case LogsType.EVENT:
+                    Console.BackgroundColor = ConsoleColor.DarkGreen;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        ///     Reset 'BackgroundColor' and 'ForegroundColor' for console
+        /// </summary>
+
+        #region ResetLoggingColor
+
+        private void ResetLoggingColor()
+        {
+            Console.ResetColor();
+        }
+
+        #endregion
+
+        /// <summary>
+        ///     Check enable console log by type
+        /// </summary>
+        /// <param name="type">Specified type</param>
+        /// <returns>Return 'true' if enable</returns>
+
+        #region CheckEnableConsoleLoggingByType
+
+        public bool CheckEnableConsoleLoggingByType(LogsType type)
+        {
+            return type switch
+            {
+                LogsType.EVENT => ActiveConsoleLogging.EVENT,
+                LogsType.INFO => ActiveConsoleLogging.INFO,
+                LogsType.WARN => ActiveConsoleLogging.WARN,
+                LogsType.ERROR => ActiveConsoleLogging.ERROR,
+                LogsType.EXCEPTION => ActiveConsoleLogging.EXCEPTION,
+                _ => throw new InvalidEnumArgumentException(nameof(type), (int) type, typeof(LogsType))
+            };
+        }
+
+        #endregion
+
+        /// <summary>
+        ///     Check enable file logging by type
+        /// </summary>
+        /// <param name="type">Specified type</param>
+        /// <returns>Return 'true' if enable</returns>
+
+        #region CheckEnableFileLoggingByType
+
+        public bool CheckEnableFileLoggingByType(LogsType type)
+        {
+            return type switch
+            {
+                LogsType.EVENT => ActiveFileLogging.EVENT,
+                LogsType.INFO => ActiveFileLogging.INFO,
+                LogsType.WARN => ActiveFileLogging.WARN,
+                LogsType.ERROR => ActiveFileLogging.ERROR,
+                LogsType.EXCEPTION => ActiveFileLogging.EXCEPTION,
+                _ => throw new InvalidEnumArgumentException(nameof(type), (int) type, typeof(LogsType))
+            };
+        }
+
+        #endregion
+
+        /// <summary>
+        ///     Check enable console logging or file logging is enable
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns>Return true if console logging or file logging is enable</returns>
+
+        #region CheckEnableConsoleLoggingOrFileLoggingByType
+
+        public bool CheckEnableConsoleLoggingOrFileLoggingByType(LogsType type)
+        {
+            return CheckEnableConsoleLoggingByType(type) || CheckEnableFileLoggingByType(type);
         }
 
         #endregion

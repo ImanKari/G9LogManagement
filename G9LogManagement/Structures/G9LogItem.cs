@@ -184,8 +184,6 @@ namespace G9LogManagement.Structures
                         break;
                 }
 
-            sb.Replace(Environment.NewLine, "\n");
-
             return sb.ToString();
         }
 
