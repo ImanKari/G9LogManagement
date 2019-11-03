@@ -32,29 +32,41 @@ namespace G9LogManagement.Config
         /// <summary>
         ///     Generate MD5 from text
         /// </summary>
-        /// <param name="s">Specify text</param>
+        /// <param name="text">Specify text</param>
         /// <returns>Return MD5 from text</returns>
 
         #region CreateMD5
 
-        private string CreateMD5(string s)
+        private string CreateMD5(string text)
         {
+#if NETSTANDARD2_1
+            using var md5 = MD5.Create();
+            var encoding = Encoding.ASCII;
+            var data = encoding.GetBytes(text);
+
+            Span<byte> hashBytes = stackalloc byte[16];
+            md5.TryComputeHash(data, hashBytes, out var written);
+            if (written != hashBytes.Length)
+                throw new OverflowException();
+
+
+            Span<char> stringBuffer = stackalloc char[32];
+            for (var i = 0; i < hashBytes.Length; i++)
+                hashBytes[i].TryFormat(stringBuffer.Slice(2 * i), out _, "x2");
+            return new string(stringBuffer);
+#else
+            // Use input string to calculate MD5 hash
             using (var md5 = MD5.Create())
             {
-                var encoding = Encoding.ASCII;
-                var data = encoding.GetBytes(s);
+                var inputBytes = Encoding.ASCII.GetBytes(text);
+                var hashBytes = md5.ComputeHash(inputBytes);
 
-                Span<byte> hashBytes = stackalloc byte[16];
-                md5.TryComputeHash(data, hashBytes, out var written);
-                if (written != hashBytes.Length)
-                    throw new OverflowException();
-
-
-                Span<char> stringBuffer = stackalloc char[32];
-                for (var i = 0; i < hashBytes.Length; i++)
-                    hashBytes[i].TryFormat(stringBuffer.Slice(2 * i), out _, "x2");
-                return new string(stringBuffer);
+                // Convert the byte array to hexadecimal string
+                var sb = new StringBuilder();
+                for (var i = 0; i < hashBytes.Length; i++) sb.Append(hashBytes[i].ToString("X2"));
+                return sb.ToString();
             }
+#endif
         }
 
         #endregion
@@ -65,9 +77,19 @@ namespace G9LogManagement.Config
 
         /// <inheritdoc />
         public string ConfigVersion =>
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
             string.IsNullOrEmpty(Assembly.GetExecutingAssembly().GetName().Version.ToString())
                 ? Assembly.GetEntryAssembly()?.GetName().Version.ToString() ?? "0.0.0.0"
                 : Assembly.GetExecutingAssembly().GetName().Version.ToString();
+#elif (NETSTANDARD1_6 || NETSTANDARD1_5)
+        string.IsNullOrEmpty(Assembly.GetEntryAssembly().GetName().Version.ToString())
+                ? Assembly.GetEntryAssembly()?.GetName().Version.ToString() ?? "0.0.0.0"
+                : Assembly.GetEntryAssembly().GetName().Version.ToString();
+#else
+            string.IsNullOrEmpty(Assembly.Load(new AssemblyName(typeof(LogConfig).AssemblyQualifiedName)).GetName().Version.ToString())
+                ? Assembly.Load(new AssemblyName(typeof(LogConfig).AssemblyQualifiedName))?.GetName().Version.ToString() ?? "0.0.0.0"
+                : Assembly.Load(new AssemblyName(typeof(LogConfig).AssemblyQualifiedName)).GetName().Version.ToString();
+#endif
 
         /// <summary>
         ///     Save path

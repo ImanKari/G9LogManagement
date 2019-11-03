@@ -40,11 +40,13 @@ namespace G9LogManagement.AESEncryptionDecryption
         {
             try
             {
-                using var encryptor =
-                    CustomAes.CreateEncryptor(Encoding.UTF8.GetBytes(privateKey), Encoding.UTF8.GetBytes(iv));
-                message = null;
-                var encryptData = PerformCryptography(Encoding.UTF8.GetBytes(plainText), encryptor);
-                return Convert.ToBase64String(encryptData, 0, encryptData.Length);
+                using (var encryptor =
+                    CustomAes.CreateEncryptor(Encoding.UTF8.GetBytes(privateKey), Encoding.UTF8.GetBytes(iv)))
+                {
+                    message = null;
+                    var encryptData = PerformCryptography(Encoding.UTF8.GetBytes(plainText), encryptor);
+                    return Convert.ToBase64String(encryptData, 0, encryptData.Length);
+                }
             }
             catch (Exception ex)
             {
@@ -66,10 +68,13 @@ namespace G9LogManagement.AESEncryptionDecryption
         {
             try
             {
-                using var decryptor =
-                    CustomAes.CreateDecryptor(Encoding.UTF8.GetBytes(privateKey), Encoding.UTF8.GetBytes(iv));
-                message = null;
-                return Encoding.UTF8.GetString(PerformCryptography(Convert.FromBase64String(cipherText), decryptor));
+                using (var decryptor =
+                    CustomAes.CreateDecryptor(Encoding.UTF8.GetBytes(privateKey), Encoding.UTF8.GetBytes(iv)))
+                {
+                    message = null;
+                    return Encoding.UTF8.GetString(PerformCryptography(Convert.FromBase64String(cipherText),
+                        decryptor));
+                }
             }
             catch (Exception ex)
             {
@@ -90,11 +95,13 @@ namespace G9LogManagement.AESEncryptionDecryption
 
         private static byte[] PerformCryptography(byte[] data, ICryptoTransform cryptoTransform)
         {
-            using var ms = new MemoryStream();
-            using var cryptoStream = new CryptoStream(ms, cryptoTransform, CryptoStreamMode.Write);
-            cryptoStream.Write(data, 0, data.Length);
-            cryptoStream.FlushFinalBlock();
-            return ms.ToArray();
+            using (var ms = new MemoryStream())
+            using (var cryptoStream = new CryptoStream(ms, cryptoTransform, CryptoStreamMode.Write))
+            {
+                cryptoStream.Write(data, 0, data.Length);
+                cryptoStream.FlushFinalBlock();
+                return ms.ToArray();
+            }
         }
 
         #endregion

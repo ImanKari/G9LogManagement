@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -38,9 +37,25 @@ namespace G9LogManagement
 
         public InitializeFoldersAndFilesForLogReaders()
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-            _assemblyVersion = fileVersionInfo.ProductVersion;
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
+            var fileVersionInfo = string.IsNullOrEmpty(Assembly.GetExecutingAssembly().GetName().Version.ToString())
+                ? Assembly.GetEntryAssembly()?.GetName().Version.ToString() ?? "0.0.0.0"
+                : Assembly.GetExecutingAssembly().GetName().Version.ToString();
+#elif (NETSTANDARD1_6 || NETSTANDARD1_5)
+        var fileVersionInfo = string.IsNullOrEmpty(Assembly.GetEntryAssembly().GetName().Version.ToString())
+                ? Assembly.GetEntryAssembly()?.GetName().Version.ToString() ?? "0.0.0.0"
+                : Assembly.GetEntryAssembly().GetName().Version.ToString();
+#else
+            var fileVersionInfo = string.IsNullOrEmpty(Assembly
+                .Load(new AssemblyName(typeof(InitializeFoldersAndFilesForLogReaders).AssemblyQualifiedName)).GetName()
+                .Version.ToString())
+                ? Assembly.Load(new AssemblyName(typeof(InitializeFoldersAndFilesForLogReaders).AssemblyQualifiedName))
+                      ?.GetName().Version.ToString() ?? "0.0.0.0"
+                : Assembly.Load(new AssemblyName(typeof(InitializeFoldersAndFilesForLogReaders).AssemblyQualifiedName))
+                    .GetName().Version.ToString();
+#endif
+
+            _assemblyVersion = fileVersionInfo;
 
             var logReaderTemplateFoldersList = new List<string>
             {
@@ -169,20 +184,30 @@ namespace G9LogManagement
 
         private void WriteEmbeddedResourceToFile(string embeddedResourceAddress, string pathAndFileName)
         {
-            using var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream(embeddedResourceAddress);
-            using var file = new FileStream(pathAndFileName, FileMode.Create, FileAccess.Write);
-            if (pathAndFileName.Contains("G9LogReaderTemplate/Index.html"))
+#if (NETSTANDARD2_0)
+            using (var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream(embeddedResourceAddress))
+#elif (NETSTANDARD1_6 || NETSTANDARD1_5)
+            using (var resource = Assembly.GetEntryAssembly().GetManifestResourceStream(embeddedResourceAddress))
+#else
+            using (var resource = Assembly
+                .Load(new AssemblyName(typeof(InitializeFoldersAndFilesForLogReaders).AssemblyQualifiedName))
+                .GetManifestResourceStream(embeddedResourceAddress))
+#endif
+            using (var file = new FileStream(pathAndFileName, FileMode.Create, FileAccess.Write))
             {
-                using var reader =
-                    new StreamReader(
-                        resource ?? throw new InvalidOperationException(
-                            $"Embedded resource not found!\nAddress:{embeddedResourceAddress}"));
-                var index = reader.ReadToEnd();
-                var bytes = Encoding.UTF8.GetBytes(index.Replace("<G9AppVersion/>", _assemblyVersion));
-                file.Write(bytes, 0, bytes.Length);
+                if (pathAndFileName.Contains("G9LogReaderTemplate/Index.html"))
+                    using (var reader =
+                        new StreamReader(
+                            resource ?? throw new InvalidOperationException(
+                                $"Embedded resource not found!\nAddress:{embeddedResourceAddress}")))
+                    {
+                        var index = reader.ReadToEnd();
+                        var bytes = Encoding.UTF8.GetBytes(index.Replace("<G9AppVersion/>", _assemblyVersion));
+                        file.Write(bytes, 0, bytes.Length);
+                    }
+                else
+                    resource.CopyTo(file);
             }
-            else
-                resource.CopyTo(file);
         }
 
         #endregion

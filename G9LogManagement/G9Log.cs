@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -16,6 +15,9 @@ using G9LogManagement.Config;
 using G9LogManagement.Enums;
 using G9LogManagement.Structures;
 using G9ScheduleManagement;
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
+using System.ComponentModel;
+#endif
 
 namespace G9LogManagement
 {
@@ -29,7 +31,12 @@ namespace G9LogManagement
         /// <summary>
         ///     Scheduler for handle duration save log
         /// </summary>
-        private readonly G9Schedule _scheduler;
+        private readonly G9Schedule _scheduleForSaveLogsWithTime;
+
+        /// <summary>
+        ///     Schedule check 'HasShutdownStarted' for application exit
+        /// </summary>
+        private readonly G9Schedule _scheduleForCheckHasShutdownStarted;
 
         /// <summary>
         ///     Concurrent Queue for data logs
@@ -107,6 +114,11 @@ namespace G9LogManagement
         /// </summary>
         private readonly object _waitForFlushLogItems = new object();
 
+        /// <summary>
+        ///     Flag field => run just one time on exit
+        /// </summary>
+        private bool flagOnApplicationExit;
+
         #region Enable Logging Fields And Properties
 
         /// <summary>
@@ -158,15 +170,12 @@ namespace G9LogManagement
             _configuration = G9ConfigManagement_Singleton<LogConfig>.GetInstance(
                 string.Format(G9LogConst.G9ConfigName, customLogName), customLogConfig, customLogConfig != null);
 
-            // Set event for exit or unload
-            AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
-            AppDomain.CurrentDomain.DomainUnload += OnProcessExit;
-
             if (_configuration.Configuration.ComponentLog)
                 G9LogInformationForComponentLog("Start G9LogManagement...", G9LogConst.G9LogIdentity, "Start");
 
-            // Initialize scheduler
-            _scheduler = new G9Schedule();
+            // Initialize schedules
+            _scheduleForSaveLogsWithTime = new G9Schedule();
+            _scheduleForCheckHasShutdownStarted = new G9Schedule();
 
             // Start scheduler handler
             ScheduleHandler();
@@ -182,7 +191,7 @@ namespace G9LogManagement
 
         private void ScheduleHandler()
         {
-            _scheduler
+            _scheduleForSaveLogsWithTime
                 .AddScheduleAction(() =>
                 {
                     // Active flag for save logs in file
@@ -347,10 +356,18 @@ namespace G9LogManagement
 
             // Check if enable stack information log for type
             if (_configuration.Configuration.EnableStackTraceInformation.CheckValueByType(logType))
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
                 if (ex != null)
                     (fileName, methodBase, lineNumber) = GetStackInformation(new StackTrace(ex, true));
                 else
                     (fileName, methodBase, lineNumber) = GetStackInformation(new StackTrace(true));
+#else
+                if (ex != null)
+                    GetStackInformation(new StackTrace(ex, true), out fileName, out methodBase, out lineNumber);
+                else
+                    GetStackInformation(new StackTrace(new Exception(), true), out fileName, out methodBase,
+                        out lineNumber);
+#endif
 
             // Write log
             WriteLogAutomatic(
@@ -427,7 +444,7 @@ namespace G9LogManagement
                                      flushSpace.Count >= _configuration.Configuration.SaveCount))
             {
                 // Stop scheduler
-                _scheduler?.Stop();
+                _scheduleForSaveLogsWithTime?.Stop();
                 lock (_waitForFlushLogItems)
                 {
                     if (flushSpace.Any() && (forceSaveLogs || _activeTimeOutForSave ||
@@ -473,8 +490,12 @@ namespace G9LogManagement
                         {
                             // Write bytes for next day
                             while (_queueOfLogDataNextDay.Any())
+#if NETSTANDARD2_1
                                 if (_queueOfLogDataNextDay.TryDequeue(out var logItemData))
                                     WriteLogsToStream(logItemData, logFileStream);
+#else
+                                WriteLogsToStream(_queueOfLogDataNextDay.Dequeue(), logFileStream);
+#endif
 
                             // Dequeue log Item for save to file
                             while (!flushSpace.IsEmpty)
@@ -512,11 +533,11 @@ namespace G9LogManagement
                             goto Start2;
 
                         // Reset duration of scheduler
-                        if (_scheduler != null)
+                        if (_scheduleForSaveLogsWithTime != null)
                         {
-                            _scheduler.ResetDuration();
+                            _scheduleForSaveLogsWithTime.ResetDuration();
                             // Resume scheduler
-                            _scheduler.Resume();
+                            _scheduleForSaveLogsWithTime.Resume();
                         }
                     }
                 }
@@ -540,6 +561,7 @@ namespace G9LogManagement
 
         private void WriteLogsToStream(G9LogItem logItemData, FileStream fileStream)
         {
+#if NETSTANDARD2_1
             if (fileStream.Length <= 2)
             {
                 fileStream.Write(_encoding.GetBytes(
@@ -553,6 +575,23 @@ namespace G9LogManagement
                     $"{GenerateLogByInformation(logItemData.LogType, logItemData.Identity, logItemData.Title, logItemData.Body, logItemData.FileName, logItemData.MethodBase, logItemData.LineNumber, logItemData.LogDateTime, true)});"
                 ));
             }
+#else
+            if (fileStream.Length <= 2)
+            {
+                var dataByte = _encoding.GetBytes(
+                    $"G9DataLog.push({GenerateLogByInformation(logItemData.LogType, logItemData.Identity, logItemData.Title, logItemData.Body, logItemData.FileName, logItemData.MethodBase, logItemData.LineNumber, logItemData.LogDateTime, false)});"
+                );
+                fileStream.Write(dataByte, 0, dataByte.Length);
+            }
+            else
+            {
+                var dataByte = _encoding.GetBytes(
+                    $"{GenerateLogByInformation(logItemData.LogType, logItemData.Identity, logItemData.Title, logItemData.Body, logItemData.FileName, logItemData.MethodBase, logItemData.LineNumber, logItemData.LogDateTime, true)});"
+                );
+                fileStream.Seek(-2, SeekOrigin.End);
+                fileStream.Write(dataByte, 0, dataByte.Length);
+            }
+#endif
         }
 
         #endregion
@@ -600,32 +639,79 @@ namespace G9LogManagement
 
         #region GetStackInformation
 
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
         private (string, string, string) GetStackInformation(StackTrace stackTrace)
+#else
+        private void GetStackInformation(StackTrace stackTrace, out string fileName, out string methodName,
+            out string lineNumber)
+#endif
         {
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
+            var number = stackTrace.FrameCount > 1 ? stackTrace.FrameCount - 1 : 0;
             return
                 // Check if exists stack trace frame count => add stack trace information
-                stackTrace.FrameCount > 1
+                stackTrace?.GetFrames()?.Any() != null
                     ? (
-                        stackTrace.GetFrame(stackTrace.FrameCount - 1).GetFileName(),
-                        stackTrace.GetFrame(stackTrace.FrameCount - 1).GetMethod().ToString(),
-                        stackTrace.GetFrame(stackTrace.FrameCount - 1).GetFileLineNumber().ToString()
+                        stackTrace.GetFrame(number).GetFileName(),
+                        stackTrace.GetFrame(number).GetMethod().ToString(),
+                        stackTrace.GetFrame(number).GetFileLineNumber().ToString()
                     )
                     // Else return empty
                     : (string.Empty, string.Empty, string.Empty);
+#else
+            // Check if exists stack trace frame count => add stack trace information
+            var frames = stackTrace.GetFrames();
+            if (frames.Any())
+            {
+                var number = frames.Length > 1 ? frames.Length - 1 : 0;
+                fileName = frames[number].GetFileName();
+                methodName = frames[number].GetMethod().ToString();
+                lineNumber = frames[number].GetFileLineNumber().ToString();
+            }
+            else
+            {
+                fileName = methodName = lineNumber = null;
+            }
+#endif
         }
 
         #endregion
 
+
+        private void OnApplicationExitHandler()
+        {
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
+            // Set event for exit or unload
+            AppDomain.CurrentDomain.ProcessExit += OnApplicationExit;
+            AppDomain.CurrentDomain.DomainUnload += OnApplicationExit;
+#else
+            _scheduleForCheckHasShutdownStarted.AddScheduleAction(() =>
+            {
+                if (Environment.HasShutdownStarted)
+                {
+                    _scheduleForCheckHasShutdownStarted.Dispose();
+                    OnApplicationExit(null, null);
+                }
+            });
+#endif
+        }
+
         /// <summary>
-        ///     On process exit
+        ///     On application exit => execute requirement
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
 
-        #region OnProcessExit
+        #region OnApplicationExit
 
-        private void OnProcessExit(object sender, EventArgs e)
+        private void OnApplicationExit(object sender, EventArgs e)
         {
+            // Check for run on time
+            if (flagOnApplicationExit) return;
+
+            // Set flag exit
+            flagOnApplicationExit = true;
+
             // Log for exit
             if (_configuration.Configuration.ComponentLog)
                 G9LogInformationForComponentLog("Stop G9LogManagement and close app...", G9LogConst.G9LogIdentity,
@@ -637,8 +723,16 @@ namespace G9LogManagement
             // Flush force file
             FlushLogsAndSave(false, true);
 
+            // Dispose scheduler
+            _scheduleForSaveLogsWithTime.Dispose();
+            _scheduleForCheckHasShutdownStarted.Dispose();
+
             // Sleep for wait insert data
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
             Thread.Sleep(G9LogConst.DefaultTimeOutToCloseStreamWhenExitApp);
+#else
+            Task.Delay(G9LogConst.DefaultTimeOutToCloseStreamWhenExitApp).Wait(100);
+#endif
         }
 
         #endregion
@@ -702,7 +796,13 @@ namespace G9LogManagement
                 CloseSettingFileAndSetCloseReason(closeReason, oldPath);
 
                 // Generate data file path js
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
                 var (settingFilePath, tempCurrentLogFileAddress) = GenerateSettingAndDataFilePath();
+#else
+                string settingFilePath, tempCurrentLogFileAddress;
+                GenerateSettingAndDataFilePath(out settingFilePath, out tempCurrentLogFileAddress);
+#endif
+
                 CurrentLogFileAddress = tempCurrentLogFileAddress;
 
                 // Check if not exists directory create it
@@ -738,7 +838,11 @@ namespace G9LogManagement
 
         #region GenerateSettingAndDataFilePath
 
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
         private (string, string) GenerateSettingAndDataFilePath()
+#else
+        private void GenerateSettingAndDataFilePath(out string settingFilePath, out string tempCurrentLogFileAddress)
+#endif
         {
             int i = -1, j = 0;
             var existNewConfigPath = false;
@@ -769,7 +873,15 @@ namespace G9LogManagement
                     $"{j}-{G9LogConst.DataFileName}");
 
                 if (!File.Exists(newSettingPath))
+                {
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
                     return (newSettingPath, newDataPath);
+#else
+                    settingFilePath = newSettingPath;
+                    tempCurrentLogFileAddress = newDataPath;
+                    return;
+#endif
+                }
 
                 j++;
             }
@@ -852,12 +964,19 @@ namespace G9LogManagement
                     out var error);
 
                 if (!string.IsNullOrEmpty(error))
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
                     throw new Exception(error, new Exception(new StackTrace().ToString()));
+#else
+                    throw new Exception(error, new Exception(new StackTrace(new Exception(), true).ToString()));
+#endif
             }
 
-            using var configFile = File.CreateText(configPathFile);
-            configFile.WriteLine($"var G9Encoding = '{encoding}';");
-            configFile.WriteLine($"var G9DefaultPage = '{(byte) _configuration.Configuration.LogReaderStarterPage}';");
+            using (var configFile = File.CreateText(configPathFile))
+            {
+                configFile.WriteLine($"var G9Encoding = '{encoding}';");
+                configFile.WriteLine(
+                    $"var G9DefaultPage = '{(byte) _configuration.Configuration.LogReaderStarterPage}';");
+            }
 
             return newPathForCheck;
         }
@@ -924,8 +1043,15 @@ namespace G9LogManagement
                                     $"G9FileSize.push('{(string.IsNullOrEmpty(oldDataPathFile) ? string.Empty : (new FileInfo(oldDataPathFile).Length / (decimal) 1024).ToString("#.###"))}');";
                             }
 
-                        using var newTask = new StreamWriter(checkPath, false);
-                        foreach (var line in settingFileLines) newTask.WriteLine(line);
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
+                        using (var newTask = new StreamWriter(checkPath, false))
+#else
+                        using (var newTask =
+                            new StreamWriter(new FileStream(checkPath, FileMode.Create), Encoding.UTF8))
+#endif
+                        {
+                            foreach (var line in settingFileLines) newTask.WriteLine(line);
+                        }
 
                         break;
                     }
@@ -981,11 +1107,13 @@ namespace G9LogManagement
 
         private void CreateSettingFile(string path)
         {
-            using var settingFile = File.CreateText(path);
-            settingFile.WriteLine($"G9StartDateTime.push('{DateTime.Now:yyyy-MM-dd HH:mm:ss}');");
-            settingFile.WriteLine("G9FinishDateTime.push('');");
-            settingFile.WriteLine("G9FileSize.push('');");
-            settingFile.WriteLine($"G9FileCloseReason.push('{ReasonCloseType.OpenOrForceClose}');");
+            using (var settingFile = File.CreateText(path))
+            {
+                settingFile.WriteLine($"G9StartDateTime.push('{DateTime.Now:yyyy-MM-dd HH:mm:ss}');");
+                settingFile.WriteLine("G9FinishDateTime.push('');");
+                settingFile.WriteLine("G9FileSize.push('');");
+                settingFile.WriteLine($"G9FileCloseReason.push('{ReasonCloseType.OpenOrForceClose}');");
+            }
         }
 
         #endregion
@@ -1000,10 +1128,19 @@ namespace G9LogManagement
 
         private void SetLogReaderConfiguration(string path)
         {
-            using var cultureStreamWriter =
-                new StreamWriter(Path.Combine(path, G9LogConst.DefaultLanguageCultureFile), false);
-            cultureStreamWriter.Write(
-                $"var DefaultCulture = '{_configuration.Configuration.LogReaderDefaultCulture}';");
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
+            using (var cultureStreamWriter =
+                new StreamWriter(Path.Combine(path, G9LogConst.DefaultLanguageCultureFile), false))
+#else
+            using (var cultureStreamWriter =
+                new StreamWriter(
+                    new FileStream(Path.Combine(path, G9LogConst.DefaultLanguageCultureFile), FileMode.Create),
+                    Encoding.UTF8))
+#endif
+            {
+                cultureStreamWriter.Write(
+                    $"var DefaultCulture = '{_configuration.Configuration.LogReaderDefaultCulture}';");
+            }
         }
 
         #endregion
@@ -1150,6 +1287,7 @@ namespace G9LogManagement
 
         public bool CheckEnableConsoleLoggingByType(LogsType type)
         {
+#if NETSTANDARD2_1
             return type switch
             {
                 LogsType.EVENT => ActiveConsoleLogging.EVENT,
@@ -1159,6 +1297,28 @@ namespace G9LogManagement
                 LogsType.EXCEPTION => ActiveConsoleLogging.EXCEPTION,
                 _ => throw new InvalidEnumArgumentException(nameof(type), (int) type, typeof(LogsType))
             };
+#else
+            switch (type)
+            {
+                case LogsType.EVENT:
+                    return ActiveConsoleLogging.EVENT;
+                case LogsType.INFO:
+                    return ActiveConsoleLogging.INFO;
+                case LogsType.WARN:
+                    return ActiveConsoleLogging.WARN;
+                case LogsType.ERROR:
+                    return ActiveConsoleLogging.ERROR;
+                case LogsType.EXCEPTION:
+                    return ActiveConsoleLogging.EXCEPTION;
+                default:
+#if (NETSTANDARD2_0)
+                    throw new InvalidEnumArgumentException(nameof(type), (int)type, typeof(LogsType));
+#else
+                    throw new ArgumentOutOfRangeException(nameof(type), type,
+                        $"Value enum type {typeof(LogsType)} not supported!");
+#endif
+            }
+#endif
         }
 
         #endregion
@@ -1173,6 +1333,7 @@ namespace G9LogManagement
 
         public bool CheckEnableFileLoggingByType(LogsType type)
         {
+#if NETSTANDARD2_1
             return type switch
             {
                 LogsType.EVENT => ActiveFileLogging.EVENT,
@@ -1182,6 +1343,28 @@ namespace G9LogManagement
                 LogsType.EXCEPTION => ActiveFileLogging.EXCEPTION,
                 _ => throw new InvalidEnumArgumentException(nameof(type), (int) type, typeof(LogsType))
             };
+#else
+            switch (type)
+            {
+                case LogsType.EVENT:
+                    return ActiveFileLogging.EVENT;
+                case LogsType.INFO:
+                    return ActiveFileLogging.INFO;
+                case LogsType.WARN:
+                    return ActiveFileLogging.WARN;
+                case LogsType.ERROR:
+                    return ActiveFileLogging.ERROR;
+                case LogsType.EXCEPTION:
+                    return ActiveFileLogging.EXCEPTION;
+                default:
+#if (NETSTANDARD2_0)
+                    throw new InvalidEnumArgumentException(nameof(type), (int) type, typeof(LogsType));
+#else
+                    throw new ArgumentOutOfRangeException(nameof(type), type,
+                        $"Value enum type {typeof(LogsType)} not supported!");
+#endif
+            }
+#endif
         }
 
         #endregion

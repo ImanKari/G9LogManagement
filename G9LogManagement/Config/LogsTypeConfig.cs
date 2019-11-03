@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using G9ConfigManagement.Attributes;
 using G9LogManagement.Enums;
 
@@ -21,6 +22,7 @@ namespace G9LogManagement.Config
 
         public bool CheckValueByType(LogsType type)
         {
+#if NETSTANDARD2_1
             return type switch
             {
                 LogsType.EVENT => EVENT,
@@ -30,13 +32,35 @@ namespace G9LogManagement.Config
                 LogsType.EXCEPTION => EXCEPTION,
                 _ => throw new InvalidEnumArgumentException(nameof(type), (int) type, typeof(LogsType))
             };
+#else
+            switch (type)
+            {
+                case LogsType.EVENT:
+                    return EVENT;
+                case LogsType.INFO:
+                    return INFO;
+                case LogsType.WARN:
+                    return WARN;
+                case LogsType.ERROR:
+                    return ERROR;
+                case LogsType.EXCEPTION:
+                    return EXCEPTION;
+                default:
+#if (NETSTANDARD2_0)
+                    throw new InvalidEnumArgumentException(nameof(type), (int) type, typeof(LogsType));
+#else
+                    throw new ArgumentOutOfRangeException(nameof(type), type,
+                        $"Value enum type {typeof(LogsType)} not supported!");
+#endif
+            }
+#endif
         }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #region Fields And Properties
+#region Fields And Properties
 
         /// <summary>
         ///     Event log enable or disable
@@ -63,6 +87,6 @@ namespace G9LogManagement.Config
         /// </summary>
         public bool EXCEPTION { set; get; } = true;
 
-        #endregion
+#endregion
     }
 }

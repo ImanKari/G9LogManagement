@@ -17,7 +17,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Log Magement")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("2.0.0.3")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("2.0.0.3")]
-[assembly: System.Reflection.AssemblyProductAttribute("G9 Log Management")]
+[assembly: System.Reflection.AssemblyProductAttribute("G9LogManagement.DotNetStandard.2.0")]
 [assembly: System.Reflection.AssemblyTitleAttribute("G9LogManagement.DotNetStandard.2.0")]
 [assembly: System.Reflection.AssemblyVersionAttribute("2.0.0.3")]
 
