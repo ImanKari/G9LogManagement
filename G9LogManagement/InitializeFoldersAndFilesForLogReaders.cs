@@ -184,7 +184,7 @@ namespace G9LogManagement
 
         private void WriteEmbeddedResourceToFile(string embeddedResourceAddress, string pathAndFileName)
         {
-#if (NETSTANDARD2_0)
+#if (NETSTANDARD2_0 || NETSTANDARD2_1)
             using (var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream(embeddedResourceAddress))
 #elif (NETSTANDARD1_6 || NETSTANDARD1_5)
             using (var resource = Assembly.GetEntryAssembly().GetManifestResourceStream(embeddedResourceAddress))

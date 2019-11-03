@@ -650,7 +650,7 @@ namespace G9LogManagement
             var number = stackTrace.FrameCount > 1 ? stackTrace.FrameCount - 1 : 0;
             return
                 // Check if exists stack trace frame count => add stack trace information
-                stackTrace?.GetFrames()?.Any() != null
+                stackTrace?.GetFrames() != null && stackTrace.GetFrames().Any()
                     ? (
                         stackTrace.GetFrame(number).GetFileName(),
                         stackTrace.GetFrame(number).GetMethod().ToString(),
