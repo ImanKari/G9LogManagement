@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using G9LogManagement.Config;
 
 namespace G9LogManagement
 {
@@ -37,25 +38,7 @@ namespace G9LogManagement
 
         public InitializeFoldersAndFilesForLogReaders()
         {
-#if (NETSTANDARD2_1 || NETSTANDARD2_0)
-            var fileVersionInfo = string.IsNullOrEmpty(Assembly.GetExecutingAssembly().GetName().Version.ToString())
-                ? Assembly.GetEntryAssembly()?.GetName().Version.ToString() ?? "0.0.0.0"
-                : Assembly.GetExecutingAssembly().GetName().Version.ToString();
-#elif (NETSTANDARD1_6 || NETSTANDARD1_5)
-        var fileVersionInfo = string.IsNullOrEmpty(Assembly.GetEntryAssembly().GetName().Version.ToString())
-                ? Assembly.GetEntryAssembly()?.GetName().Version.ToString() ?? "0.0.0.0"
-                : Assembly.GetEntryAssembly().GetName().Version.ToString();
-#else
-            var fileVersionInfo = string.IsNullOrEmpty(Assembly
-                .Load(new AssemblyName(typeof(InitializeFoldersAndFilesForLogReaders).AssemblyQualifiedName)).GetName()
-                .Version.ToString())
-                ? Assembly.Load(new AssemblyName(typeof(InitializeFoldersAndFilesForLogReaders).AssemblyQualifiedName))
-                      ?.GetName().Version.ToString() ?? "0.0.0.0"
-                : Assembly.Load(new AssemblyName(typeof(InitializeFoldersAndFilesForLogReaders).AssemblyQualifiedName))
-                    .GetName().Version.ToString();
-#endif
-
-            _assemblyVersion = fileVersionInfo;
+            _assemblyVersion = LogConfig.ApplicationVersion;
 
             var logReaderTemplateFoldersList = new List<string>
             {
@@ -190,7 +173,7 @@ namespace G9LogManagement
             using (var resource = Assembly.GetEntryAssembly().GetManifestResourceStream(embeddedResourceAddress))
 #else
             using (var resource = Assembly
-                .Load(new AssemblyName(typeof(InitializeFoldersAndFilesForLogReaders).AssemblyQualifiedName))
+                .Load(new AssemblyName(nameof(G9LogManagement)))
                 .GetManifestResourceStream(embeddedResourceAddress))
 #endif
             using (var file = new FileStream(pathAndFileName, FileMode.Create, FileAccess.Write))

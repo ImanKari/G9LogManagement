@@ -1,4 +1,7 @@
-﻿using System;
+﻿#if NETSTANDARD2_1
+using System;
+#endif
+using System;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -53,7 +56,7 @@ namespace G9LogManagement.Config
             Span<char> stringBuffer = stackalloc char[32];
             for (var i = 0; i < hashBytes.Length; i++)
                 hashBytes[i].TryFormat(stringBuffer.Slice(2 * i), out _, "x2");
-            return new string(stringBuffer);
+            return new string(stringBuffer).ToLower();
 #else
             // Use input string to calculate MD5 hash
             using (var md5 = MD5.Create())
@@ -64,7 +67,7 @@ namespace G9LogManagement.Config
                 // Convert the byte array to hexadecimal string
                 var sb = new StringBuilder();
                 for (var i = 0; i < hashBytes.Length; i++) sb.Append(hashBytes[i].ToString("X2"));
-                return sb.ToString();
+                return sb.ToString().ToLower();
             }
 #endif
         }
@@ -75,8 +78,10 @@ namespace G9LogManagement.Config
 
         #region Fields And Properties
 
-        /// <inheritdoc />
-        public string ConfigVersion =>
+        /// <summary>
+        ///     Specified application version
+        /// </summary>
+        public static string ApplicationVersion =>
 #if (NETSTANDARD2_1 || NETSTANDARD2_0)
             string.IsNullOrEmpty(Assembly.GetExecutingAssembly().GetName().Version.ToString())
                 ? Assembly.GetEntryAssembly()?.GetName().Version.ToString() ?? "0.0.0.0"
@@ -86,10 +91,42 @@ namespace G9LogManagement.Config
                 ? Assembly.GetEntryAssembly()?.GetName().Version.ToString() ?? "0.0.0.0"
                 : Assembly.GetEntryAssembly().GetName().Version.ToString();
 #else
-            string.IsNullOrEmpty(Assembly.Load(new AssemblyName(typeof(LogConfig).AssemblyQualifiedName)).GetName().Version.ToString())
-                ? Assembly.Load(new AssemblyName(typeof(LogConfig).AssemblyQualifiedName))?.GetName().Version.ToString() ?? "0.0.0.0"
-                : Assembly.Load(new AssemblyName(typeof(LogConfig).AssemblyQualifiedName)).GetName().Version.ToString();
+            string.IsNullOrEmpty(Assembly.Load(new AssemblyName(nameof(G9LogManagement))).GetName().Version.ToString())
+                ? Assembly.Load(new AssemblyName(nameof(G9LogManagement)))?.GetName().Version.ToString() ?? "0.0.0.0"
+                : Assembly.Load(new AssemblyName(nameof(G9LogManagement))).GetName().Version.ToString();
 #endif
+
+        /// <inheritdoc />
+        public string ConfigVersion => ApplicationVersion;
+
+        /// <summary>
+        /// Field for save base app
+        /// </summary>
+        private string _baseApp;
+
+        /// <summary>
+        /// <para>Specified base app - project root for create logs and requirement</para>
+        /// <para>Sample value: 'drive and path' like 'c:\folder\...', 'AppDomain.CurrentDomain.BaseDirectory' use value of BaseDirectory and '' empty for automatic find value</para>
+        /// 
+        /// </summary>
+        [Hint(@"Sample value: 'drive and path' like 'c:\folder\...', 'AppDomain.CurrentDomain.BaseDirectory' use value of BaseDirectory and '' empty for automatic find value")]
+        public string BaseApp
+        {
+            get
+            {
+                if (_baseApp == "AppDomain.CurrentDomain.BaseDirectory")
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
+                    return AppDomain.CurrentDomain.BaseDirectory;
+#else
+                    return AppContext.BaseDirectory;
+#endif
+                else if (_baseApp is null)
+                    return string.Empty;
+
+                return _baseApp;
+            }
+            set => _baseApp = value;
+        }
 
         /// <summary>
         ///     Save path
@@ -112,11 +149,12 @@ namespace G9LogManagement.Config
         }
 
         /// <summary>
-        ///     Specify directory name date type
-        ///     'Gregorian' or 'Shamsi'
+        ///     <para>Specify directory name date type</para>
+        ///     <para>'Gregorian', 'Shamsi', 'GregorianShamsi' and 'ShamsiGregorian'</para>
         /// </summary>
-        [Hint("Specify directory name date type")]
-        [Hint("'" + nameof(DateTimeType.Gregorian) + "' or '" + nameof(DateTimeType.Shamsi) + "'")]
+        [Hint("Specified directory name date type")]
+        [Hint("Sample value: '" + nameof(DateTimeType.Gregorian) + "','" + nameof(DateTimeType.Shamsi) + "'" + "','" +
+              nameof(DateTimeType.GregorianShamsi) + "'" + "' and '" + nameof(DateTimeType.ShamsiGregorian) + "'")]
         public DateTimeType DirectoryNameDateType { set; get; }
 
         /// <summary>
@@ -359,6 +397,6 @@ namespace G9LogManagement.Config
         [Hint("values: '" + nameof(LogReaderPages.Dashboard) + "' or '" + nameof(LogReaderPages.LogsManagement) + "'")]
         public LogReaderPages LogReaderStarterPage { set; get; }
 
-        #endregion
+#endregion
     }
 }

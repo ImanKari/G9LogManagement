@@ -1,0 +1,116 @@
+﻿.G9-Language {
+    background-color: rgba(34, 34, 34, 0.23);
+    cursor: pointer;
+    display: table;
+    position: relative;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.G9-Language-DivImg {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    background-color: #222222;
+    background-color: rgba(34, 34, 34, 0.69);
+    border-right: 1px solid #b4c1dc;
+    border-right: 1px solid rgba(180, 193, 220, 0.39);
+    box-sizing: border-box;
+    display: table-cell;
+    padding: 0 3% 0 3%;
+    position: relative;
+    transition: 169ms;
+    width: 16%;
+}
+
+.G9-Language-Image {
+    position: relative;
+    width: 100%;    
+}
+
+.G9-Language:hover .G9-Language-DivImg { box-shadow: 0 0 3px 1px rgba(180, 193, 220, 0.69); }
+
+.G9-Language-DivLabel {
+    background-color: #222222;
+    background-color: rgba(34, 34, 34, 0.39);
+    display: table-cell;
+    position: relative;
+    text-align: center;
+    transition: 169ms;
+    width: 84%;
+}
+
+.G9-Language:hover .G9-Language-DivLabel { box-shadow: 0 0 3px 1px rgba(180, 193, 220, 0.69); }
+
+.G9-Language-Label {
+    color: #b4c1dc;
+    transition: 169ms;
+}
+
+.G9-Language:hover .G9-Language-Label { color: #eee; }
+
+.G9-Language-LanguageItems {
+    height: 0;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 101%;
+    transition: 269ms;
+    width: 100%;
+    z-index: 69;    
+}
+
+.G9-Language:hover .G9-Language-LanguageItems {
+    background-color: rgba(34, 34, 34, 0.69);
+    border-radius: 0 0 9px 9px;
+    border-top: 2px solid #b4c1dc;
+    border-top: 2px solid rgba(180, 193, 220, 0.39);
+    box-shadow: 0 6.9px 6.9px 1.9px rgb(43, 43, 43);
+    height: auto;
+}
+
+.G9-Language-LanguageItems_innerDiv {
+    background-color: #0c0c0c;
+    background-color: rgba(12, 12, 12, 0.59);
+    border-bottom: 2px solid #b4c1dc;
+    border-bottom: 2px solid rgba(180, 193, 220, 0.39);
+    cursor: pointer;
+    display: table;
+    padding-bottom: 6.9px;
+    padding-top: 6.9px;
+    position: relative;
+    transition: 169ms;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.G9-Language-LanguageItems_innerDiv:hover { background-color: #0c0c0c; }
+
+.G9-Language-LanguageItems_innerDiv:active .G9-Language-LanguageItems {
+    height: 0;
+}
+
+.G9-Language-DivImg-Items {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    border-right: 1px solid #b4c1dc;
+    border-right: 1px solid rgba(180, 193, 220, 0.39);
+    box-sizing: border-box;
+    display: table-cell;
+    padding: 0 3% 0 3%;
+    position: relative;
+    transition: 169ms;
+    width: 16%;
+}
+
+.G9-Language-Image-choose {
+    position: relative;
+    width: 100%;
+}
+
+.G9-Language-DivLabel-Items {
+    display: table-cell;
+    position: relative;
+    text-align: center;
+    transition: 169ms;
+    width: 84%;
+}

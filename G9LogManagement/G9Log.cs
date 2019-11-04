@@ -7,7 +7,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using G9ConfigManagement;
 using G9LogManagement.AESEncryptionDecryption;
@@ -15,6 +14,7 @@ using G9LogManagement.Config;
 using G9LogManagement.Enums;
 using G9LogManagement.Structures;
 using G9ScheduleManagement;
+
 #if (NETSTANDARD2_1 || NETSTANDARD2_0)
 using System.ComponentModel;
 #endif
@@ -365,7 +365,7 @@ namespace G9LogManagement
                 if (ex != null)
                     GetStackInformation(new StackTrace(ex, true), out fileName, out methodBase, out lineNumber);
                 else
-                    GetStackInformation(new StackTrace(new Exception(), true), out fileName, out methodBase,
+                    GetStackInformation(new StackTrace(new Exception("Info"), true), out fileName, out methodBase,
                         out lineNumber);
 #endif
 
@@ -661,7 +661,7 @@ namespace G9LogManagement
 #else
             // Check if exists stack trace frame count => add stack trace information
             var frames = stackTrace.GetFrames();
-            if (frames.Any())
+            if (frames != null && frames.Any())
             {
                 var number = frames.Length > 1 ? frames.Length - 1 : 0;
                 fileName = frames[number].GetFileName();
@@ -728,11 +728,7 @@ namespace G9LogManagement
             _scheduleForCheckHasShutdownStarted.Dispose();
 
             // Sleep for wait insert data
-#if (NETSTANDARD2_1 || NETSTANDARD2_0)
-            Thread.Sleep(G9LogConst.DefaultTimeOutToCloseStreamWhenExitApp);
-#else
             Task.Delay(G9LogConst.DefaultTimeOutToCloseStreamWhenExitApp).Wait(100);
-#endif
         }
 
         #endregion
@@ -779,18 +775,8 @@ namespace G9LogManagement
                 _startDateTime = DateTime.Now;
 
                 // Generate directory name
-                if (_configuration.Configuration.DirectoryNameDateType == DateTimeType.Gregorian)
-                {
-                    CurrentLogDirectory =
-                        Path.Combine(_configuration.Configuration.Path, LogName,
-                            _startDateTime.ToString("yyyy-MM-dd/"));
-                }
-                else
-                {
-                    var pc = new PersianCalendar();
-                    CurrentLogDirectory = Path.Combine(_configuration.Configuration.Path, LogName,
-                        $"{pc.GetYear(_startDateTime)}-{pc.GetMonth(_startDateTime)}-{pc.GetDayOfMonth(_startDateTime)}/");
-                }
+                CurrentLogDirectory = Path.Combine(_configuration.Configuration.Path, LogName,
+                    GetFolderNameByDateTimeType(_startDateTime, _configuration.Configuration.DirectoryNameDateType));
 
                 // Close update old setting file
                 CloseSettingFileAndSetCloseReason(closeReason, oldPath);
@@ -1380,6 +1366,41 @@ namespace G9LogManagement
         public bool CheckEnableConsoleLoggingOrFileLoggingByType(LogsType type)
         {
             return CheckEnableConsoleLoggingByType(type) || CheckEnableFileLoggingByType(type);
+        }
+
+        #endregion
+
+        /// <summary>
+        ///     Specified folder name
+        /// </summary>
+        /// <param name="folderDateTime">Folder date time</param>
+        /// <param name="folderDateTimeType">Folder date time type</param>
+        /// <returns>Folder name</returns>
+
+        #region GetFolderNameByDateTimeType
+
+        private string GetFolderNameByDateTimeType(DateTime folderDateTime, DateTimeType folderDateTimeType)
+        {
+            switch (folderDateTimeType)
+            {
+                case DateTimeType.Gregorian:
+                    return folderDateTime.ToString("yyyy-MM-dd/");
+                case DateTimeType.Shamsi:
+                    var pc = new PersianCalendar();
+                    return
+                        $"{pc.GetYear(_startDateTime)}-{pc.GetMonth(_startDateTime).ToString().PadLeft(2, '0')}-{pc.GetDayOfMonth(_startDateTime).ToString().PadLeft(2, '0')}/";
+                case DateTimeType.GregorianShamsi:
+                    var pc1 = new PersianCalendar();
+                    return
+                        $"{folderDateTime:yyyy-MM-dd}_{pc1.GetYear(_startDateTime)}-{pc1.GetMonth(_startDateTime).ToString().PadLeft(2, '0')}-{pc1.GetDayOfMonth(_startDateTime).ToString().PadLeft(2, '0')}/";
+                case DateTimeType.ShamsiGregorian:
+                    var pc2 = new PersianCalendar();
+                    return
+                        $"{pc2.GetYear(_startDateTime)}-{pc2.GetMonth(_startDateTime).ToString().PadLeft(2, '0')}-{pc2.GetDayOfMonth(_startDateTime).ToString().PadLeft(2, '0')}_{folderDateTime:yyyy-MM-dd}/";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(folderDateTimeType), folderDateTimeType,
+                        "Enum value not supported!");
+            }
         }
 
         #endregion

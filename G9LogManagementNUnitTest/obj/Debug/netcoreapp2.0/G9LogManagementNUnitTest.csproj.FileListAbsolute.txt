@@ -1,0 +1,3 @@
+D:\Project\G9LogManagement\G9LogManagementNUnitTest\obj\Debug\netcoreapp2.0\G9LogManagementNUnitTest.csprojAssemblyReference.cache
+D:\Project\G9LogManagement\G9LogManagementNUnitTest\obj\Debug\netcoreapp2.0\G9LogManagementNUnitTest.AssemblyInfoInputs.cache
+D:\Project\G9LogManagement\G9LogManagementNUnitTest\obj\Debug\netcoreapp2.0\G9LogManagementNUnitTest.AssemblyInfo.cs

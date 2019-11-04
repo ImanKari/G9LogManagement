@@ -24,7 +24,7 @@ namespace G9LogManagement
 
         static G9LogDefault()
         {
-            G9Logging = new G9Log();
+            G9Logging = new G9Log(customLogConfig: G9LogDefaultConfigInitialize.DefaultInstanceLogConfig);
         }
 
         #endregion
