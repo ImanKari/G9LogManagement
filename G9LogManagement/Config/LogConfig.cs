@@ -1,7 +1,5 @@
-﻿#if NETSTANDARD2_1
-using System;
-#endif
-using System;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -100,28 +98,30 @@ namespace G9LogManagement.Config
         public string ConfigVersion => ApplicationVersion;
 
         /// <summary>
-        /// Field for save base app
+        ///     Field for save base app
         /// </summary>
         private string _baseApp;
 
         /// <summary>
-        /// <para>Specified base app - project root for create logs and requirement</para>
-        /// <para>Sample value: 'drive and path' like 'c:\folder\...', 'AppDomain.CurrentDomain.BaseDirectory' use value of BaseDirectory and '' empty for automatic find value</para>
-        /// 
+        ///     <para>Specified base app - project root for create logs and requirement</para>
+        ///     <para>Sample value: if set empty use automatic 'BaseDirectory' value, if set 'path' like 'c:\folder\...'</para>
         /// </summary>
-        [Hint(@"Sample value: 'drive and path' like 'c:\folder\...', 'AppDomain.CurrentDomain.BaseDirectory' use value of BaseDirectory and '' empty for automatic find value")]
+        [Hint(@"Sample value: if set empty use automatic 'BaseDirectory' value, if set 'path' like 'c:\folder\...'")]
         public string BaseApp
         {
             get
             {
-                if (_baseApp == "AppDomain.CurrentDomain.BaseDirectory")
+                // Set default value
+                if (string.IsNullOrEmpty(_baseApp))
 #if (NETSTANDARD2_1 || NETSTANDARD2_0)
                     return AppDomain.CurrentDomain.BaseDirectory;
 #else
                     return AppContext.BaseDirectory;
 #endif
-                else if (_baseApp is null)
-                    return string.Empty;
+                // Check base app path
+                if (!Directory.Exists(_baseApp))
+                    throw new DirectoryNotFoundException(
+                        $"Base app directory set in config file not found: path => '{_baseApp}'");
 
                 return _baseApp;
             }
@@ -175,7 +175,7 @@ namespace G9LogManagement.Config
         ///     Specify console logging type is enable
         /// </summary>
         [Hint("Specify console logging type is enable")]
-        public LogsTypeConfig ActiveConsoleLogs { set; get; } = new LogsTypeConfig();
+        public LogsTypeConfig ActiveConsoleLogs { set; get; } = new LogsTypeConfig(false);
 
         /// <summary>
         ///     Enable stack trace info for logs
@@ -397,6 +397,6 @@ namespace G9LogManagement.Config
         [Hint("values: '" + nameof(LogReaderPages.Dashboard) + "' or '" + nameof(LogReaderPages.LogsManagement) + "'")]
         public LogReaderPages LogReaderStarterPage { set; get; }
 
-#endregion
+        #endregion
     }
 }

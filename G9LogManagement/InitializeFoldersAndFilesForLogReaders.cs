@@ -33,10 +33,11 @@ namespace G9LogManagement
         ///     Constructor
         ///     Initialize and create all folders and files for log reader
         /// </summary>
+        /// <param name="baseApp">Specified base app for copy logging system files</param>
 
         #region InitializeFoldersAndFilesForLogReaders
 
-        public InitializeFoldersAndFilesForLogReaders()
+        public InitializeFoldersAndFilesForLogReaders(string baseApp)
         {
             _assemblyVersion = LogConfig.ApplicationVersion;
 
@@ -131,8 +132,8 @@ namespace G9LogManagement
             // Create all folders if not exists
             logReaderTemplateFoldersList.ForEach(s =>
             {
-                if (!Directory.Exists(s))
-                    Directory.CreateDirectory(s);
+                if (!Directory.Exists(Path.Combine(baseApp, s)))
+                    Directory.CreateDirectory(Path.Combine(baseApp, s));
             });
 
             // Create all files in not exists
@@ -140,12 +141,14 @@ namespace G9LogManagement
             {
                 if (_initializeFirstTime)
                 {
-                    WriteEmbeddedResourceToFile((nameof(G9LogManagement) + "." + s).Replace('/', '.'), s);
+                    WriteEmbeddedResourceToFile((nameof(G9LogManagement) + "." + s).Replace('/', '.'),
+                        Path.Combine(baseApp, s));
                 }
                 else
                 {
                     if (!File.Exists(s))
-                        WriteEmbeddedResourceToFile((nameof(G9LogManagement) + "." + s).Replace('/', '.'), s);
+                        WriteEmbeddedResourceToFile((nameof(G9LogManagement) + "." + s).Replace('/', '.'),
+                            Path.Combine(baseApp, s));
                 }
             });
             // Set false initialize for first time

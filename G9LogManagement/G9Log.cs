@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using G9ConfigManagement;
@@ -117,7 +118,7 @@ namespace G9LogManagement
         /// <summary>
         ///     Flag field => run just one time on exit
         /// </summary>
-        private bool flagOnApplicationExit;
+        private bool _flagOnApplicationExit;
 
         #region Enable Logging Fields And Properties
 
@@ -130,6 +131,16 @@ namespace G9LogManagement
         ///     Specified active logging for console
         /// </summary>
         public LogsTypeConfig ActiveConsoleLogging => _configuration.Configuration.ActiveConsoleLogs;
+
+        /// <summary>
+        ///     Specified base app path for logging file
+        /// </summary>
+        public readonly string BaseApp;
+
+        /// <summary>
+        ///     Thread lock for console logging
+        /// </summary>
+        private readonly object _consoleLoggingLock = new object();
 
         #endregion
 
@@ -163,12 +174,15 @@ namespace G9LogManagement
             // Set log name
             LogName = customLogName;
 
-            // Initialize folders and files
-            new InitializeFoldersAndFilesForLogReaders();
-
             // Load configs
             _configuration = G9ConfigManagement_Singleton<LogConfig>.GetInstance(
                 string.Format(G9LogConst.G9ConfigName, customLogName), customLogConfig, customLogConfig != null);
+
+            // Set base app
+            BaseApp = _configuration.Configuration.BaseApp;
+
+            // Initialize folders and files
+            new InitializeFoldersAndFilesForLogReaders(_configuration.Configuration.BaseApp);
 
             if (_configuration.Configuration.ComponentLog)
                 G9LogInformationForComponentLog("Start G9LogManagement...", G9LogConst.G9LogIdentity, "Start");
@@ -179,6 +193,7 @@ namespace G9LogManagement
 
             // Start scheduler handler
             ScheduleHandler();
+            OnApplicationExitHandler();
         }
 
         #endregion
@@ -200,7 +215,8 @@ namespace G9LogManagement
                     FlushLogsAndSave();
                 })
                 .SetDuration(TimeSpan.FromSeconds(_configuration.Configuration.SaveTime))
-                .AddErrorCallBack(exception => G9LogException(exception, "Scheduler Error!", "Scheduler", "Scheduler"));
+                .AddErrorCallBack(exception =>
+                    G9LogException(exception, "Scheduler Save Log Error!", "Scheduler", "Scheduler"));
         }
 
         #endregion
@@ -621,7 +637,7 @@ namespace G9LogManagement
                 string key = _configuration.Configuration.EncryptedUserName,
                     iv = _configuration.Configuration.EncryptedPassword;
                 return
-                    $"{(addCommaInFirst ? "," : string.Empty)}[{(byte) logType},'{identity}','{AES128.EncryptString($"{title}🅖➒{body}🅖➒{fileName}🅖➒{methodBase}🅖➒{lineNumber}", key, iv, out _)}','{logDateTime.ToString("yyyy/MM/dd HH:mm:ss.ff")}']";
+                    $"{(addCommaInFirst ? "," : string.Empty)}[{(byte) logType},'{identity}','{AES128.EncryptString($"{title}🅖➒{body}🅖➒{fileName}🅖➒{methodBase}🅖➒{lineNumber}", key, iv, out _)}','{logDateTime:yyyy/MM/dd HH:mm:ss.ff}']";
             }
 
             // Normal write
@@ -631,17 +647,24 @@ namespace G9LogManagement
 
         #endregion
 
+        //Add stack trace information
+        #region GetStackInformation
+
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
         /// <summary>
         ///     Add stack trace information
         /// </summary>
         /// <param name="stackTrace">Stack trace object</param>
         /// <returns>return (string FileName, string MethodBase, string LineNumber)</returns>
-
-        #region GetStackInformation
-
-#if (NETSTANDARD2_1 || NETSTANDARD2_0)
         private (string, string, string) GetStackInformation(StackTrace stackTrace)
 #else
+        /// <summary>
+        ///     Add stack trace information
+        /// </summary>
+        /// <param name="stackTrace">Stack trace object</param>
+        /// <param name="fileName">Out file name</param>
+        /// <param name="methodName">Out method name</param>
+        /// <param name="lineNumber">Out line number</param>
         private void GetStackInformation(StackTrace stackTrace, out string fileName, out string methodName,
             out string lineNumber)
 #endif
@@ -677,7 +700,10 @@ namespace G9LogManagement
 
         #endregion
 
-
+        /// <summary>
+        /// event Handler for on application exit
+        /// </summary>
+        #region OnApplicationExitHandler
         private void OnApplicationExitHandler()
         {
 #if (NETSTANDARD2_1 || NETSTANDARD2_0)
@@ -685,32 +711,40 @@ namespace G9LogManagement
             AppDomain.CurrentDomain.ProcessExit += OnApplicationExit;
             AppDomain.CurrentDomain.DomainUnload += OnApplicationExit;
 #else
+
+            
             _scheduleForCheckHasShutdownStarted.AddScheduleAction(() =>
-            {
-                if (Environment.HasShutdownStarted)
                 {
-                    _scheduleForCheckHasShutdownStarted.Dispose();
-                    OnApplicationExit(null, null);
-                }
-            });
+                    if (Environment.HasShutdownStarted) OnApplicationExit();
+                }).SetDuration(TimeSpan.FromMilliseconds(1))
+                .AddErrorCallBack(exception =>
+                    G9LogException(exception, "Scheduler Save Log Error!", "Scheduler", "Scheduler"));
 #endif
         }
+        #endregion
 
+        // On application exit => execute requirement
+        #region OnApplicationExit
+
+#if (NETSTANDARD2_1 || NETSTANDARD2_0)
         /// <summary>
         ///     On application exit => execute requirement
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-
-        #region OnApplicationExit
-
         private void OnApplicationExit(object sender, EventArgs e)
+#else
+        /// <summary>
+        ///     On application exit => execute requirement
+        /// </summary>
+        private void OnApplicationExit()
+#endif
         {
             // Check for run on time
-            if (flagOnApplicationExit) return;
+            if (_flagOnApplicationExit) return;
 
             // Set flag exit
-            flagOnApplicationExit = true;
+            _flagOnApplicationExit = true;
 
             // Log for exit
             if (_configuration.Configuration.ComponentLog)
@@ -775,7 +809,7 @@ namespace G9LogManagement
                 _startDateTime = DateTime.Now;
 
                 // Generate directory name
-                CurrentLogDirectory = Path.Combine(_configuration.Configuration.Path, LogName,
+                CurrentLogDirectory = Path.Combine(BaseApp, _configuration.Configuration.Path, LogName,
                     GetFolderNameByDateTimeType(_startDateTime, _configuration.Configuration.DirectoryNameDateType));
 
                 // Close update old setting file
@@ -785,14 +819,14 @@ namespace G9LogManagement
 #if (NETSTANDARD2_1 || NETSTANDARD2_0)
                 var (settingFilePath, tempCurrentLogFileAddress) = GenerateSettingAndDataFilePath();
 #else
-                string settingFilePath, tempCurrentLogFileAddress;
-                GenerateSettingAndDataFilePath(out settingFilePath, out tempCurrentLogFileAddress);
+                GenerateSettingAndDataFilePath(out var settingFilePath, out var tempCurrentLogFileAddress);
 #endif
 
                 CurrentLogFileAddress = tempCurrentLogFileAddress;
 
                 // Check if not exists directory create it
-                CopyDirectoryAndFileBetweenTwoPath(G9LogConst.G9LogReaderPath, CurrentLogDirectory);
+                CopyDirectoryAndFileBetweenTwoPath(Path.Combine(BaseApp, G9LogConst.G9LogReaderPath),
+                    CurrentLogDirectory);
 
                 // Set log reader configuration
                 SetLogReaderConfiguration(CurrentLogDirectory);
@@ -816,7 +850,6 @@ namespace G9LogManagement
 
         #endregion
 
-
         /// <summary>
         ///     Generate path for setting and data file
         /// </summary>
@@ -835,7 +868,7 @@ namespace G9LogManagement
             // Check main directory
             while (true)
                 if (Directory.Exists(
-                    Path.Combine(
+                    Path.Combine(BaseApp,
                         CurrentLogDirectory.Substring(0,
                             CurrentLogDirectory.Length - 1) + G9LogConst.DefaultChangePathText + ++i)))
                 {
@@ -853,9 +886,9 @@ namespace G9LogManagement
             // Check inner directory
             while (true)
             {
-                var newSettingPath = Path.Combine(CurrentLogDirectory, G9LogConst.DataDirectory,
+                var newSettingPath = Path.Combine(BaseApp, CurrentLogDirectory, G9LogConst.DataDirectory,
                     $"{j}-{G9LogConst.SettingFileName}");
-                var newDataPath = Path.Combine(CurrentLogDirectory, G9LogConst.DataDirectory,
+                var newDataPath = Path.Combine(BaseApp, CurrentLogDirectory, G9LogConst.DataDirectory,
                     $"{j}-{G9LogConst.DataFileName}");
 
                 if (!File.Exists(newSettingPath))
@@ -892,11 +925,11 @@ namespace G9LogManagement
                   + G9LogConst.DefaultChangePathText + newConfigPathIndex
                 : CurrentLogDirectory;
 
-            var dicrectoryPath = Path.Combine(newPathForCheck, G9LogConst.DataDirectory);
-            if (!Directory.Exists(dicrectoryPath))
-                Directory.CreateDirectory(dicrectoryPath);
+            var directoryPath = Path.Combine(BaseApp, newPathForCheck, G9LogConst.DataDirectory);
+            if (!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
 
-            var configPathFile = Path.Combine(dicrectoryPath, G9LogConst.ConfigFileName);
+            var configPathFile = Path.Combine(BaseApp, directoryPath, G9LogConst.ConfigFileName);
             // Check config file if exists
             if (File.Exists(configPathFile))
             {
@@ -984,31 +1017,32 @@ namespace G9LogManagement
             if (closeReason == ReasonCloseType.ChangeDay && !string.IsNullOrEmpty(oldPath))
             {
                 archivePath = oldPath;
-                oldSettingPath = Path.Combine(oldPath, G9LogConst.DataDirectory);
+                oldSettingPath = Path.Combine(BaseApp, oldPath, G9LogConst.DataDirectory);
             }
             else
             {
-                oldSettingPath = Path.Combine(CurrentLogDirectory, G9LogConst.DataDirectory);
+                oldSettingPath = Path.Combine(BaseApp, CurrentLogDirectory, G9LogConst.DataDirectory);
             }
 
 
             // If firs file or folder not exists = exit func
             if (!Directory.Exists(oldSettingPath) ||
-                !File.Exists(Path.Combine(oldSettingPath, $"{i}-{G9LogConst.SettingFileName}")))
+                !File.Exists(Path.Combine(BaseApp, oldSettingPath, $"{i}-{G9LogConst.SettingFileName}")))
                 return;
 
             while (true)
             {
-                var checkPath = Path.Combine(oldSettingPath, $"{i}-{G9LogConst.SettingFileName}");
+                var checkPath = Path.Combine(BaseApp, oldSettingPath, $"{i}-{G9LogConst.SettingFileName}");
 
                 if (!File.Exists(checkPath))
                     if (i > 0)
                     {
-                        checkPath = Path.Combine(oldSettingPath, $"{i - 1}-{G9LogConst.SettingFileName}");
+                        checkPath = Path.Combine(BaseApp, oldSettingPath, $"{i - 1}-{G9LogConst.SettingFileName}");
 
                         var oldDataPathFile = string.Empty;
-                        if (File.Exists(Path.Combine(oldSettingPath, $"{i - 1}-{G9LogConst.DataFileName}")))
-                            oldDataPathFile = Path.Combine(oldSettingPath, $"{i - 1}-{G9LogConst.DataFileName}");
+                        if (File.Exists(Path.Combine(BaseApp, oldSettingPath, $"{i - 1}-{G9LogConst.DataFileName}")))
+                            oldDataPathFile = Path.Combine(BaseApp, oldSettingPath,
+                                $"{i - 1}-{G9LogConst.DataFileName}");
 
                         var settingFileLines = File.ReadAllLines(checkPath);
 
@@ -1064,6 +1098,8 @@ namespace G9LogManagement
 
         private void CopyDirectoryAndFileBetweenTwoPath(string sourcePath, string destinationPath)
         {
+            if (!destinationPath.EndsWith("/")) destinationPath += "/";
+
             //Now Create all of the directories
             foreach (var dirPath in Directory.GetDirectories(sourcePath, "*",
                 SearchOption.AllDirectories))
@@ -1116,11 +1152,11 @@ namespace G9LogManagement
         {
 #if (NETSTANDARD2_1 || NETSTANDARD2_0)
             using (var cultureStreamWriter =
-                new StreamWriter(Path.Combine(path, G9LogConst.DefaultLanguageCultureFile), false))
+                new StreamWriter(Path.Combine(BaseApp, path, G9LogConst.DefaultLanguageCultureFile), false))
 #else
             using (var cultureStreamWriter =
                 new StreamWriter(
-                    new FileStream(Path.Combine(path, G9LogConst.DefaultLanguageCultureFile), FileMode.Create),
+                    new FileStream(Path.Combine(BaseApp, path, G9LogConst.DefaultLanguageCultureFile), FileMode.Create),
                     Encoding.UTF8))
 #endif
             {
@@ -1143,7 +1179,7 @@ namespace G9LogManagement
         private string ExceptionErrorGenerate(Exception ex, string additionalMessage)
         {
             var exceptionMessage = new StringBuilder();
-            // Add additioanal
+            // Add additional
             if (!string.IsNullOrEmpty(additionalMessage))
                 exceptionMessage.Append(
                     $"###### Additional Message ######{Environment.NewLine}{additionalMessage}{Environment.NewLine}");
@@ -1181,7 +1217,7 @@ namespace G9LogManagement
             // Delete all files
             foreach (var file in di.GetFiles())
                 file.Delete();
-            // Delete all directoy
+            // Delete all directory
             foreach (var dir in di.GetDirectories())
                 dir.Delete(true);
             // Delete main directory
@@ -1199,15 +1235,19 @@ namespace G9LogManagement
 
         private void ConsoleLogging(G9LogItem logItem)
         {
-            // Set console color
-            SetConsoleLoggingColorByLogType(logItem.LogType);
+            // Lock for console logging
+            lock (_consoleLoggingLock)
+            {
+                // Set console color
+                SetConsoleLoggingColorByLogType(logItem.LogType);
 
-            // Show console log
-            Console.WriteLine(
-                $"################################################# Log Type: {logItem.LogType} #################################################\nDate & Time: {logItem.LogDateTime:yyyy/MM/ss HH:mm:ss.fff}\tIdentity: {logItem.Identity}\tTitle: {logItem.Title}\nBody: {logItem.Body}\nPath: {logItem.FileName}\tMethod: {logItem.MethodBase}\tLine: {logItem.LineNumber}\n");
+                // Show console log
+                Console.WriteLine(
+                    $"################################################# Log Type: {logItem.LogType} #################################################\nDate & Time: {logItem.LogDateTime:yyyy/MM/ss HH:mm:ss.fff}\tIdentity: {logItem.Identity}\tTitle: {logItem.Title}\nBody: {logItem.Body}\nPath: {logItem.FileName}\tMethod: {logItem.MethodBase}\tLine: {logItem.LineNumber}\n");
 
-            // Reset console
-            ResetLoggingColor();
+                // Reset console
+                ResetLoggingColor();
+            }
         }
 
         #endregion

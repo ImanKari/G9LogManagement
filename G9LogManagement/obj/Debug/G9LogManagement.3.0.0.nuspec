@@ -13,41 +13,41 @@
     <copyright>G9Studio - 2019</copyright>
     <dependencies>
       <group targetFramework=".NETStandard1.3">
-        <dependency id="G9ConfigManagement" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="G9ConfigManagement" version="2.0.1" exclude="Build,Analyzers" />
         <dependency id="G9ScheduleManagement" version="2.0.0.1" exclude="Build,Analyzers" />
         <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
         <dependency id="System.Diagnostics.FileVersionInfo" version="4.3.0" exclude="Build,Analyzers" />
         <dependency id="System.Diagnostics.StackTrace" version="4.3.0" exclude="Build,Analyzers" />
       </group>
       <group targetFramework=".NETStandard1.4">
-        <dependency id="G9ConfigManagement" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="G9ConfigManagement" version="2.0.1" exclude="Build,Analyzers" />
         <dependency id="G9ScheduleManagement" version="2.0.0.1" exclude="Build,Analyzers" />
         <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
         <dependency id="System.Diagnostics.FileVersionInfo" version="4.3.0" exclude="Build,Analyzers" />
         <dependency id="System.Diagnostics.StackTrace" version="4.3.0" exclude="Build,Analyzers" />
       </group>
       <group targetFramework=".NETStandard1.5">
-        <dependency id="G9ConfigManagement" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="G9ConfigManagement" version="2.0.1" exclude="Build,Analyzers" />
         <dependency id="G9ScheduleManagement" version="2.0.0.1" exclude="Build,Analyzers" />
         <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
         <dependency id="System.Diagnostics.FileVersionInfo" version="4.3.0" exclude="Build,Analyzers" />
         <dependency id="System.Diagnostics.StackTrace" version="4.3.0" exclude="Build,Analyzers" />
       </group>
       <group targetFramework=".NETStandard1.6">
-        <dependency id="G9ConfigManagement" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="G9ConfigManagement" version="2.0.1" exclude="Build,Analyzers" />
         <dependency id="G9ScheduleManagement" version="2.0.0.1" exclude="Build,Analyzers" />
         <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
         <dependency id="System.Diagnostics.FileVersionInfo" version="4.3.0" exclude="Build,Analyzers" />
         <dependency id="System.Diagnostics.StackTrace" version="4.3.0" exclude="Build,Analyzers" />
       </group>
       <group targetFramework=".NETStandard2.0">
-        <dependency id="G9ConfigManagement" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="G9ConfigManagement" version="2.0.1" exclude="Build,Analyzers" />
         <dependency id="G9ScheduleManagement" version="2.0.0.1" exclude="Build,Analyzers" />
         <dependency id="System.Diagnostics.FileVersionInfo" version="4.3.0" exclude="Build,Analyzers" />
         <dependency id="System.Diagnostics.StackTrace" version="4.3.0" exclude="Build,Analyzers" />
       </group>
       <group targetFramework=".NETStandard2.1">
-        <dependency id="G9ConfigManagement" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="G9ConfigManagement" version="2.0.1" exclude="Build,Analyzers" />
         <dependency id="G9ScheduleManagement" version="2.0.0.1" exclude="Build,Analyzers" />
         <dependency id="System.Diagnostics.FileVersionInfo" version="4.3.0" exclude="Build,Analyzers" />
         <dependency id="System.Diagnostics.StackTrace" version="4.3.0" exclude="Build,Analyzers" />

@@ -33,8 +33,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="G9ConfigManagement, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\G9ConfigManagement.2.0.0\lib\netstandard1.3\G9ConfigManagement.dll</HintPath>
+    <Reference Include="G9ConfigManagement, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\G9ConfigManagement.2.0.1\lib\netstandard1.3\G9ConfigManagement.dll</HintPath>
     </Reference>
     <Reference Include="G9ScheduleManagement, Version=2.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\G9ScheduleManagement.2.0.0.1\lib\netstandard1.3\G9ScheduleManagement.dll</HintPath>

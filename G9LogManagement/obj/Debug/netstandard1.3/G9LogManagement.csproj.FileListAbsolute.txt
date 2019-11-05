@@ -5,4 +5,3 @@ D:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.3\G9LogManagem
 D:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.3\G9LogManagement.AssemblyInfo.cs
 D:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.3\G9LogManagement.dll
 D:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.3\G9LogManagement.pdb
-D:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.3\G9LogManagement.csprojAssemblyReference.cache

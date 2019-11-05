@@ -15,13 +15,12 @@ namespace G9LogManagementTest
         {
             G9LogDefaultConfigInitialize.InitializeDefaultInstanceLogConfig(new LogConfig()
             {
-                BaseApp = "AppDomain.CurrentDomain.BaseDirectory",
                 SaveTime = 3,
                 SaveCount = 500,
-                LogUserName = "ImanKari",
-                LogPassword = "1990",
-                MaxFileSize = 6,
-                LogReaderStarterPage = LogReaderPages.LogsManagement,
+                LogUserName = "Admin",
+                LogPassword = "ImanKari1990",
+                MaxFileSize = 9,
+                LogReaderStarterPage = LogReaderPages.Dashboard,
                 LogReaderDefaultCulture = CultureType.fa,
                 DirectoryNameDateType = DateTimeType.GregorianShamsi
             });

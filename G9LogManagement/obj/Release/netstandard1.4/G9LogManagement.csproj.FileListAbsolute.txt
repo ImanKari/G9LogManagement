@@ -1,0 +1,3 @@
+D:\Project\G9LogManagement\G9LogManagement\obj\Release\netstandard1.4\G9LogManagement.csprojAssemblyReference.cache
+D:\Project\G9LogManagement\G9LogManagement\obj\Release\netstandard1.4\G9LogManagement.AssemblyInfoInputs.cache
+D:\Project\G9LogManagement\G9LogManagement\obj\Release\netstandard1.4\G9LogManagement.AssemblyInfo.cs

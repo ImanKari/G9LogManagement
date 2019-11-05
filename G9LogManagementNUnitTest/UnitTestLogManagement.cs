@@ -23,7 +23,7 @@ namespace G9LogManagementNUnitTest
         [Order(1)]
         public void CheckInitializeFoldersAndFilesLogReader()
         {
-            var initialize = new InitializeFoldersAndFilesForLogReaders();
+            var initialize = new InitializeFoldersAndFilesForLogReaders(Logging.BaseApp);
 
         }
 

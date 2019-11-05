@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-using G9ConfigManagement.Attributes;
 using G9LogManagement.Enums;
 
 namespace G9LogManagement.Config
@@ -30,7 +28,7 @@ namespace G9LogManagement.Config
                 LogsType.WARN => WARN,
                 LogsType.ERROR => ERROR,
                 LogsType.EXCEPTION => EXCEPTION,
-                _ => throw new InvalidEnumArgumentException(nameof(type), (int) type, typeof(LogsType))
+                _ => throw new System.ComponentModel.InvalidEnumArgumentException(nameof(type), (int) type, typeof(LogsType))
             };
 #else
             switch (type)
@@ -47,7 +45,7 @@ namespace G9LogManagement.Config
                     return EXCEPTION;
                 default:
 #if (NETSTANDARD2_0)
-                    throw new InvalidEnumArgumentException(nameof(type), (int) type, typeof(LogsType));
+                    throw new System.ComponentModel.InvalidEnumArgumentException(nameof(type), (int) type, typeof(LogsType));
 #else
                     throw new ArgumentOutOfRangeException(nameof(type), type,
                         $"Value enum type {typeof(LogsType)} not supported!");
@@ -56,37 +54,52 @@ namespace G9LogManagement.Config
 #endif
         }
 
-#endregion
+        #endregion
 
-#endregion
+        /// <summary>
+        ///     <para>Constructor</para>
+        ///     <para>Initialize requirement</para>
+        /// </summary>
+        /// <param name="defaultValue">Specified default value for members</param>
 
-#region Fields And Properties
+        #region LogsTypeConfig
+
+        public LogsTypeConfig(bool defaultValue = true)
+        {
+            EVENT = INFO = WARN = ERROR = EXCEPTION = defaultValue;
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Fields And Properties
 
         /// <summary>
         ///     Event log enable or disable
         /// </summary>
-        public bool EVENT { set; get; } = true;
+        public bool EVENT { set; get; }
 
         /// <summary>
         ///     Info log enable or disable
         /// </summary>
-        public bool INFO { set; get; } = true;
+        public bool INFO { set; get; }
 
         /// <summary>
         ///     Warning log enable or disable
         /// </summary>
-        public bool WARN { set; get; } = true;
+        public bool WARN { set; get; }
 
         /// <summary>
         ///     Error log enable or disable
         /// </summary>
-        public bool ERROR { set; get; } = true;
+        public bool ERROR { set; get; }
 
         /// <summary>
         ///     Exception error log enable or disable
         /// </summary>
-        public bool EXCEPTION { set; get; } = true;
+        public bool EXCEPTION { set; get; }
 
-#endregion
+        #endregion
     }
 }

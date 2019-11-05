@@ -72,7 +72,7 @@
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.0.0, )"
+              "version": "[2.0.1, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
@@ -98,7 +98,7 @@
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.0.0, )"
+              "version": "[2.0.1, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
@@ -124,7 +124,7 @@
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.0.0, )"
+              "version": "[2.0.1, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
@@ -150,7 +150,7 @@
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.0.0, )"
+              "version": "[2.0.1, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
@@ -176,7 +176,7 @@
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.0.0, )"
+              "version": "[2.0.1, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
@@ -213,7 +213,7 @@
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.0.0, )"
+              "version": "[2.0.1, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",

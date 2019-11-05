@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v3.0": {
-      "G9ConfigManagement/2.0.0": {
+      "G9ConfigManagement/2.0.1": {
         "type": "package",
         "dependencies": {
           "System.Xml.XmlDocument": "4.3.0"
@@ -1412,7 +1412,7 @@
         "type": "project",
         "framework": ".NETStandard,Version=v2.1",
         "dependencies": {
-          "G9ConfigManagement": "2.0.0",
+          "G9ConfigManagement": "2.0.1",
           "G9ScheduleManagement": "2.0.0.1",
           "System.Diagnostics.FileVersionInfo": "4.3.0",
           "System.Diagnostics.StackTrace": "4.3.0"
@@ -1427,14 +1427,14 @@
     }
   },
   "libraries": {
-    "G9ConfigManagement/2.0.0": {
-      "sha512": "PfLSk7Pj76oxKYZ68POS/Sm/cE7LUrnSqtkKRcqw+jtpzCM94KCHAU9bTZB06HmTF8sLN6/mPmIVD29XYjGphg==",
+    "G9ConfigManagement/2.0.1": {
+      "sha512": "3g+JAl/p807xZ/hP5dNHItTeNShFMcsWQTSUFpSUa4Kl320W+UdOYTdSQ/w4NJGXTcuyRYp5UwgISzrQFRVmTw==",
       "type": "package",
-      "path": "g9configmanagement/2.0.0",
+      "path": "g9configmanagement/2.0.1",
       "files": [
         ".nupkg.metadata",
         "LICENSE.md",
-        "g9configmanagement.2.0.0.nupkg.sha512",
+        "g9configmanagement.2.0.1.nupkg.sha512",
         "g9configmanagement.nuspec",
         "lib/netstandard1.3/G9ConfigManagement.dll",
         "lib/netstandard1.4/G9ConfigManagement.dll",
