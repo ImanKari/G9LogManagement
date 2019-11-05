@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using G9LogManagement.Enums;
 
 namespace G9LogManagement
@@ -37,13 +38,20 @@ namespace G9LogManagement
         /// <param name="message">Additional message</param>
         /// <param name="identity">Insert identity if need found easy in logs</param>
         /// <param name="title">Custom title for log</param>
+        /// <param name="customCallerPath">Custom caller path</param>
+        /// <param name="customCallerName">Custom caller name</param>
+        /// <param name="customLineNumber">Custom line number</param>
 
         #region G9LogException_Default
 
         public static void G9LogException_Default(this Exception ex, string message = null, string identity = null,
-            string title = null)
+            string title = null,
+            [CallerFilePath] string customCallerPath = null,
+            [CallerMemberName] string customCallerName = null,
+            [CallerLineNumber] int customLineNumber = 0)
         {
-            G9Logging.G9LogException(ex, message, identity);
+            G9Logging.G9LogException(ex, message, identity, title, customCallerPath, customCallerName,
+                customLineNumber);
         }
 
         #endregion
@@ -55,12 +63,18 @@ namespace G9LogManagement
         /// <param name="message">Error message</param>
         /// <param name="identity">Insert identity if need found easy in logs</param>
         /// <param name="title">Custom title for log</param>
+        /// <param name="customCallerPath">Custom caller path</param>
+        /// <param name="customCallerName">Custom caller name</param>
+        /// <param name="customLineNumber">Custom line number</param>
 
         #region G9LogError_Default
 
-        public static void G9LogError_Default(this string message, string identity = null, string title = null)
+        public static void G9LogError_Default(this string message, string identity = null, string title = null,
+            [CallerFilePath] string customCallerPath = null,
+            [CallerMemberName] string customCallerName = null,
+            [CallerLineNumber] int customLineNumber = 0)
         {
-            G9Logging.G9LogError(message, identity, title);
+            G9Logging.G9LogError(message, identity, title, customCallerPath, customCallerName, customLineNumber);
         }
 
         #endregion
@@ -72,12 +86,18 @@ namespace G9LogManagement
         /// <param name="message">Warning message</param>
         /// <param name="identity">Insert identity if need found easy in logs</param>
         /// <param name="title">Custom title for log</param>
+        /// <param name="customCallerPath">Custom caller path</param>
+        /// <param name="customCallerName">Custom caller name</param>
+        /// <param name="customLineNumber">Custom line number</param>
 
         #region G9LogWarning_Default
 
-        public static void G9LogWarning_Default(this string message, string identity = null, string title = null)
+        public static void G9LogWarning_Default(this string message, string identity = null, string title = null,
+            [CallerFilePath] string customCallerPath = null,
+            [CallerMemberName] string customCallerName = null,
+            [CallerLineNumber] int customLineNumber = 0)
         {
-            G9Logging.G9LogWarning(message, identity, title);
+            G9Logging.G9LogWarning(message, identity, title, customCallerPath, customCallerName, customLineNumber);
         }
 
         #endregion
@@ -89,12 +109,18 @@ namespace G9LogManagement
         /// <param name="message">Information message</param>
         /// <param name="identity">Insert identity if need found easy in logs</param>
         /// <param name="title">Custom title for log</param>
+        /// <param name="customCallerPath">Custom caller path</param>
+        /// <param name="customCallerName">Custom caller name</param>
+        /// <param name="customLineNumber">Custom line number</param>
 
         #region G9LogInformation_Default
 
-        public static void G9LogInformation_Default(this string message, string identity = null, string title = null)
+        public static void G9LogInformation_Default(this string message, string identity = null, string title = null,
+            [CallerFilePath] string customCallerPath = null,
+            [CallerMemberName] string customCallerName = null,
+            [CallerLineNumber] int customLineNumber = 0)
         {
-            G9Logging.G9LogInformation(message, identity, title);
+            G9Logging.G9LogInformation(message, identity, title, customCallerPath, customCallerName, customLineNumber);
         }
 
         #endregion
@@ -106,12 +132,18 @@ namespace G9LogManagement
         /// <param name="message">Event message</param>
         /// <param name="identity">Insert identity if need found easy in logs</param>
         /// <param name="title">Custom title for log</param>
+        /// <param name="customCallerPath">Custom caller path</param>
+        /// <param name="customCallerName">Custom caller name</param>
+        /// <param name="customLineNumber">Custom line number</param>
 
         #region G9LogEvent_Default
 
-        public static void G9LogEvent_Default(this string message, string identity = null, string title = null)
+        public static void G9LogEvent_Default(this string message, string identity = null, string title = null,
+            [CallerFilePath] string customCallerPath = null,
+            [CallerMemberName] string customCallerName = null,
+            [CallerLineNumber] int customLineNumber = 0)
         {
-            G9Logging.G9LogEvent(message, identity, title);
+            G9Logging.G9LogEvent(message, identity, title, customCallerPath, customCallerName, customLineNumber);
         }
 
         #endregion

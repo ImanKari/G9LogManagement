@@ -6,7 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using G9ConfigManagement;
@@ -228,18 +228,26 @@ namespace G9LogManagement
         /// <param name="message">Additional message</param>
         /// <param name="identity">Insert identity if need found easy in logs</param>
         /// <param name="title">Custom title for log</param>
+        /// <param name="customCallerPath">Custom caller path</param>
+        /// <param name="customCallerName">Custom caller name</param>
+        /// <param name="customLineNumber">Custom line number</param>
 
         #region G9LogException
 
         public void G9LogException(Exception ex, string message = null, string identity = null,
-            string title = null)
+            string title = null,
+            [CallerFilePath] string customCallerPath = null,
+            [CallerMemberName] string customCallerName = null,
+            [CallerLineNumber] int customLineNumber = 0)
         {
             // Ignore if disable log type
             if (!CheckEnableConsoleLoggingOrFileLoggingByType(LogsType.EXCEPTION)) return;
 
             // Handle log
             Task.Run(
-                () => G9LogManagement(LogsType.EXCEPTION, ExceptionErrorGenerate(ex, message), identity, title, ex));
+                () => G9LogManagement(LogsType.EXCEPTION, ExceptionErrorGenerate(ex, message), identity, title,
+                    customCallerPath: customCallerPath, customCallerName: customCallerName,
+                    customLineNumber: customLineNumber));
         }
 
         #endregion
@@ -250,16 +258,23 @@ namespace G9LogManagement
         /// <param name="message">Error message</param>
         /// <param name="identity">Insert identity if need found easy in logs</param>
         /// <param name="title">Custom title for log</param>
+        /// <param name="customCallerPath">Custom caller path</param>
+        /// <param name="customCallerName">Custom caller name</param>
+        /// <param name="customLineNumber">Custom line number</param>
 
         #region G9LogError
 
-        public void G9LogError(string message, string identity = null, string title = null)
+        public void G9LogError(string message, string identity = null, string title = null,
+            [CallerFilePath] string customCallerPath = null,
+            [CallerMemberName] string customCallerName = null,
+            [CallerLineNumber] int customLineNumber = 0)
         {
             // Ignore if disable log type
             if (!CheckEnableConsoleLoggingOrFileLoggingByType(LogsType.ERROR)) return;
 
             // Handle log
-            Task.Run(() => G9LogManagement(LogsType.ERROR, message, identity, title));
+            Task.Run(() => G9LogManagement(LogsType.ERROR, message, identity, title, customCallerPath: customCallerPath,
+                customCallerName: customCallerName, customLineNumber: customLineNumber));
         }
 
         #endregion
@@ -270,16 +285,23 @@ namespace G9LogManagement
         /// <param name="message">Warning message</param>
         /// <param name="identity">Insert identity if need found easy in logs</param>
         /// <param name="title">Custom title for log</param>
+        /// <param name="customCallerPath">Custom caller path</param>
+        /// <param name="customCallerName">Custom caller name</param>
+        /// <param name="customLineNumber">Custom line number</param>
 
         #region G9LogWarning
 
-        public void G9LogWarning(string message, string identity = null, string title = null)
+        public void G9LogWarning(string message, string identity = null, string title = null,
+            [CallerFilePath] string customCallerPath = null,
+            [CallerMemberName] string customCallerName = null,
+            [CallerLineNumber] int customLineNumber = 0)
         {
             // Ignore if disable log type
             if (!CheckEnableConsoleLoggingOrFileLoggingByType(LogsType.WARN)) return;
 
             // Handle log
-            Task.Run(() => G9LogManagement(LogsType.WARN, message, identity, title));
+            Task.Run(() => G9LogManagement(LogsType.WARN, message, identity, title, customCallerPath: customCallerPath,
+                customCallerName: customCallerName, customLineNumber: customLineNumber));
         }
 
         #endregion
@@ -290,16 +312,23 @@ namespace G9LogManagement
         /// <param name="message">Information message</param>
         /// <param name="identity">Insert identity if need found easy in logs</param>
         /// <param name="title">Custom title for log</param>
-
+        /// <param name="customCallerPath">Custom caller path</param>
+        /// <param name="customCallerName">Custom caller name</param>
+        /// <param name="customLineNumber">Custom line number</param>
+        
         #region G9LogInformation
 
-        public void G9LogInformation(string message, string identity = null, string title = null)
+        public void G9LogInformation(string message, string identity = null, string title = null,
+            [CallerFilePath] string customCallerPath = null,
+            [CallerMemberName] string customCallerName = null,
+            [CallerLineNumber] int customLineNumber = 0)
         {
             // Ignore if disable log type
             if (!CheckEnableConsoleLoggingOrFileLoggingByType(LogsType.INFO)) return;
 
             // Handle log
-            Task.Run(() => G9LogManagement(LogsType.INFO, message, identity, title));
+            Task.Run(() => G9LogManagement(LogsType.INFO, message, identity, title, customCallerPath: customCallerPath,
+                customCallerName: customCallerName, customLineNumber: customLineNumber));
         }
 
         #endregion
@@ -310,16 +339,24 @@ namespace G9LogManagement
         /// <param name="message">Event message</param>
         /// <param name="identity">Insert identity if need found easy in logs</param>
         /// <param name="title">Custom title for log</param>
+        /// <param name="customCallerPath">Custom caller path</param>
+        /// <param name="customCallerName">Custom caller name</param>
+        /// <param name="customLineNumber">Custom line number</param>
 
         #region G9LogEvent
 
-        public void G9LogEvent(string message, string identity = null, string title = null)
+        public void G9LogEvent(string message, string identity = null, string title = null,
+            [CallerFilePath] string customCallerPath = null,
+            [CallerMemberName] string customCallerName = null,
+            [CallerLineNumber] int customLineNumber = 0
+        )
         {
             // Ignore if disable log type
             if (!CheckEnableConsoleLoggingOrFileLoggingByType(LogsType.EVENT)) return;
 
             // Handle log
-            Task.Run(() => G9LogManagement(LogsType.EVENT, message, identity, title));
+            Task.Run(() => G9LogManagement(LogsType.EVENT, message, identity, title, customCallerPath: customCallerPath,
+                customCallerName: customCallerName, customLineNumber: customLineNumber));
         }
 
         #endregion
@@ -332,11 +369,17 @@ namespace G9LogManagement
         /// <param name="title">Custom title for log</param>
         /// <param name="customDateTime">Set custom date time for log if need</param>
         /// <param name="forceSaveLogs">When need force save</param>
+        /// <param name="customCallerPath">Custom caller path</param>
+        /// <param name="customCallerName">Custom caller name</param>
+        /// <param name="customLineNumber">Custom line number</param>
 
         #region G9LogInformationForComponentLog
 
         private void G9LogInformationForComponentLog(string message, string identity = null,
-            string title = null, DateTime? customDateTime = null, bool forceSaveLogs = false)
+            string title = null, DateTime? customDateTime = null, bool forceSaveLogs = false,
+            [CallerFilePath] string customCallerPath = null,
+            [CallerMemberName] string customCallerName = null,
+            [CallerLineNumber] int customLineNumber = 0)
         {
             // If disable component log => return
             if (!_configuration.Configuration.ComponentLog) return;
@@ -344,7 +387,8 @@ namespace G9LogManagement
             // Handle log
             // Without check file size
             Task.Run(() =>
-                G9LogManagement(LogsType.EVENT, message, identity, title, null, false, customDateTime, forceSaveLogs));
+                G9LogManagement(LogsType.EVENT, message, identity, title, false, customDateTime, forceSaveLogs,
+                    customCallerPath, customCallerName, customLineNumber));
         }
 
         #endregion
@@ -356,34 +400,30 @@ namespace G9LogManagement
         /// <param name="message">Message for log</param>
         /// <param name="identity">Identity for log</param>
         /// <param name="title">Log title</param>
-        /// <param name="ex">Exception if exists</param>
         /// <param name="fileSizeCheck">Specify check file size or no</param>
         /// <param name="customDateTime">If need custom date time set it</param>
         /// <param name="forceSaveLogs">When need force save</param>
+        /// <param name="customCallerPath">Custom caller path</param>
+        /// <param name="customCallerName">Custom caller name</param>
+        /// <param name="customLineNumber">Custom line number</param>
 
         #region G9LogManagement
 
         private void G9LogManagement(LogsType logType, string message, string identity = null,
-            string title = null,
-            Exception ex = null, bool fileSizeCheck = true, DateTime? customDateTime = null, bool forceSaveLogs = false)
+            string title = null, bool fileSizeCheck = true, DateTime? customDateTime = null, bool forceSaveLogs = false,
+            string customCallerPath = null,
+            string customCallerName = null,
+            int customLineNumber = 0)
         {
-            // fields for save stack trace information
             string fileName = string.Empty, methodBase = string.Empty, lineNumber = string.Empty;
 
             // Check if enable stack information log for type
             if (_configuration.Configuration.EnableStackTraceInformation.CheckValueByType(logType))
-#if (NETSTANDARD2_1 || NETSTANDARD2_0)
-                if (ex != null)
-                    (fileName, methodBase, lineNumber) = GetStackInformation(new StackTrace(ex, true));
-                else
-                    (fileName, methodBase, lineNumber) = GetStackInformation(new StackTrace(true));
-#else
-                if (ex != null)
-                    GetStackInformation(new StackTrace(ex, true), out fileName, out methodBase, out lineNumber);
-                else
-                    GetStackInformation(new StackTrace(new Exception("Info"), true), out fileName, out methodBase,
-                        out lineNumber);
-#endif
+            {
+                fileName = customCallerPath;
+                methodBase = customCallerName;
+                lineNumber = customLineNumber.ToString();
+            }
 
             // Write log
             WriteLogAutomatic(
@@ -647,63 +687,12 @@ namespace G9LogManagement
 
         #endregion
 
-        //Add stack trace information
-        #region GetStackInformation
-
-#if (NETSTANDARD2_1 || NETSTANDARD2_0)
         /// <summary>
-        ///     Add stack trace information
+        ///     event Handler for on application exit
         /// </summary>
-        /// <param name="stackTrace">Stack trace object</param>
-        /// <returns>return (string FileName, string MethodBase, string LineNumber)</returns>
-        private (string, string, string) GetStackInformation(StackTrace stackTrace)
-#else
-        /// <summary>
-        ///     Add stack trace information
-        /// </summary>
-        /// <param name="stackTrace">Stack trace object</param>
-        /// <param name="fileName">Out file name</param>
-        /// <param name="methodName">Out method name</param>
-        /// <param name="lineNumber">Out line number</param>
-        private void GetStackInformation(StackTrace stackTrace, out string fileName, out string methodName,
-            out string lineNumber)
-#endif
-        {
-#if (NETSTANDARD2_1 || NETSTANDARD2_0)
-            var number = stackTrace.FrameCount > 1 ? stackTrace.FrameCount - 1 : 0;
-            return
-                // Check if exists stack trace frame count => add stack trace information
-                stackTrace?.GetFrames() != null && stackTrace.GetFrames().Any()
-                    ? (
-                        stackTrace.GetFrame(number).GetFileName(),
-                        stackTrace.GetFrame(number).GetMethod().ToString(),
-                        stackTrace.GetFrame(number).GetFileLineNumber().ToString()
-                    )
-                    // Else return empty
-                    : (string.Empty, string.Empty, string.Empty);
-#else
-            // Check if exists stack trace frame count => add stack trace information
-            var frames = stackTrace.GetFrames();
-            if (frames != null && frames.Any())
-            {
-                var number = frames.Length > 1 ? frames.Length - 1 : 0;
-                fileName = frames[number].GetFileName();
-                methodName = frames[number].GetMethod().ToString();
-                lineNumber = frames[number].GetFileLineNumber().ToString();
-            }
-            else
-            {
-                fileName = methodName = lineNumber = null;
-            }
-#endif
-        }
 
-        #endregion
-
-        /// <summary>
-        /// event Handler for on application exit
-        /// </summary>
         #region OnApplicationExitHandler
+
         private void OnApplicationExitHandler()
         {
 #if (NETSTANDARD2_1 || NETSTANDARD2_0)
@@ -712,7 +701,7 @@ namespace G9LogManagement
             AppDomain.CurrentDomain.DomainUnload += OnApplicationExit;
 #else
 
-            
+
             _scheduleForCheckHasShutdownStarted.AddScheduleAction(() =>
                 {
                     if (Environment.HasShutdownStarted) OnApplicationExit();
@@ -721,9 +710,11 @@ namespace G9LogManagement
                     G9LogException(exception, "Scheduler Save Log Error!", "Scheduler", "Scheduler"));
 #endif
         }
+
         #endregion
 
         // On application exit => execute requirement
+
         #region OnApplicationExit
 
 #if (NETSTANDARD2_1 || NETSTANDARD2_0)

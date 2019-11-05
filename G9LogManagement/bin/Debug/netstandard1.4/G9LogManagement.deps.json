@@ -7,7 +7,7 @@
   "targets": {
     ".NETStandard,Version=v1.4": {},
     ".NETStandard,Version=v1.4/": {
-      "G9LogManagement/3.0.0.0": {
+      "G9LogManagement/3.0.1.0": {
         "dependencies": {
           "G9ConfigManagement": "2.0.1",
           "G9ScheduleManagement": "2.0.0.1",
@@ -722,7 +722,7 @@
     }
   },
   "libraries": {
-    "G9LogManagement/3.0.0.0": {
+    "G9LogManagement/3.0.1.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
