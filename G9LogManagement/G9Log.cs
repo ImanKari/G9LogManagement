@@ -315,7 +315,7 @@ namespace G9LogManagement
         /// <param name="customCallerPath">Custom caller path</param>
         /// <param name="customCallerName">Custom caller name</param>
         /// <param name="customLineNumber">Custom line number</param>
-        
+
         #region G9LogInformation
 
         public void G9LogInformation(string message, string identity = null, string title = null,
@@ -677,12 +677,12 @@ namespace G9LogManagement
                 string key = _configuration.Configuration.EncryptedUserName,
                     iv = _configuration.Configuration.EncryptedPassword;
                 return
-                    $"{(addCommaInFirst ? "," : string.Empty)}[{(byte) logType},'{identity}','{AES128.EncryptString($"{title}🅖➒{body}🅖➒{fileName}🅖➒{methodBase}🅖➒{lineNumber}", key, iv, out _)}','{logDateTime:yyyy/MM/dd HH:mm:ss.ff}']";
+                    $"{(addCommaInFirst ? "," : string.Empty)}[{(byte) logType},'{EncodeJs(identity)}','{AES128.EncryptString($"{title}🅖➒{body}🅖➒{fileName}🅖➒{methodBase}🅖➒{lineNumber}", key, iv, out _)}','{logDateTime:yyyy/MM/dd HH:mm:ss.ff}']";
             }
 
             // Normal write
             return
-                $"{(addCommaInFirst ? "," : string.Empty)}[{(byte) logType},'{identity}','{title}🅖➒{body}🅖➒{fileName}🅖➒{methodBase}🅖➒{lineNumber}','{logDateTime:yyyy/MM/dd HH:mm:ss.ff}']";
+                $"{(addCommaInFirst ? "," : string.Empty)}[{(byte) logType},'{EncodeJs(identity)}','{EncodeJs($"{title}🅖➒{body}🅖➒{fileName}🅖➒{methodBase}🅖➒{lineNumber}")}','{logDateTime:yyyy/MM/dd HH:mm:ss.ff}']";
         }
 
         #endregion
@@ -861,7 +861,7 @@ namespace G9LogManagement
                 if (Directory.Exists(
                     Path.Combine(BaseApp,
                         CurrentLogDirectory.Substring(0,
-                            CurrentLogDirectory.Length - 1) + G9LogConst.DefaultChangePathText + ++i)))
+                            CurrentLogDirectory.Length - 1) + G9LogConst.DefaultChangeConfigText + ++i)))
                 {
                     existNewConfigPath = true;
                 }
@@ -913,7 +913,7 @@ namespace G9LogManagement
         {
             var newPathForCheck = existNewConfigPath
                 ? CurrentLogDirectory.Substring(0, CurrentLogDirectory.Length - 1)
-                  + G9LogConst.DefaultChangePathText + newConfigPathIndex
+                  + G9LogConst.DefaultChangeConfigText + newConfigPathIndex
                 : CurrentLogDirectory;
 
             var directoryPath = Path.Combine(BaseApp, newPathForCheck, G9LogConst.DataDirectory);
@@ -1074,7 +1074,7 @@ namespace G9LogManagement
             // If change day => archive previous day
             if (_configuration.Configuration.ZipArchivePreviousDay && closeReason == ReasonCloseType.ChangeDay &&
                 !string.IsNullOrEmpty(oldPath))
-                GenerateDirectoryZipArchiveAndRemoveDirectory(archivePath);
+                DirectoryToZipArchiveAndRemoveDirectory(archivePath);
         }
 
         #endregion
@@ -1191,14 +1191,64 @@ namespace G9LogManagement
         #endregion
 
         /// <summary>
-        ///     Generate zip by directory path
-        ///     remove directory with all files after generate zip
+        ///     <para>Generate zip by directory path</para>
+        ///     <para>Remove directory with all files after generate zip</para>
+        ///     <para>Check all change config folders</para>
         /// </summary>
         /// <param name="directoryPath">Specify directory path</param>
 
-        #region GenerateDirectoryZipArchiveAndRemoveDirectoty
+        #region DirectoryToZipArchiveAndRemoveDirectory
 
-        private void GenerateDirectoryZipArchiveAndRemoveDirectory(string directoryPath)
+        private void DirectoryToZipArchiveAndRemoveDirectory(string directoryPath)
+        {
+            int foundPos;
+            if (
+                // if found 'DefaultChangeConfigText' in directory path
+                (foundPos = directoryPath.IndexOf(G9LogConst.DefaultChangeConfigText, StringComparison.Ordinal)) != -1 &&
+                // if exist directory path when remove 'DefaultChangeConfigText' from end
+                Directory.Exists(directoryPath.Substring(0, foundPos)) &&
+                // if length found position + 'DefaultChangeConfigText' length greater than directoryPath.Length - 3
+                // this section specified 'DefaultChangeConfigText' at end of directory path
+                foundPos + G9LogConst.DefaultChangeConfigText.Length > directoryPath.Length - 3)
+                directoryPath = directoryPath.Substring(0, foundPos);
+
+
+
+            // Archive default path
+            ArchiveAndDeletePath(directoryPath);
+
+            //Set counter for check other directory
+            var changeConfigCounter = 0;
+            // ReSharper disable once TooWideLocalVariableScope
+            string changeConfigDirectoryPath;
+            // Repeat for change config folders
+            do
+            {
+                // Check if exists set path else break from loop
+                if (Directory.Exists(
+                    $"{directoryPath.Trim('/')}{G9LogConst.DefaultChangeConfigText}{changeConfigCounter}"))
+                    changeConfigDirectoryPath =
+                        $"{directoryPath.Trim('/')}{G9LogConst.DefaultChangeConfigText}{changeConfigCounter}";
+                else
+                    break;
+
+                // Archive change config path
+                ArchiveAndDeletePath(changeConfigDirectoryPath);
+
+                changeConfigCounter++;
+            } while (true);
+        }
+
+        #endregion
+
+        /// <summary>
+        ///     Archive directory then delete all files and folders
+        /// </summary>
+        /// <param name="directoryPath">Specify directory path</param>
+
+        #region ArchiveAndDeletePath
+
+        private void ArchiveAndDeletePath(string directoryPath)
         {
             // Generate archive
             ZipFile.CreateFromDirectory(directoryPath, directoryPath.Trim('/') + ".zip"
@@ -1432,6 +1482,57 @@ namespace G9LogManagement
                     throw new ArgumentOutOfRangeException(nameof(folderDateTimeType), folderDateTimeType,
                         "Enum value not supported!");
             }
+        }
+
+        #endregion
+
+        /// <summary>
+        ///     Encodes a string to be represented as a string literal. The format
+        ///     is essentially a JSON string.
+        ///     The string returned includes outer quotes
+        ///     Example Output: "Hello \"Rick\"!\r\nRock on"
+        /// </summary>
+        /// <param name="text">Text for convert</param>
+        /// <returns>Converted text</returns>
+
+        #region EncodeJs
+
+        public string EncodeJs(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+
+            var sb = new StringBuilder();
+            foreach (var c in text)
+                switch (c)
+                {
+                    case '\'':
+                        sb.Append("\\'");
+                        break;
+                    case '\\':
+                        sb.Append("\\\\");
+                        break;
+                    case '\b':
+                        sb.Append("\\b");
+                        break;
+                    case '\f':
+                        sb.Append("\\f");
+                        break;
+                    case '\n':
+                        sb.Append("\\n");
+                        break;
+                    case '\r':
+                        sb.Append("\\r");
+                        break;
+                    case '\t':
+                        sb.Append("\\t");
+                        break;
+                    default:
+                        sb.Append(c);
+                        break;
+                }
+
+            return sb.ToString();
         }
 
         #endregion

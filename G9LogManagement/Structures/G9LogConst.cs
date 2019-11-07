@@ -43,9 +43,9 @@
         public const string DefaultEncodingSampleText = "This Is G9™ Team!";
 
         /// <summary>
-        ///     Specify default change path sample text
+        ///     Specify default change config sample text
         /// </summary>
-        public const string DefaultChangePathText = "-ChangeConfig-";
+        public const string DefaultChangeConfigText = "-ChangeConfig-";
 
         /// <summary>
         ///     Specify default language culture file path

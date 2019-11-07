@@ -17,88 +17,35 @@ namespace G9LogManagement.Structures
         public LogsType LogType;
 
         /// <summary>
-        /// Field save identity
-        /// </summary>
-        private string _identity;
-
-        /// <summary>
         ///     Identity for log
         ///     Find easy and fast log with identity
         /// </summary>
-        public string Identity{
-            set => _identity = EncodeJsString(value);
-            get => _identity;
-        }
-
-        /// <summary>
-        /// Field save title
-        /// </summary>
-        private string _title;
+        public string Identity { set; get; }
 
         /// <summary>
         ///     Specify title of log
         /// </summary>
-        public string Title
-        {
-            set => _title = EncodeJsString(value);
-            get => _title;
-        }
-
-        /// <summary>
-        /// Field save body
-        /// </summary>
-        private string _body;
+        public string Title { set; get; }
 
         /// <summary>
         ///     Specify body of log
         /// </summary>
-        public string Body
-        {
-            set => _body = EncodeJsString(value);
-            get => _body;
-        }
-
-        /// <summary>
-        /// Field save file name
-        /// </summary>
-        private string _fileName;
+        public string Body { set; get; }
 
         /// <summary>
         ///     Specify stack trace file name
         /// </summary>
-        public string FileName
-        {
-            set => _fileName = EncodeJsString(value);
-            get => _fileName;
-        }
-
-        /// <summary>
-        /// Field save method base
-        /// </summary>
-        private string _methodBase;
+        public string FileName { set; get; }
 
         /// <summary>
         ///     specify stack trace method base
         /// </summary>
-        public string MethodBase
-        {
-            set => _methodBase = EncodeJsString(value);
-            get => _methodBase;
-        }
-
-        /// <summary>
-        /// Field save line number
-        /// </summary>
-        private string _lineNumber;
+        public string MethodBase { set; get; }
 
         /// <summary>
         ///     Specify stack trace line number
         /// </summary>
-        public string LineNumber
-        {
-            set => _lineNumber = EncodeJsString(value);
-            get => _lineNumber;
-        }
+        public string LineNumber { set; get; }
 
         /// <summary>
         ///     Specify log register date time
@@ -134,57 +81,6 @@ namespace G9LogManagement.Structures
             MethodBase = oMethodBase;
             LineNumber = oLineNumber;
             LogDateTime = oLogDateTime;
-        }
-
-        #endregion
-
-        /// <summary>
-        ///     Encodes a string to be represented as a string literal. The format
-        ///     is essentially a JSON string.
-        ///     The string returned includes outer quotes
-        ///     Example Output: "Hello \"Rick\"!\r\nRock on"
-        /// </summary>
-        /// <param name="text">Text for convert</param>
-        /// <returns>Converted text</returns>
-
-        #region EncodeJsString
-
-        public string EncodeJsString(string text)
-        {
-            if (string.IsNullOrEmpty(text))
-                return text;
-
-            var sb = new StringBuilder();
-            foreach (var c in text)
-                switch (c)
-                {
-                    case '\'':
-                        sb.Append("\\'");
-                        break;
-                    case '\\':
-                        sb.Append("\\\\");
-                        break;
-                    case '\b':
-                        sb.Append("\\b");
-                        break;
-                    case '\f':
-                        sb.Append("\\f");
-                        break;
-                    case '\n':
-                        sb.Append("\\n");
-                        break;
-                    case '\r':
-                        sb.Append("\\r");
-                        break;
-                    case '\t':
-                        sb.Append("\\t");
-                        break;
-                    default:
-                        sb.Append(c);
-                        break;
-                }
-
-            return sb.ToString();
         }
 
         #endregion

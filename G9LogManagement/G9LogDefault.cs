@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define asd
+using System;
 using System.Runtime.CompilerServices;
 using G9LogManagement.Enums;
 

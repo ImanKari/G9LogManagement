@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using G9LogManagement;
 using G9LogManagement.Config;
@@ -17,17 +18,19 @@ namespace G9LogManagementTest
             {
                 SaveTime = 3,
                 SaveCount = 500,
-                LogUserName = "Admin",
-                LogPassword = "ImanKari1990",
+                //LogUserName = "Admin",
+                //LogPassword = "ImanKari1990",
                 MaxFileSize = 9,
                 LogReaderStarterPage = LogReaderPages.Dashboard,
                 LogReaderDefaultCulture = CultureType.fa,
-                DirectoryNameDateType = DateTimeType.GregorianShamsi
+                DirectoryNameDateType = DateTimeType.GregorianShamsi,
+                ActiveConsoleLogs = new LogsTypeConfig(true)
             });
 
             // Test for 1 million log
             for (var index = 0; index < 1000; index++)
             {
+                Thread.Sleep(99);
                 // Event
                 $"Event {index}".G9LogEvent_Default($"Event {index}", $"Event {index}");
                 // Information
