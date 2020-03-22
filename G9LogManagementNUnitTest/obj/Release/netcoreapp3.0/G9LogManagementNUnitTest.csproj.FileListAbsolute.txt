@@ -3,7 +3,6 @@ D:\Project\G9LogManagement\G9LogManagementNUnitTest\bin\Release\netcoreapp3.0\NU
 D:\Project\G9LogManagement\G9LogManagementNUnitTest\bin\Release\netcoreapp3.0\NUnit3.TestAdapter.pdb
 D:\Project\G9LogManagement\G9LogManagementNUnitTest\bin\Release\netcoreapp3.0\nunit.engine.dll
 D:\Project\G9LogManagement\G9LogManagementNUnitTest\bin\Release\netcoreapp3.0\nunit.engine.api.dll
-D:\Project\G9LogManagement\G9LogManagementNUnitTest\bin\Release\netcoreapp3.0\testhost.exe
 D:\Project\G9LogManagement\G9LogManagementNUnitTest\bin\Release\netcoreapp3.0\G9LogManagementNUnitTest.deps.json
 D:\Project\G9LogManagement\G9LogManagementNUnitTest\bin\Release\netcoreapp3.0\G9LogManagementNUnitTest.runtimeconfig.json
 D:\Project\G9LogManagement\G9LogManagementNUnitTest\bin\Release\netcoreapp3.0\G9LogManagementNUnitTest.runtimeconfig.dev.json

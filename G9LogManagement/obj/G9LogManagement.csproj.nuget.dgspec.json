@@ -5,7 +5,7 @@
   },
   "projects": {
     "D:\\Project\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj": {
-      "version": "3.0.2",
+      "version": "3.0.3",
       "restore": {
         "projectUniqueName": "D:\\Project\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj",
         "projectName": "G9LogManagement",
@@ -33,12 +33,10 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "D:\\Project\\G9ConfigManagement\\G9ConfigManagement\\G9ConfigManagement.DotNetStandard.2.0\\bin\\Release": {},
           "D:\\Project\\G9ConfigManagement\\G9ConfigManagement\\G9ConfigManagement\\bin\\Release": {},
-          "D:\\Project\\G9LogManagement\\G9LogManagement.DotNetStandard.2.0\\bin\\Release": {},
           "D:\\Project\\G9LogManagement\\G9LogManagement\\bin\\Release": {},
-          "D:\\Project\\G9ScheduleManagement\\G9ScheduleManagement.DotNetStandard.2.0\\bin\\Release": {},
           "D:\\Project\\G9ScheduleManagement\\G9ScheduleManagement\\bin\\Release": {},
+          "D:\\Project\\G9SuperNetCore\\G9SuperNetCoreServer\\G9SuperNetCoreServer\\bin\\Release": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -72,7 +70,7 @@
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.0.1, )"
+              "version": "[2.1.0.1, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
@@ -92,13 +90,13 @@
               "version": "[4.3.0, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
         },
         "netstandard1.4": {
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.0.1, )"
+              "version": "[2.1.0.1, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
@@ -118,13 +116,13 @@
               "version": "[4.3.0, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
         },
         "netstandard1.5": {
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.0.1, )"
+              "version": "[2.1.0.1, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
@@ -144,13 +142,13 @@
               "version": "[4.3.0, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
         },
         "netstandard1.6": {
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.0.1, )"
+              "version": "[2.1.0.1, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
@@ -170,13 +168,13 @@
               "version": "[4.3.0, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
         },
         "netstandard2.0": {
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.0.1, )"
+              "version": "[2.1.0.1, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
@@ -207,13 +205,13 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
         },
         "netstandard2.1": {
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.0.1, )"
+              "version": "[2.1.0.1, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
@@ -243,7 +241,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
         }
       }
     }

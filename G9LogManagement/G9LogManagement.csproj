@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard1.3;netstandard1.4;netstandard1.5;netstandard1.6;netstandard2.0;netstandard2.1</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>3.0.2.0</Version>
+    <Version>3.0.3.0</Version>
     <Authors>Iman Kari</Authors>
     <Company>G9Studio</Company>
     <Description>Log Magement</Description>
@@ -12,8 +12,8 @@
     <PackageProjectUrl>http://www.G9TM.com/</PackageProjectUrl>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <Product>G9 Log Management</Product>
-    <AssemblyVersion>3.0.2.0</AssemblyVersion>
-    <FileVersion>3.0.2.0</FileVersion>
+    <AssemblyVersion>3.0.3.0</AssemblyVersion>
+    <FileVersion>3.0.3.0</FileVersion>
     <PackageId>G9LogManagement</PackageId>
   </PropertyGroup>
 
@@ -254,7 +254,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="G9ConfigManagement" Version="2.0.1" />
+    <PackageReference Include="G9ConfigManagement" Version="2.1.0.1" />
     <PackageReference Include="G9ScheduleManagement" Version="2.0.0.1" />
     <PackageReference Include="System.Diagnostics.FileVersionInfo" Version="4.3.0" />
     <PackageReference Include="System.Diagnostics.StackTrace" Version="4.3.0" />

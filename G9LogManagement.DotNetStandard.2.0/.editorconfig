@@ -1,4 +1,0 @@
-﻿[*.cs]
-
-# CS0164: This label has not been referenced
-dotnet_diagnostic.CS0164.severity = none

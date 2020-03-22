@@ -106,7 +106,7 @@ namespace G9LogManagement.Config
         ///     <para>Specified base app - project root for create logs and requirement</para>
         ///     <para>Sample value: if set empty use automatic 'BaseDirectory' value, if set 'path' like 'c:\folder\...'</para>
         /// </summary>
-        [Hint(@"Sample value: if set empty use automatic 'BaseDirectory' value, if set 'path' like 'c:\folder\...'")]
+        [G9ConfigHint(@"Sample value: if set empty use automatic 'BaseDirectory' value, if set 'path' like 'c:\folder\...'")]
         public string BaseApp
         {
             get
@@ -136,7 +136,7 @@ namespace G9LogManagement.Config
         /// <summary>
         ///     Specify path for create log directory
         /// </summary>
-        [Hint("Specify path for create log directory")]
+        [G9ConfigHint("Specify path for create log directory")]
         public string Path
         {
             set => _path = value;
@@ -152,8 +152,8 @@ namespace G9LogManagement.Config
         ///     <para>Specify directory name date type</para>
         ///     <para>'Gregorian', 'Shamsi', 'GregorianShamsi' and 'ShamsiGregorian'</para>
         /// </summary>
-        [Hint("Specified directory name date type")]
-        [Hint("Sample value: '" + nameof(DateTimeType.Gregorian) + "','" + nameof(DateTimeType.Shamsi) + "'" + "','" +
+        [G9ConfigHint("Specified directory name date type")]
+        [G9ConfigHint("Sample value: '" + nameof(DateTimeType.Gregorian) + "','" + nameof(DateTimeType.Shamsi) + "'" + "','" +
               nameof(DateTimeType.GregorianShamsi) + "'" + "' and '" + nameof(DateTimeType.ShamsiGregorian) + "'")]
         public DateTimeType DirectoryNameDateType { set; get; }
 
@@ -161,33 +161,33 @@ namespace G9LogManagement.Config
         ///     Enable log for component G9LogHandler
         ///     Logs like: start datetime, end datetime and other additional
         /// </summary>
-        [Hint("Enable log for component G9LogHandler")]
-        [Hint("Logs like: start datetime, end datetime and other additional")]
+        [G9ConfigHint("Enable log for component G9LogHandler")]
+        [G9ConfigHint("Logs like: start datetime, end datetime and other additional")]
         public bool ComponentLog { set; get; } = true;
 
         /// <summary>
         ///     Specify file logging type is enable
         /// </summary>
-        [Hint("Specify file logging type is enable")]
+        [G9ConfigHint("Specify file logging type is enable")]
         public LogsTypeConfig ActiveFileLogs { set; get; } = new LogsTypeConfig();
 
         /// <summary>
         ///     Specify console logging type is enable
         /// </summary>
-        [Hint("Specify console logging type is enable")]
+        [G9ConfigHint("Specify console logging type is enable")]
         public LogsTypeConfig ActiveConsoleLogs { set; get; } = new LogsTypeConfig(false);
 
         /// <summary>
         ///     Enable stack trace info for logs
         /// </summary>
-        [Hint("Enable stack trace info for logs")]
+        [G9ConfigHint("Enable stack trace info for logs")]
         public LogsTypeConfig EnableStackTraceInformation { set; get; } = new LogsTypeConfig();
 
         /// <summary>
         ///     Specify need encrypt data for log
         ///     open just by user pass
         /// </summary>
-        [Ignore]
+        [G9ConfigIgnore]
         public bool EnableEncryptionLog
         {
             get
@@ -226,15 +226,15 @@ namespace G9LogManagement.Config
         ///     Log UserName
         ///     If need encryption log with user and password
         /// </summary>
-        [Hint("If need encryption log with user and password")]
-        [Hint("Optional: Log UserName")]
+        [G9ConfigHint("If need encryption log with user and password")]
+        [G9ConfigHint("Optional: Log UserName")]
         public string LogUserName { set; get; }
 
         /// <summary>
         ///     Log Password
         ///     If need encryption log with user and password
         /// </summary>
-        [Hint("Optional: Log Password")]
+        [G9ConfigHint("Optional: Log Password")]
         public string LogPassword { set; get; }
 
         /// <summary>
@@ -250,28 +250,24 @@ namespace G9LogManagement.Config
         /// <summary>
         ///     Access to encrypted username
         /// </summary>
-        [Ignore]
+        [G9ConfigIgnore]
         public string EncryptedUserName
         {
             get
             {
-                if (!EnableEncryptionLog)
-                    return null;
-                return _encryptedUserName;
+                return !EnableEncryptionLog ? null : _encryptedUserName;
             }
         }
 
         /// <summary>
         ///     Access to encrypted password
         /// </summary>
-        [Ignore]
+        [G9ConfigIgnore]
         public string EncryptedPassword
         {
             get
             {
-                if (!EnableEncryptionLog)
-                    return null;
-                return _encryptedPassword;
+                return !EnableEncryptionLog ? null : _encryptedPassword;
             }
         }
 
@@ -283,8 +279,8 @@ namespace G9LogManagement.Config
         /// <summary>
         ///     Specify max file size in byte
         /// </summary>
-        [Hint("Specify max file size in MB")]
-        [Hint("Minimum 3 and maximum 10")]
+        [G9ConfigHint("Specify max file size in MB")]
+        [G9ConfigHint("Minimum 3 and maximum 10")]
         public decimal MaxFileSize
         {
             set
@@ -308,7 +304,7 @@ namespace G9LogManagement.Config
         /// <summary>
         ///     Access to max file size Mb => byte
         /// </summary>
-        [Ignore]
+        [G9ConfigIgnore]
         public decimal MaxFileSizeInByte
         {
             get
@@ -332,8 +328,8 @@ namespace G9LogManagement.Config
         /// <summary>
         ///     Specify default culture for log reader
         /// </summary>
-        [Hint("Specify default culture for log reader")]
-        [Hint("values: '" + nameof(CultureType.en_us) + "' or '" + nameof(CultureType.fa) + "'")]
+        [G9ConfigHint("Specify default culture for log reader")]
+        [G9ConfigHint("values: '" + nameof(CultureType.en_us) + "' or '" + nameof(CultureType.fa) + "'")]
         public CultureType LogReaderDefaultCulture { set; get; }
 
         /// <summary>
@@ -344,8 +340,8 @@ namespace G9LogManagement.Config
         /// <summary>
         ///     Specify time in second for save logs
         /// </summary>
-        [Hint("Specify time in second for save logs")]
-        [Hint("Minimum 1 and maximum 3600")]
+        [G9ConfigHint("Specify time in second for save logs")]
+        [G9ConfigHint("Minimum 1 and maximum 3600")]
         public int SaveTime
         {
             set
@@ -368,8 +364,8 @@ namespace G9LogManagement.Config
         /// <summary>
         ///     Specify count of logs for save logs
         /// </summary>
-        [Hint("Specify count of logs for save logs")]
-        [Hint("Minimum 100 and maximum 10000")]
+        [G9ConfigHint("Specify count of logs for save logs")]
+        [G9ConfigHint("Minimum 100 and maximum 10000")]
         public int SaveCount
         {
             set
@@ -387,14 +383,14 @@ namespace G9LogManagement.Config
         /// <summary>
         ///     Specify enable archive previous day
         /// </summary>
-        [Hint("Specify enable archive previous day")]
+        [G9ConfigHint("Specify enable archive previous day")]
         public bool ZipArchivePreviousDay { set; get; } = true;
 
         /// <summary>
         ///     Specify log reader starter page
         /// </summary>
-        [Hint("Specify log reader starter page")]
-        [Hint("values: '" + nameof(LogReaderPages.Dashboard) + "' or '" + nameof(LogReaderPages.LogsManagement) + "'")]
+        [G9ConfigHint("Specify log reader starter page")]
+        [G9ConfigHint("values: '" + nameof(LogReaderPages.Dashboard) + "' or '" + nameof(LogReaderPages.LogsManagement) + "'")]
         public LogReaderPages LogReaderStarterPage { set; get; }
 
         #endregion

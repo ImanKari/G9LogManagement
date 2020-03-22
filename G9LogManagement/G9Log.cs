@@ -63,7 +63,7 @@ namespace G9LogManagement
         ///     Access to parsed config file
         ///     <para>Config file: 'G9Log.config'</para>
         /// </summary>
-        private readonly G9ConfigManagement_Singleton<LogConfig> _configuration;
+        private readonly G9ConfigManagementSingleton<LogConfig> _configuration;
 
         /// <summary>
         ///     Encoding for log write
@@ -175,13 +175,14 @@ namespace G9LogManagement
             LogName = customLogName;
 
             // Load configs
-            _configuration = G9ConfigManagement_Singleton<LogConfig>.GetInstance(
+            _configuration = G9ConfigManagementSingleton<LogConfig>.GetInstance(
                 string.Format(G9LogConst.G9ConfigName, customLogName), customLogConfig, customLogConfig != null);
 
             // Set base app
             BaseApp = _configuration.Configuration.BaseApp;
 
             // Initialize folders and files
+            // ReSharper disable once ObjectCreationAsStatement
             new InitializeFoldersAndFilesForLogReaders(_configuration.Configuration.BaseApp);
 
             if (_configuration.Configuration.ComponentLog)
@@ -925,10 +926,10 @@ namespace G9LogManagement
             if (File.Exists(configPathFile))
             {
                 var configFileLines = File.ReadAllLines(configPathFile);
-                for (var i = 0; i < configFileLines.Length; i++)
-                    if (configFileLines[i].Contains("G9Encoding"))
+                foreach (var t in configFileLines)
+                    if (t.Contains("G9Encoding"))
                     {
-                        var encryptionText = configFileLines[i]
+                        var encryptionText = t
                             .Replace("var G9Encoding = '", string.Empty).Replace("';", string.Empty);
 
                         // If encryption is true but encrypt text is empty => generate new path

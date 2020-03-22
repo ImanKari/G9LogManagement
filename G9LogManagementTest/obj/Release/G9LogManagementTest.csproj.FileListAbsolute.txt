@@ -29,3 +29,9 @@ D:\Project\G9LogManagement\G9LogManagementTest\obj\Release\G9LogManagementTest.e
 D:\Project\G9LogManagement\G9LogManagementTest\obj\Release\G9LogManagementTest.csproj.CopyComplete
 D:\Project\G9LogManagement\G9LogManagementTest\obj\Release\G9LogManagementTest.exe
 D:\Project\G9LogManagement\G9LogManagementTest\obj\Release\G9LogManagementTest.pdb
+D:\Project\G9LogManagement\G9LogManagementTest\bin\Release\System.Buffers.dll
+D:\Project\G9LogManagement\G9LogManagementTest\bin\Release\System.Memory.dll
+D:\Project\G9LogManagement\G9LogManagementTest\bin\Release\System.Runtime.CompilerServices.Unsafe.dll
+D:\Project\G9LogManagement\G9LogManagementTest\bin\Release\System.Buffers.xml
+D:\Project\G9LogManagement\G9LogManagementTest\bin\Release\System.Memory.xml
+D:\Project\G9LogManagement\G9LogManagementTest\bin\Release\System.Runtime.CompilerServices.Unsafe.xml

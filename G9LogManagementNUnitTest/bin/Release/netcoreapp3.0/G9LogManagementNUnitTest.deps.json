@@ -8,23 +8,23 @@
     ".NETCoreApp,Version=v3.0": {
       "G9LogManagementNUnitTest/1.0.0": {
         "dependencies": {
-          "G9LogManagement": "3.0.1",
-          "Microsoft.NET.Test.Sdk": "16.3.0",
-          "NUnit3TestAdapter": "3.15.1",
+          "G9LogManagement": "3.0.3",
+          "Microsoft.NET.Test.Sdk": "16.5.0",
+          "NUnit3TestAdapter": "3.16.1",
           "NUnit": "3.12.0"
         },
         "runtime": {
           "G9LogManagementNUnitTest.dll": {}
         }
       },
-      "G9ConfigManagement/2.0.1": {
+      "G9ConfigManagement/2.1.0.1": {
         "dependencies": {
           "System.Xml.XmlDocument": "4.3.0"
         },
         "runtime": {
           "lib/netstandard2.1/G9ConfigManagement.dll": {
-            "assemblyVersion": "2.0.1.0",
-            "fileVersion": "2.0.1.0"
+            "assemblyVersion": "2.1.0.1",
+            "fileVersion": "2.1.0.1"
           }
         }
       },
@@ -36,7 +36,7 @@
           }
         }
       },
-      "Microsoft.CodeCoverage/16.3.0": {
+      "Microsoft.CodeCoverage/16.5.0": {
         "runtime": {
           "lib/netcoreapp1.0/Microsoft.VisualStudio.CodeCoverage.Shim.dll": {
             "assemblyVersion": "15.0.0.0",
@@ -82,15 +82,15 @@
           }
         }
       },
-      "Microsoft.NET.Test.Sdk/16.3.0": {
+      "Microsoft.NET.Test.Sdk/16.5.0": {
         "dependencies": {
-          "Microsoft.CodeCoverage": "16.3.0",
-          "Microsoft.TestPlatform.TestHost": "16.3.0"
+          "Microsoft.CodeCoverage": "16.5.0",
+          "Microsoft.TestPlatform.TestHost": "16.5.0"
         }
       },
       "Microsoft.NETCore.Platforms/1.1.0": {},
       "Microsoft.NETCore.Targets/1.1.0": {},
-      "Microsoft.TestPlatform.ObjectModel/16.3.0": {
+      "Microsoft.TestPlatform.ObjectModel/16.5.0": {
         "dependencies": {
           "NuGet.Frameworks": "5.0.0"
         },
@@ -189,9 +189,9 @@
           }
         }
       },
-      "Microsoft.TestPlatform.TestHost/16.3.0": {
+      "Microsoft.TestPlatform.TestHost/16.5.0": {
         "dependencies": {
-          "Microsoft.TestPlatform.ObjectModel": "16.3.0",
+          "Microsoft.TestPlatform.ObjectModel": "16.5.0",
           "Newtonsoft.Json": "9.0.1"
         },
         "runtime": {
@@ -411,7 +411,7 @@
           }
         }
       },
-      "NUnit3TestAdapter/3.15.1": {
+      "NUnit3TestAdapter/3.16.1": {
         "dependencies": {
           "Microsoft.DotNet.InternalAbstractions": "1.0.0",
           "System.ComponentModel.EventBasedAsync": "4.3.0",
@@ -979,9 +979,9 @@
           }
         }
       },
-      "G9LogManagement/3.0.1": {
+      "G9LogManagement/3.0.3": {
         "dependencies": {
-          "G9ConfigManagement": "2.0.1",
+          "G9ConfigManagement": "2.1.0.1",
           "G9ScheduleManagement": "2.0.0.1",
           "System.Diagnostics.FileVersionInfo": "4.3.0",
           "System.Diagnostics.StackTrace": "4.3.0"
@@ -998,12 +998,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "G9ConfigManagement/2.0.1": {
+    "G9ConfigManagement/2.1.0.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-3g+JAl/p807xZ/hP5dNHItTeNShFMcsWQTSUFpSUa4Kl320W+UdOYTdSQ/w4NJGXTcuyRYp5UwgISzrQFRVmTw==",
-      "path": "g9configmanagement/2.0.1",
-      "hashPath": "g9configmanagement.2.0.1.nupkg.sha512"
+      "sha512": "sha512-3mi/xyAmx5Ro0DgU0D3HOSwMsFfOckKGIzh91HIcn2wRQbey0ccFp0yivdJMqIGvdULwt0VzdZlskQQhcknyzg==",
+      "path": "g9configmanagement/2.1.0.1",
+      "hashPath": "g9configmanagement.2.1.0.1.nupkg.sha512"
     },
     "G9ScheduleManagement/2.0.0.1": {
       "type": "package",
@@ -1012,12 +1012,12 @@
       "path": "g9schedulemanagement/2.0.0.1",
       "hashPath": "g9schedulemanagement.2.0.0.1.nupkg.sha512"
     },
-    "Microsoft.CodeCoverage/16.3.0": {
+    "Microsoft.CodeCoverage/16.5.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-CVEzOQp+2Y/VdUEbvtziOd41QJ3tGGvqI14to5blM0Glr4P9uasORK4SaSF4bvlRQaiMeqS2iGoCfVIggdymmw==",
-      "path": "microsoft.codecoverage/16.3.0",
-      "hashPath": "microsoft.codecoverage.16.3.0.nupkg.sha512"
+      "sha512": "sha512-PM5YLtyN45EyUGePJpaNogndlaQPrMgQQXHKMhMESC6KfSVvt+j7+dxBi8NYC6X6dZVysf7ngwhSW3wwvPJRSQ==",
+      "path": "microsoft.codecoverage/16.5.0",
+      "hashPath": "microsoft.codecoverage.16.5.0.nupkg.sha512"
     },
     "Microsoft.CSharp/4.0.1": {
       "type": "package",
@@ -1033,12 +1033,12 @@
       "path": "microsoft.dotnet.internalabstractions/1.0.0",
       "hashPath": "microsoft.dotnet.internalabstractions.1.0.0.nupkg.sha512"
     },
-    "Microsoft.NET.Test.Sdk/16.3.0": {
+    "Microsoft.NET.Test.Sdk/16.5.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Drk/adJoZYuMx3MuhcpEqfXDrAOwv56tjq9SlqeO20+oTlNfGEebw2dmMRTl17EwlUYctdmZv5VzTZVncU1aVw==",
-      "path": "microsoft.net.test.sdk/16.3.0",
-      "hashPath": "microsoft.net.test.sdk.16.3.0.nupkg.sha512"
+      "sha512": "sha512-yHZOhVSPuGqgHi+KhHiAZqNY08avkQraXKvgKgDU8c/ztmGzw7gmukkv49EaTq6T3xmp4XroWk3gAlbJHMxl8w==",
+      "path": "microsoft.net.test.sdk/16.5.0",
+      "hashPath": "microsoft.net.test.sdk.16.5.0.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "type": "package",
@@ -1054,19 +1054,19 @@
       "path": "microsoft.netcore.targets/1.1.0",
       "hashPath": "microsoft.netcore.targets.1.1.0.nupkg.sha512"
     },
-    "Microsoft.TestPlatform.ObjectModel/16.3.0": {
+    "Microsoft.TestPlatform.ObjectModel/16.5.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-F4ZZ1c6J6VqeFhfPPBZNk+jr7VU5qYgxoClWK+VOJMRwGYc5edYY5q9CGtNgT93VcVGQ/ie6Gn8J9HDoST1fAg==",
-      "path": "microsoft.testplatform.objectmodel/16.3.0",
-      "hashPath": "microsoft.testplatform.objectmodel.16.3.0.nupkg.sha512"
+      "sha512": "sha512-NnLFxmFBCAS6kye2JFszD5WKgj4Zve5KX/R0mhYwh6BVnSeybI2unRnjEPtLyY3CAVhwrY4bh/8LNFtslAcGZg==",
+      "path": "microsoft.testplatform.objectmodel/16.5.0",
+      "hashPath": "microsoft.testplatform.objectmodel.16.5.0.nupkg.sha512"
     },
-    "Microsoft.TestPlatform.TestHost/16.3.0": {
+    "Microsoft.TestPlatform.TestHost/16.5.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-N44oK5yrJw70tJh/f5XrDT9ibywsz/t9hm9f59DojtfJphYG55oXf/2ht9h0iNMyzpuh7lFAWPdRcZ9v0Oj82w==",
-      "path": "microsoft.testplatform.testhost/16.3.0",
-      "hashPath": "microsoft.testplatform.testhost.16.3.0.nupkg.sha512"
+      "sha512": "sha512-ytGymboQIvjNX5pLC0yp/Bz9sGDHqSnLQgBRtd4VrqOUgKmmcfxMYZ6p0TBZgAT1oijdC6xqUZ7rl8mbaaXTJw==",
+      "path": "microsoft.testplatform.testhost/16.5.0",
+      "hashPath": "microsoft.testplatform.testhost.16.5.0.nupkg.sha512"
     },
     "Microsoft.Win32.Primitives/4.3.0": {
       "type": "package",
@@ -1110,12 +1110,12 @@
       "path": "nunit/3.12.0",
       "hashPath": "nunit.3.12.0.nupkg.sha512"
     },
-    "NUnit3TestAdapter/3.15.1": {
+    "NUnit3TestAdapter/3.16.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-gqy0llGjhJYq9ebFvtbmBcF/MY8z5kcTIxYs+eXwp2d4Ntha8pSPxUzryvBm7H46VbWI6FS5/XNbxwiQpe88vQ==",
-      "path": "nunit3testadapter/3.15.1",
-      "hashPath": "nunit3testadapter.3.15.1.nupkg.sha512"
+      "sha512": "sha512-wKuxi7G9Gs2I9gnckwtMVzbPIy7vkNj+FafrmQPaYCUguT+se5kmzI3XwsVCXEalWk9pSYZW7roBkNu4ogn3DA==",
+      "path": "nunit3testadapter/3.16.1",
+      "hashPath": "nunit3testadapter.3.16.1.nupkg.sha512"
     },
     "runtime.native.System/4.3.0": {
       "type": "package",
@@ -1509,7 +1509,7 @@
       "path": "system.xml.xpath.xmldocument/4.3.0",
       "hashPath": "system.xml.xpath.xmldocument.4.3.0.nupkg.sha512"
     },
-    "G9LogManagement/3.0.1": {
+    "G9LogManagement/3.0.3": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

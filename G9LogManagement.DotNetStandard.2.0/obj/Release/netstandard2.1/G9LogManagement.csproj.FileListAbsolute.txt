@@ -1,7 +1,0 @@
-D:\Project\G9LogManagement\G9LogManagement\bin\Release\netstandard2.1\G9LogManagement.deps.json
-D:\Project\G9LogManagement\G9LogManagement\bin\Release\netstandard2.1\G9LogManagement.dll
-D:\Project\G9LogManagement\G9LogManagement\bin\Release\netstandard2.1\G9LogManagement.pdb
-D:\Project\G9LogManagement\G9LogManagement\obj\Release\netstandard2.1\G9LogManagement.AssemblyInfoInputs.cache
-D:\Project\G9LogManagement\G9LogManagement\obj\Release\netstandard2.1\G9LogManagement.AssemblyInfo.cs
-D:\Project\G9LogManagement\G9LogManagement\obj\Release\netstandard2.1\G9LogManagement.dll
-D:\Project\G9LogManagement\G9LogManagement\obj\Release\netstandard2.1\G9LogManagement.pdb
