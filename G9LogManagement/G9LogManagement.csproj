@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard1.3;netstandard1.4;netstandard1.5;netstandard1.6;netstandard2.0;netstandard2.1</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>3.0.3.3</Version>
+    <Version>3.0.3.4</Version>
     <Authors>Iman Kari</Authors>
     <Company>G9Studio</Company>
     <Description>Log Magement</Description>
@@ -12,14 +12,14 @@
     <PackageProjectUrl>http://www.G9TM.com/</PackageProjectUrl>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <Product>G9 Log Management</Product>
-    <AssemblyVersion>3.0.3.3</AssemblyVersion>
-    <FileVersion>3.0.3.3</FileVersion>
+    <AssemblyVersion>3.0.3.4</AssemblyVersion>
+    <FileVersion>3.0.3.4</FileVersion>
     <PackageId>G9LogManagement</PackageId>
     <PackageIcon>G9-Icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/ImanKari/G9LogManagement</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>Log Management LogViewer Logger Viewer</PackageTags>
-    <PackageReleaseNotes>- Fixed Version 3.0.3.3</PackageReleaseNotes>
+    <PackageReleaseNotes>- Fixed Version 3.0.3.4</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 

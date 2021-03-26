@@ -47,8 +47,8 @@ namespace G9LogManagementNUnitTest
                 LogPassword = "1990",
                 MaxFileSize = 6,
                 LogReaderStarterPage = LogReaderPages.LogsManagement,
-                LogReaderDefaultCulture = CultureType.fa,
-                DirectoryNameDateType = DateTimeType.Shamsi
+                LogReaderDefaultCulture = CultureType.en_us,
+                DirectoryNameDateType = DateTimeType.Gregorian
             });
         }
 

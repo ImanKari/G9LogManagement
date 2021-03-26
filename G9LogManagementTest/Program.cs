@@ -22,8 +22,8 @@ namespace G9LogManagementTest
                 //LogPassword = "ImanKari1990",
                 MaxFileSize = 9,
                 LogReaderStarterPage = LogReaderPages.Dashboard,
-                LogReaderDefaultCulture = CultureType.fa,
-                DirectoryNameDateType = DateTimeType.GregorianShamsi,
+                LogReaderDefaultCulture = CultureType.en_us,
+                DirectoryNameDateType = DateTimeType.Gregorian,
                 ActiveConsoleLogs = new LogsTypeConfig(true)
             });
 

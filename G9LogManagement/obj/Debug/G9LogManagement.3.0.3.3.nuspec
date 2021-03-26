@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>G9LogManagement</id>
+    <version>3.0.3.3</version>
+    <authors>Iman Kari</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="file">LICENSE.md</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <icon>G9-Icon.png</icon>
+    <projectUrl>http://www.g9tm.com/</projectUrl>
+    <description>Log Magement</description>
+    <releaseNotes>- Fixed Version 3.0.3.3</releaseNotes>
+    <copyright>G9Studio - 2021</copyright>
+    <tags>Log Management LogViewer Logger Viewer</tags>
+    <repository type="GitHub" url="https://github.com/ImanKari/G9LogManagement" />
+    <dependencies>
+      <group targetFramework=".NETStandard1.3">
+        <dependency id="G9ConfigManagement" version="2.1.0.4" exclude="Build,Analyzers" />
+        <dependency id="G9ScheduleManagement" version="2.1.0.4" exclude="Build,Analyzers" />
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.FileVersionInfo" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.StackTrace" version="4.3.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard1.4">
+        <dependency id="G9ConfigManagement" version="2.1.0.4" exclude="Build,Analyzers" />
+        <dependency id="G9ScheduleManagement" version="2.1.0.4" exclude="Build,Analyzers" />
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.FileVersionInfo" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.StackTrace" version="4.3.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard1.5">
+        <dependency id="G9ConfigManagement" version="2.1.0.4" exclude="Build,Analyzers" />
+        <dependency id="G9ScheduleManagement" version="2.1.0.4" exclude="Build,Analyzers" />
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.FileVersionInfo" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.StackTrace" version="4.3.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard1.6">
+        <dependency id="G9ConfigManagement" version="2.1.0.4" exclude="Build,Analyzers" />
+        <dependency id="G9ScheduleManagement" version="2.1.0.4" exclude="Build,Analyzers" />
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.FileVersionInfo" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.StackTrace" version="4.3.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="G9ConfigManagement" version="2.1.0.4" exclude="Build,Analyzers" />
+        <dependency id="G9ScheduleManagement" version="2.1.0.4" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.FileVersionInfo" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.StackTrace" version="4.3.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="G9ConfigManagement" version="2.1.0.4" exclude="Build,Analyzers" />
+        <dependency id="G9ScheduleManagement" version="2.1.0.4" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.FileVersionInfo" version="4.3.0" exclude="Build,Analyzers" />
+        <dependency id="System.Diagnostics.StackTrace" version="4.3.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="G:\Project\G9LogManagement\G9LogManagement\bin\Debug\netstandard1.3\G9LogManagement.dll" target="lib\netstandard1.3\G9LogManagement.dll" />
+    <file src="G:\Project\G9LogManagement\G9LogManagement\bin\Debug\netstandard1.4\G9LogManagement.dll" target="lib\netstandard1.4\G9LogManagement.dll" />
+    <file src="G:\Project\G9LogManagement\G9LogManagement\bin\Debug\netstandard1.5\G9LogManagement.dll" target="lib\netstandard1.5\G9LogManagement.dll" />
+    <file src="G:\Project\G9LogManagement\G9LogManagement\bin\Debug\netstandard1.6\G9LogManagement.dll" target="lib\netstandard1.6\G9LogManagement.dll" />
+    <file src="G:\Project\G9LogManagement\G9LogManagement\bin\Debug\netstandard2.0\G9LogManagement.dll" target="lib\netstandard2.0\G9LogManagement.dll" />
+    <file src="G:\Project\G9LogManagement\G9LogManagement\bin\Debug\netstandard2.1\G9LogManagement.dll" target="lib\netstandard2.1\G9LogManagement.dll" />
+    <file src="G:\Project\G9LogManagement\G9LogManagement\G9-Icon.png" target="G9-Icon.png" />
+    <file src="G:\Project\G9LogManagement\G9LogManagement\LICENSE.md" target="LICENSE.md" />
+  </files>
+</package>

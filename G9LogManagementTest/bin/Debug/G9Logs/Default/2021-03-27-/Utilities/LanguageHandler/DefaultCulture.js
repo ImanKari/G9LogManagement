@@ -1,0 +1,1 @@
+﻿var DefaultCulture = 'en_us';

@@ -7,10 +7,10 @@
   "targets": {
     ".NETStandard,Version=v1.5": {},
     ".NETStandard,Version=v1.5/": {
-      "G9LogManagement/3.0.3.2": {
+      "G9LogManagement/3.0.3.3": {
         "dependencies": {
-          "G9ConfigManagement": "2.1.0.2",
-          "G9ScheduleManagement": "2.1.0.3",
+          "G9ConfigManagement": "2.1.0.4",
+          "G9ScheduleManagement": "2.1.0.4",
           "NETStandard.Library": "1.6.1",
           "System.Diagnostics.FileVersionInfo": "4.3.0",
           "System.Diagnostics.StackTrace": "4.3.0"
@@ -19,26 +19,26 @@
           "G9LogManagement.dll": {}
         }
       },
-      "G9ConfigManagement/2.1.0.2": {
+      "G9ConfigManagement/2.1.0.4": {
         "dependencies": {
           "NETStandard.Library": "1.6.1",
           "System.Xml.XmlDocument": "4.3.0"
         },
         "runtime": {
           "lib/netstandard1.5/G9ConfigManagement.dll": {
-            "assemblyVersion": "2.1.0.2",
-            "fileVersion": "2.1.0.2"
+            "assemblyVersion": "2.1.0.4",
+            "fileVersion": "2.1.0.4"
           }
         }
       },
-      "G9ScheduleManagement/2.1.0.3": {
+      "G9ScheduleManagement/2.1.0.4": {
         "dependencies": {
           "NETStandard.Library": "1.6.1"
         },
         "runtime": {
           "lib/netstandard1.5/G9ScheduleManagement.dll": {
-            "assemblyVersion": "2.1.0.3",
-            "fileVersion": "2.1.0.3"
+            "assemblyVersion": "2.1.0.4",
+            "fileVersion": "2.1.0.4"
           }
         }
       },
@@ -722,24 +722,24 @@
     }
   },
   "libraries": {
-    "G9LogManagement/3.0.3.2": {
+    "G9LogManagement/3.0.3.3": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "G9ConfigManagement/2.1.0.2": {
+    "G9ConfigManagement/2.1.0.4": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-ouklL/P69R9ruqR+xq9cDmFMKy0pByTJDQJ4JWvFwxudn+g1nQOXc9uq+ss8U3bO74GnT93U0lsM9oQG3nlAug==",
-      "path": "g9configmanagement/2.1.0.2",
-      "hashPath": "g9configmanagement.2.1.0.2.nupkg.sha512"
+      "sha512": "sha512-I7DpkbaZ+T7rAO6prbUbAzViVK9I9detvk9Jhxw/V5GMpGfl+9vncYAScvAj0hQlhca4vIASuAzuEKzS9Cxgjw==",
+      "path": "g9configmanagement/2.1.0.4",
+      "hashPath": "g9configmanagement.2.1.0.4.nupkg.sha512"
     },
-    "G9ScheduleManagement/2.1.0.3": {
+    "G9ScheduleManagement/2.1.0.4": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-AHLq0f2GzQv6abyMRS/0RQ4R9MrXeF1m88dnPDxgALuMvHhzoiP4wEKquIRgledrOdR3ekHcwnI1lxL3jb6/UQ==",
-      "path": "g9schedulemanagement/2.1.0.3",
-      "hashPath": "g9schedulemanagement.2.1.0.3.nupkg.sha512"
+      "sha512": "sha512-ysOQabKIGSXunjC+fj7WeHfbznHg7k7wAFaI1jeCIPRwEtEm5WulqiCzV1ecUpFX0WjQ1Zi0YSPLKz8eQqPTfg==",
+      "path": "g9schedulemanagement/2.1.0.4",
+      "hashPath": "g9schedulemanagement.2.1.0.4.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "type": "package",
