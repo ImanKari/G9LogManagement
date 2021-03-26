@@ -39,7 +39,7 @@ steps:
     command: custom
     custom: nuget
     arguments: >
-      push $(Pipeline.Workspace)/**/G9LogManagement/G9LogManagement/bin/Release/*.nupkg
+      push $(Pipeline.Workspace)/**/G9LogManagement/bin/Release/*.nupkg
       -s https://api.nuget.org/v3/index.json
       -k $(NuGetApiKey) 
       --skip-duplicate
