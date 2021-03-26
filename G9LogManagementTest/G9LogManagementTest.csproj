@@ -33,11 +33,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="G9ConfigManagement, Version=2.1.0.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\G9ConfigManagement.2.1.0.2\lib\netstandard1.3\G9ConfigManagement.dll</HintPath>
+    <Reference Include="G9ConfigManagement, Version=2.1.0.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\G9ConfigManagement.2.1.0.4\lib\netstandard1.3\G9ConfigManagement.dll</HintPath>
     </Reference>
-    <Reference Include="G9ScheduleManagement, Version=2.1.0.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\G9ScheduleManagement.2.1.0.3\lib\netstandard1.3\G9ScheduleManagement.dll</HintPath>
+    <Reference Include="G9ScheduleManagement, Version=2.1.0.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\G9ScheduleManagement.2.1.0.4\lib\netstandard1.3\G9ScheduleManagement.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>

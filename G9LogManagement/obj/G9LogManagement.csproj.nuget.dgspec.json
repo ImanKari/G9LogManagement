@@ -5,7 +5,7 @@
   },
   "projects": {
     "G:\\Project\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj": {
-      "version": "3.0.3.2",
+      "version": "3.0.3.3",
       "restore": {
         "projectUniqueName": "G:\\Project\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj",
         "projectName": "G9LogManagement",
@@ -77,11 +77,11 @@
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.1.0.2, )"
+              "version": "[2.1.0.4, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
-              "version": "[2.1.0.3, )"
+              "version": "[2.1.0.4, )"
             },
             "NETStandard.Library": {
               "target": "Package",
@@ -104,11 +104,11 @@
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.1.0.2, )"
+              "version": "[2.1.0.4, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
-              "version": "[2.1.0.3, )"
+              "version": "[2.1.0.4, )"
             },
             "NETStandard.Library": {
               "target": "Package",
@@ -131,11 +131,11 @@
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.1.0.2, )"
+              "version": "[2.1.0.4, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
-              "version": "[2.1.0.3, )"
+              "version": "[2.1.0.4, )"
             },
             "NETStandard.Library": {
               "target": "Package",
@@ -158,11 +158,11 @@
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.1.0.2, )"
+              "version": "[2.1.0.4, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
-              "version": "[2.1.0.3, )"
+              "version": "[2.1.0.4, )"
             },
             "NETStandard.Library": {
               "target": "Package",
@@ -185,11 +185,11 @@
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.1.0.2, )"
+              "version": "[2.1.0.4, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
-              "version": "[2.1.0.3, )"
+              "version": "[2.1.0.4, )"
             },
             "NETStandard.Library": {
               "suppressParent": "All",
@@ -223,11 +223,11 @@
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.1.0.2, )"
+              "version": "[2.1.0.4, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
-              "version": "[2.1.0.3, )"
+              "version": "[2.1.0.4, )"
             },
             "System.Diagnostics.FileVersionInfo": {
               "target": "Package",

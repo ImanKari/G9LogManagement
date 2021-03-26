@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "Y8N67uJlsRV63N60+X3NxPdHaqT0+jYp31EVX/2nu9sOBgzBng6BmoR3lerEI2T3VND4Of4/Zz4ZssPEY8lfWQ==",
+  "dgSpecHash": "QrWxPY7MTAAgCPsZqlLt25smC0pkRVOTXr/1c+5WcbH2yJJR7ip9KIxAnbMBfM2j3C1dSoGkHiIFu6/4MpGx9g==",
   "success": true,
   "projectFilePath": "G:\\Project\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\ImanKari\\.nuget\\packages\\g9configmanagement\\2.1.0.2\\g9configmanagement.2.1.0.2.nupkg.sha512",
-    "C:\\Users\\ImanKari\\.nuget\\packages\\g9schedulemanagement\\2.1.0.3\\g9schedulemanagement.2.1.0.3.nupkg.sha512",
+    "C:\\Users\\ImanKari\\.nuget\\packages\\g9configmanagement\\2.1.0.4\\g9configmanagement.2.1.0.4.nupkg.sha512",
+    "C:\\Users\\ImanKari\\.nuget\\packages\\g9schedulemanagement\\2.1.0.4\\g9schedulemanagement.2.1.0.4.nupkg.sha512",
     "C:\\Users\\ImanKari\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\ImanKari\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
     "C:\\Users\\ImanKari\\.nuget\\packages\\microsoft.win32.primitives\\4.3.0\\microsoft.win32.primitives.4.3.0.nupkg.sha512",

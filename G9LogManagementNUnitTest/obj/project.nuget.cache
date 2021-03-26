@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "uzBmzlPLFOGjTQq5ZnhtslqsSLq0lZgWrWWHU7IuZ2L2NZIKZVK836bssvbOo5Fg7bIlkCtcYMRPsJuVNV7+ug==",
+  "dgSpecHash": "Eb10obkXyt2pMWOKqyxxytIB47TwTABZcLpinHxAGgxUS9euffONGyc1/dEuJdukbW2GJKNyPDEwH/HUBMH7Dw==",
   "success": true,
   "projectFilePath": "G:\\Project\\G9LogManagement\\G9LogManagementNUnitTest\\G9LogManagementNUnitTest.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\ImanKari\\.nuget\\packages\\g9configmanagement\\2.1.0.2\\g9configmanagement.2.1.0.2.nupkg.sha512",
-    "C:\\Users\\ImanKari\\.nuget\\packages\\g9schedulemanagement\\2.1.0.3\\g9schedulemanagement.2.1.0.3.nupkg.sha512",
+    "C:\\Users\\ImanKari\\.nuget\\packages\\g9configmanagement\\2.1.0.4\\g9configmanagement.2.1.0.4.nupkg.sha512",
+    "C:\\Users\\ImanKari\\.nuget\\packages\\g9schedulemanagement\\2.1.0.4\\g9schedulemanagement.2.1.0.4.nupkg.sha512",
     "C:\\Users\\ImanKari\\.nuget\\packages\\microsoft.codecoverage\\16.9.1\\microsoft.codecoverage.16.9.1.nupkg.sha512",
     "C:\\Users\\ImanKari\\.nuget\\packages\\microsoft.csharp\\4.0.1\\microsoft.csharp.4.0.1.nupkg.sha512",
     "C:\\Users\\ImanKari\\.nuget\\packages\\microsoft.dotnet.internalabstractions\\1.0.0\\microsoft.dotnet.internalabstractions.1.0.0.nupkg.sha512",
