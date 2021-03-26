@@ -5,3 +5,4 @@ D:\Project\G9LogManagement\G9LogManagement\bin\Release\netstandard2.0\G9LogManag
 D:\Project\G9LogManagement\G9LogManagement\bin\Release\netstandard2.0\G9LogManagement.pdb
 D:\Project\G9LogManagement\G9LogManagement\obj\Release\netstandard2.0\G9LogManagement.dll
 D:\Project\G9LogManagement\G9LogManagement\obj\Release\netstandard2.0\G9LogManagement.pdb
+D:\Project\G9LogManagement\G9LogManagement\obj\Release\netstandard2.0\G9LogManagement.csproj.CoreCompileInputs.cache

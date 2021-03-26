@@ -4,7 +4,6 @@
     <id>G9LogManagement</id>
     <version>3.0.3</version>
     <authors>Iman Kari</authors>
-    <owners>Iman Kari</owners>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <license type="file">LICENSE.md</license>
     <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>

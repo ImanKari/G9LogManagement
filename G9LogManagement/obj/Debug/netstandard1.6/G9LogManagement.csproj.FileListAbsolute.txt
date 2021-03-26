@@ -6,3 +6,12 @@ D:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagem
 D:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.dll
 D:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.pdb
 D:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.csprojAssemblyReference.cache
+G:\Project\G9LogManagement\G9LogManagement\bin\Debug\netstandard1.6\G9LogManagement.deps.json
+G:\Project\G9LogManagement\G9LogManagement\bin\Debug\netstandard1.6\G9LogManagement.dll
+G:\Project\G9LogManagement\G9LogManagement\bin\Debug\netstandard1.6\G9LogManagement.pdb
+G:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.csprojAssemblyReference.cache
+G:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.AssemblyInfoInputs.cache
+G:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.AssemblyInfo.cs
+G:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.csproj.CoreCompileInputs.cache
+G:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.dll
+G:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.pdb

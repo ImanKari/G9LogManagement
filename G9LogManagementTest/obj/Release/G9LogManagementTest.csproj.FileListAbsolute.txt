@@ -35,3 +35,4 @@ D:\Project\G9LogManagement\G9LogManagementTest\bin\Release\System.Runtime.Compil
 D:\Project\G9LogManagement\G9LogManagementTest\bin\Release\System.Buffers.xml
 D:\Project\G9LogManagement\G9LogManagementTest\bin\Release\System.Memory.xml
 D:\Project\G9LogManagement\G9LogManagementTest\bin\Release\System.Runtime.CompilerServices.Unsafe.xml
+D:\Project\G9LogManagement\G9LogManagementTest\obj\Release\G9LogManagementTest.csproj.CoreCompileInputs.cache
