@@ -1,24 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "G:\\Project\\G9LogManagement\\G9LogManagementNUnitTest\\G9LogManagementNUnitTest.csproj": {}
+    "I:\\Project\\!G9Products!\\G9LogManagement\\G9LogManagementNUnitTest\\G9LogManagementNUnitTest.csproj": {}
   },
   "projects": {
-    "G:\\Project\\G9LogManagement\\G9LogManagementNUnitTest\\G9LogManagementNUnitTest.csproj": {
+    "I:\\Project\\!G9Products!\\G9LogManagement\\G9LogManagementNUnitTest\\G9LogManagementNUnitTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\Project\\G9LogManagement\\G9LogManagementNUnitTest\\G9LogManagementNUnitTest.csproj",
+        "projectUniqueName": "I:\\Project\\!G9Products!\\G9LogManagement\\G9LogManagementNUnitTest\\G9LogManagementNUnitTest.csproj",
         "projectName": "G9LogManagementNUnitTest",
-        "projectPath": "G:\\Project\\G9LogManagement\\G9LogManagementNUnitTest\\G9LogManagementNUnitTest.csproj",
-        "packagesPath": "C:\\Users\\ImanKari\\.nuget\\packages\\",
-        "outputPath": "G:\\Project\\G9LogManagement\\G9LogManagementNUnitTest\\obj\\",
+        "projectPath": "I:\\Project\\!G9Products!\\G9LogManagement\\G9LogManagementNUnitTest\\G9LogManagementNUnitTest.csproj",
+        "packagesPath": "C:\\Users\\Iman Kari\\.nuget\\packages\\",
+        "outputPath": "I:\\Project\\!G9Products!\\G9LogManagement\\G9LogManagementNUnitTest\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
           "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
         ],
         "configFilePaths": [
-          "C:\\Users\\ImanKari\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Iman Kari\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
@@ -28,17 +28,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "G:\\Project\\G9ConfigManagement\\G9ConfigManagement\\G9ConfigManagement\\bin\\Release": {},
-          "G:\\Project\\G9LogManagement\\G9LogManagement\\bin\\Release": {},
-          "G:\\Project\\G9ScheduleManagement\\G9ScheduleManagement\\bin\\Release": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "netcoreapp3.0": {
             "targetAlias": "netcoreapp3.0",
             "projectReferences": {
-              "G:\\Project\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj": {
-                "projectPath": "G:\\Project\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj"
+              "I:\\Project\\!G9Products!\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj": {
+                "projectPath": "I:\\Project\\!G9Products!\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj"
               }
             }
           }
@@ -55,17 +53,17 @@
           "dependencies": {
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
-              "version": "[16.9.1, )"
+              "version": "[17.2.0, )"
             },
             "NUnit3TestAdapter": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[3.17.0, )"
+              "version": "[4.2.1, )"
             },
             "nunit": {
               "target": "Package",
-              "version": "[3.13.1, )"
+              "version": "[3.13.3, )"
             }
           },
           "imports": [
@@ -97,18 +95,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.410\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "G:\\Project\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj": {
+    "I:\\Project\\!G9Products!\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj": {
       "version": "3.0.3.5",
       "restore": {
-        "projectUniqueName": "G:\\Project\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj",
+        "projectUniqueName": "I:\\Project\\!G9Products!\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj",
         "projectName": "G9LogManagement",
-        "projectPath": "G:\\Project\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj",
-        "packagesPath": "C:\\Users\\ImanKari\\.nuget\\packages\\",
-        "outputPath": "G:\\Project\\G9LogManagement\\G9LogManagement\\obj\\",
+        "projectPath": "I:\\Project\\!G9Products!\\G9LogManagement\\G9LogManagement\\G9LogManagement.csproj",
+        "packagesPath": "C:\\Users\\Iman Kari\\.nuget\\packages\\",
+        "outputPath": "I:\\Project\\!G9Products!\\G9LogManagement\\G9LogManagement\\obj\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "fallbackFolders": [
@@ -116,7 +114,7 @@
           "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
         ],
         "configFilePaths": [
-          "C:\\Users\\ImanKari\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Iman Kari\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
@@ -131,9 +129,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "G:\\Project\\G9ConfigManagement\\G9ConfigManagement\\G9ConfigManagement\\bin\\Release": {},
-          "G:\\Project\\G9LogManagement\\G9LogManagement\\bin\\Release": {},
-          "G:\\Project\\G9ScheduleManagement\\G9ScheduleManagement\\bin\\Release": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -174,11 +170,11 @@
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.1.0.4, )"
+              "version": "[2.1.0.6, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
-              "version": "[2.1.0.4, )"
+              "version": "[2.1.0.5, )"
             },
             "NETStandard.Library": {
               "target": "Package",
@@ -194,18 +190,18 @@
               "version": "[4.3.0, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.410\\RuntimeIdentifierGraph.json"
         },
         "netstandard1.4": {
           "targetAlias": "netstandard1.4",
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.1.0.4, )"
+              "version": "[2.1.0.6, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
-              "version": "[2.1.0.4, )"
+              "version": "[2.1.0.5, )"
             },
             "NETStandard.Library": {
               "target": "Package",
@@ -221,18 +217,18 @@
               "version": "[4.3.0, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.410\\RuntimeIdentifierGraph.json"
         },
         "netstandard1.5": {
           "targetAlias": "netstandard1.5",
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.1.0.4, )"
+              "version": "[2.1.0.6, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
-              "version": "[2.1.0.4, )"
+              "version": "[2.1.0.5, )"
             },
             "NETStandard.Library": {
               "target": "Package",
@@ -248,18 +244,18 @@
               "version": "[4.3.0, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.410\\RuntimeIdentifierGraph.json"
         },
         "netstandard1.6": {
           "targetAlias": "netstandard1.6",
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.1.0.4, )"
+              "version": "[2.1.0.6, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
-              "version": "[2.1.0.4, )"
+              "version": "[2.1.0.5, )"
             },
             "NETStandard.Library": {
               "target": "Package",
@@ -275,18 +271,18 @@
               "version": "[4.3.0, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.410\\RuntimeIdentifierGraph.json"
         },
         "netstandard2.0": {
           "targetAlias": "netstandard2.0",
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.1.0.4, )"
+              "version": "[2.1.0.6, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
-              "version": "[2.1.0.4, )"
+              "version": "[2.1.0.5, )"
             },
             "NETStandard.Library": {
               "suppressParent": "All",
@@ -313,18 +309,18 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.410\\RuntimeIdentifierGraph.json"
         },
         "netstandard2.1": {
           "targetAlias": "netstandard2.1",
           "dependencies": {
             "G9ConfigManagement": {
               "target": "Package",
-              "version": "[2.1.0.4, )"
+              "version": "[2.1.0.6, )"
             },
             "G9ScheduleManagement": {
               "target": "Package",
-              "version": "[2.1.0.4, )"
+              "version": "[2.1.0.5, )"
             },
             "System.Diagnostics.FileVersionInfo": {
               "target": "Package",
@@ -350,7 +346,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.410\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -265,8 +265,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="G9ConfigManagement" Version="2.1.0.4" />
-    <PackageReference Include="G9ScheduleManagement" Version="2.1.0.4" />
+    <PackageReference Include="G9ConfigManagement" Version="2.1.0.6" />
+    <PackageReference Include="G9ScheduleManagement" Version="2.1.0.5" />
     <PackageReference Include="System.Diagnostics.FileVersionInfo" Version="4.3.0" />
     <PackageReference Include="System.Diagnostics.StackTrace" Version="4.3.0" />
   </ItemGroup>

@@ -12,6 +12,10 @@ namespace G9LogManagementTest
 {
     class Program
     {
+        /// <summary>
+        /// Test Main
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
             G9LogDefaultConfigInitialize.InitializeDefaultInstanceLogConfig(new LogConfig()

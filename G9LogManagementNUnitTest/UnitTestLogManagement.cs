@@ -17,13 +17,14 @@ namespace G9LogManagementNUnitTest
         [SetUp]
         public void Setup()
         {
+            
         }
 
         [Test]
         [Order(1)]
         public void CheckInitializeFoldersAndFilesLogReader()
         {
-            var initialize = new InitializeFoldersAndFilesForLogReaders(Logging.BaseApp);
+            var initialize = new InitializeFoldersAndFilesForLogReaders("G9Log");
 
         }
 

@@ -15,3 +15,12 @@ G:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagem
 G:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.csproj.CoreCompileInputs.cache
 G:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.dll
 G:\Project\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.pdb
+I:\Project\!G9Products!\G9LogManagement\G9LogManagement\bin\Debug\netstandard1.6\G9LogManagement.deps.json
+I:\Project\!G9Products!\G9LogManagement\G9LogManagement\bin\Debug\netstandard1.6\G9LogManagement.dll
+I:\Project\!G9Products!\G9LogManagement\G9LogManagement\bin\Debug\netstandard1.6\G9LogManagement.pdb
+I:\Project\!G9Products!\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.GeneratedMSBuildEditorConfig.editorconfig
+I:\Project\!G9Products!\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.AssemblyInfoInputs.cache
+I:\Project\!G9Products!\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.AssemblyInfo.cs
+I:\Project\!G9Products!\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.csproj.CoreCompileInputs.cache
+I:\Project\!G9Products!\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.dll
+I:\Project\!G9Products!\G9LogManagement\G9LogManagement\obj\Debug\netstandard1.6\G9LogManagement.pdb

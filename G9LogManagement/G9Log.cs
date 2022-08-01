@@ -32,12 +32,12 @@ namespace G9LogManagement
         /// <summary>
         ///     Scheduler for handle duration save log
         /// </summary>
-        private readonly G9Schedule _scheduleForSaveLogsWithTime;
+        private readonly G9CSchedule _scheduleForSaveLogsWithTime;
 
         /// <summary>
         ///     Schedule check 'HasShutdownStarted' for application exit
         /// </summary>
-        private readonly G9Schedule _scheduleForCheckHasShutdownStarted;
+        private readonly G9CSchedule _scheduleForCheckHasShutdownStarted;
 
         /// <summary>
         ///     Concurrent Queue for data logs
@@ -189,8 +189,8 @@ namespace G9LogManagement
                 G9LogInformationForComponentLog("Start G9LogManagement...", G9LogConst.G9LogIdentity, "Start");
 
             // Initialize schedules
-            _scheduleForSaveLogsWithTime = new G9Schedule();
-            _scheduleForCheckHasShutdownStarted = new G9Schedule();
+            _scheduleForSaveLogsWithTime = new G9CSchedule();
+            _scheduleForCheckHasShutdownStarted = new G9CSchedule();
 
             // Start scheduler handler
             ScheduleHandler();

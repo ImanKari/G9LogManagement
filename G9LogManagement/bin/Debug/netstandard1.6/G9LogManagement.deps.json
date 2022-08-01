@@ -7,10 +7,10 @@
   "targets": {
     ".NETStandard,Version=v1.6": {},
     ".NETStandard,Version=v1.6/": {
-      "G9LogManagement/3.0.3.3": {
+      "G9LogManagement/3.0.3.5": {
         "dependencies": {
-          "G9ConfigManagement": "2.1.0.4",
-          "G9ScheduleManagement": "2.1.0.4",
+          "G9ConfigManagement": "2.1.0.6",
+          "G9ScheduleManagement": "2.1.0.5",
           "NETStandard.Library": "1.6.1",
           "System.Diagnostics.FileVersionInfo": "4.3.0",
           "System.Diagnostics.StackTrace": "4.3.0"
@@ -19,26 +19,46 @@
           "G9LogManagement.dll": {}
         }
       },
-      "G9ConfigManagement/2.1.0.4": {
+      "G9ConfigManagement/2.1.0.6": {
         "dependencies": {
           "NETStandard.Library": "1.6.1",
           "System.Xml.XmlDocument": "4.3.0"
         },
         "runtime": {
           "lib/netstandard1.6/G9ConfigManagement.dll": {
-            "assemblyVersion": "2.1.0.4",
-            "fileVersion": "2.1.0.4"
+            "assemblyVersion": "2.1.0.6",
+            "fileVersion": "2.1.0.6"
           }
         }
       },
-      "G9ScheduleManagement/2.1.0.4": {
+      "G9ScheduleManagement/2.1.0.5": {
         "dependencies": {
-          "NETStandard.Library": "1.6.1"
+          "Microsoft.DotNet.InternalAbstractions": "1.0.0",
+          "NETStandard.Library": "1.6.1",
+          "System.Runtime.Serialization.Formatters": "4.3.0"
         },
         "runtime": {
           "lib/netstandard1.6/G9ScheduleManagement.dll": {
-            "assemblyVersion": "2.1.0.4",
-            "fileVersion": "2.1.0.4"
+            "assemblyVersion": "2.1.0.5",
+            "fileVersion": "2.1.0.5"
+          }
+        }
+      },
+      "Microsoft.DotNet.InternalAbstractions/1.0.0": {
+        "dependencies": {
+          "System.AppContext": "4.3.0",
+          "System.Collections": "4.3.0",
+          "System.IO": "4.3.0",
+          "System.IO.FileSystem": "4.3.0",
+          "System.Reflection.TypeExtensions": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Runtime.InteropServices.RuntimeInformation": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/Microsoft.DotNet.InternalAbstractions.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -664,6 +684,33 @@
           }
         }
       },
+      "System.Runtime.Serialization.Formatters/4.3.0": {
+        "dependencies": {
+          "System.Collections": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Serialization.Primitives": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.4/System.Runtime.Serialization.Formatters.dll": {
+            "assemblyVersion": "4.0.1.0",
+            "fileVersion": "4.6.24705.1"
+          }
+        }
+      },
+      "System.Runtime.Serialization.Primitives/4.3.0": {
+        "dependencies": {
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/System.Runtime.Serialization.Primitives.dll": {
+            "assemblyVersion": "4.1.2.0",
+            "fileVersion": "4.6.24705.1"
+          }
+        }
+      },
       "System.Security.Cryptography.Algorithms/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0",
@@ -939,24 +986,31 @@
     }
   },
   "libraries": {
-    "G9LogManagement/3.0.3.3": {
+    "G9LogManagement/3.0.3.5": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "G9ConfigManagement/2.1.0.4": {
+    "G9ConfigManagement/2.1.0.6": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-I7DpkbaZ+T7rAO6prbUbAzViVK9I9detvk9Jhxw/V5GMpGfl+9vncYAScvAj0hQlhca4vIASuAzuEKzS9Cxgjw==",
-      "path": "g9configmanagement/2.1.0.4",
-      "hashPath": "g9configmanagement.2.1.0.4.nupkg.sha512"
+      "sha512": "sha512-NOH3uEbjviXvT+mRzbmtNcjcVZ6FaU99Z3QwDnU9Wa61WSU9HLVY71EBievqcwj1mZNkofzQj1BY/I3PsR5ogw==",
+      "path": "g9configmanagement/2.1.0.6",
+      "hashPath": "g9configmanagement.2.1.0.6.nupkg.sha512"
     },
-    "G9ScheduleManagement/2.1.0.4": {
+    "G9ScheduleManagement/2.1.0.5": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-ysOQabKIGSXunjC+fj7WeHfbznHg7k7wAFaI1jeCIPRwEtEm5WulqiCzV1ecUpFX0WjQ1Zi0YSPLKz8eQqPTfg==",
-      "path": "g9schedulemanagement/2.1.0.4",
-      "hashPath": "g9schedulemanagement.2.1.0.4.nupkg.sha512"
+      "sha512": "sha512-taNp9ejEDPhKZat3RLI049yIRIUZQylBAifPJsG/6ZboCK+2mbRAk9BMCspSWH8S7nagq8UpeaeQ+wLw+9flqg==",
+      "path": "g9schedulemanagement/2.1.0.5",
+      "hashPath": "g9schedulemanagement.2.1.0.5.nupkg.sha512"
+    },
+    "Microsoft.DotNet.InternalAbstractions/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AAguUq7YyKk3yDWPoWA8DrLZvURxB/LrDdTn1h5lmPeznkFUpfC3p459w5mQYQE0qpquf/CkSQZ0etiV5vRHFA==",
+      "path": "microsoft.dotnet.internalabstractions/1.0.0",
+      "hashPath": "microsoft.dotnet.internalabstractions.1.0.0.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "type": "package",
@@ -1384,6 +1438,20 @@
       "sha512": "sha512-yMH+MfdzHjy17l2KESnPiF2dwq7T+xLnSJar7slyimAkUh/gTrS9/UQOtv7xarskJ2/XDSNvfLGOBQPjL7PaHQ==",
       "path": "system.runtime.numerics/4.3.0",
       "hashPath": "system.runtime.numerics.4.3.0.nupkg.sha512"
+    },
+    "System.Runtime.Serialization.Formatters/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KT591AkTNFOTbhZlaeMVvfax3RqhH1EJlcwF50Wm7sfnBLuHiOeZRRKrr1ns3NESkM20KPZ5Ol/ueMq5vg4QoQ==",
+      "path": "system.runtime.serialization.formatters/4.3.0",
+      "hashPath": "system.runtime.serialization.formatters.4.3.0.nupkg.sha512"
+    },
+    "System.Runtime.Serialization.Primitives/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Wz+0KOukJGAlXjtKr+5Xpuxf8+c8739RI1C+A2BoQZT+wMCCoMDDdO8/4IRHfaVINqL78GO8dW8G2lW/e45Mcw==",
+      "path": "system.runtime.serialization.primitives/4.3.0",
+      "hashPath": "system.runtime.serialization.primitives.4.3.0.nupkg.sha512"
     },
     "System.Security.Cryptography.Algorithms/4.3.0": {
       "type": "package",
